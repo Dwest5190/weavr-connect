@@ -679,8 +679,8 @@ function Panel(p){
   var completeFollowUp=function(fid){p.onUpdate({...person,followUps:(person.followUps||[]).map(function(f){return f.id===fid?{...f,completed:true}:f})})};
   var doDelete=function(){p.onDelete(person.id);p.onClose()};
 
-  return <div style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.4)",zIndex:200,display:"flex",justifyContent:"flex-end"}} onClick={p.onClose}><div style={{width:520,maxWidth:"92vw",height:"100vh",background:"var(--card-solid)",display:"flex",flexDirection:"column",animation:"slideIn 0.35s ease",overflowY:"auto",boxShadow:"-8px 0 40px rgba(0,0,0,0.1)"}} onClick={function(e){e.stopPropagation()}}>
-    <div style={{padding:"24px 28px",background:"var(--sidebar)",position:"relative",overflow:"hidden"}}>
+  return <div style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.4)",zIndex:200,display:"flex",justifyContent:"flex-end"}} onClick={p.onClose}><div style={{width:560,maxWidth:"100vw",height:"100vh",background:"var(--card-solid)",display:"flex",flexDirection:"column",animation:"slideIn 0.35s ease",overflowY:"auto",boxShadow:"-8px 0 40px rgba(0,0,0,0.1)"}} onClick={function(e){e.stopPropagation()}}>
+    <div style={{padding:"20px",background:"var(--sidebar)",position:"relative",overflow:"hidden"}}>
       <div style={{position:"absolute",top:-30,right:-30,width:140,height:140,borderRadius:"50%",background:"rgba(255,255,255,0.05)",pointerEvents:"none"}}/>
       <button style={{position:"absolute",top:16,right:16,background:"rgba(255,255,255,0.1)",border:"none",borderRadius:10,width:32,height:32,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}} onClick={p.onClose}><I n="x" sz={16} c="rgba(255,255,255,0.7)"/></button>
       <div style={{position:"relative",zIndex:1,display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
@@ -692,24 +692,23 @@ function Panel(p){
         <div style={{textAlign:"center"}}><RingMini value={score} max={100} color={scoreColor(score)} sz={50}/><div style={{fontSize:9,color:"rgba(255,255,255,0.5)",marginTop:4,fontWeight:600}}>{scoreLabel(score)}</div></div>
       </div>
     </div>
-    <div style={{padding:"10px 28px",background:"var(--primary)08",borderBottom:"1px solid var(--divider)",display:"flex",justifyContent:"space-between"}}>
+    <div style={{padding:"10px 20px",background:"var(--primary)08",borderBottom:"1px solid var(--divider)",display:"flex",justifyContent:"space-between"}}>
       <div style={{fontSize:12,color:"var(--text-sub)",display:"flex",alignItems:"center",gap:6}}><I n="zap" sz={13} c={stColor}/><b style={{color:"var(--text)"}}>Next:</b>{NEXT_ACT[person.currentStage]}</div>
       <div style={{fontSize:11,color:"var(--text-muted)",display:"flex",alignItems:"center",gap:12}}><span>{d===null?"Never contacted":"Last: "+fmtS(person.lastContactDate)}</span>{(function(){var stDate=person.stages&&person.stages[person.currentStage]?person.stages[person.currentStage].date:person.createdAt;var dys=ago(stDate);if(dys===null)return null;return <span style={{color:dys>14?"#EF4444":dys>7?"#F59E0B":"var(--text-muted)"}}>{dys}d in {stLabel}</span>})()}</div>
     </div>
-    <div style={{padding:"0 28px",borderBottom:"1px solid var(--divider)",background:"var(--card-solid)",position:"sticky",top:0,zIndex:10}}>
-      <div style={{display:"flex",alignItems:"center",gap:6,padding:"12px 0"}}>
-        <Btn icon="check" label={justFollowed?"Logged!":"Followed Up"} onClick={function(){done();setJustFollowed(true);setTimeout(function(){setJustFollowed(false)},2000)}} v={justFollowed?"green":"green"} sx={{padding:"7px 14px",fontSize:12}}/>
-        {linIdx>0&&<button onClick={stepBack} style={{display:"inline-flex",alignItems:"center",gap:4,padding:"7px 12px",borderRadius:12,fontSize:12,fontWeight:600,cursor:"pointer",border:"1px solid var(--inp-border)",background:"var(--card)",color:"var(--text-sub)"}}><span style={{transform:"rotate(180deg)",display:"inline-block"}}><I n="up" sz={13}/></span>Back</button>}
-        {linIdx<linearStages.length-1&&<Btn icon="up" label="Advance" onClick={adv} sx={{padding:"7px 14px",fontSize:12}}/>}
-        <Btn icon="msg" label="Text" onClick={function(){setContactOpen("text")}} sx={{padding:"7px 14px",fontSize:12}}/>
-        <Btn icon="mail" label="Email" onClick={function(){setContactOpen("email")}} v="ghost" sx={{padding:"7px 14px",fontSize:12,opacity:person.email?1:0.4}}/>
-        <div style={{flex:1}}/>
-        <Btn icon="cal" label="" onClick={function(){setShowCal(!showCal)}} v="ghost" sx={{padding:"7px 10px",fontSize:12}}/>
-        <Btn icon="edit" label="" onClick={function(){setEdit(!edit)}} v="ghost" sx={{padding:"7px 10px",fontSize:12}}/>
-        <button onClick={function(){if(confirm("Delete "+person.firstName+"?")){p.onDelete(person.id);p.onClose()}}} style={{display:"inline-flex",alignItems:"center",padding:"7px 10px",borderRadius:10,fontSize:12,cursor:"pointer",background:"transparent",color:"#EF4444",border:"1px solid #FECACA"}}><I n="trash" sz={13} c="#EF4444"/></button>
+    <div style={{padding:"10px 20px",borderBottom:"1px solid var(--divider)",background:"var(--card-solid)",position:"sticky",top:0,zIndex:10}}>
+      <div style={{display:"flex",alignItems:"center",gap:5,flexWrap:"wrap"}}>
+        <Btn icon="check" label={justFollowed?"Logged!":"Followed Up"} onClick={function(){done();setJustFollowed(true);setTimeout(function(){setJustFollowed(false)},2000)}} v="green" sx={{padding:"6px 12px",fontSize:11}}/>
+        {linIdx>0&&<button onClick={stepBack} style={{display:"inline-flex",alignItems:"center",gap:3,padding:"6px 10px",borderRadius:10,fontSize:11,fontWeight:600,cursor:"pointer",border:"1px solid var(--inp-border)",background:"var(--card)",color:"var(--text-sub)"}}><span style={{transform:"rotate(180deg)",display:"inline-block"}}><I n="up" sz={12}/></span>Back</button>}
+        {linIdx<linearStages.length-1&&<Btn icon="up" label="Advance" onClick={adv} sx={{padding:"6px 12px",fontSize:11}}/>}
+        <Btn icon="msg" label="Text" onClick={function(){setContactOpen("text")}} sx={{padding:"6px 12px",fontSize:11}}/>
+        <Btn icon="mail" label="Email" onClick={function(){setContactOpen("email")}} v="ghost" sx={{padding:"6px 12px",fontSize:11,opacity:person.email?1:0.4}}/>
+        <Btn icon="cal" label="" onClick={function(){setShowCal(!showCal)}} v="ghost" sx={{padding:"6px 8px",fontSize:11}}/>
+        <Btn icon="edit" label="" onClick={function(){setEdit(!edit)}} v="ghost" sx={{padding:"6px 8px",fontSize:11}}/>
+        <button onClick={function(){if(confirm("Delete "+person.firstName+"?")){p.onDelete(person.id);p.onClose()}}} style={{display:"inline-flex",alignItems:"center",padding:"6px 8px",borderRadius:10,fontSize:11,cursor:"pointer",background:"transparent",color:"#EF4444",border:"1px solid #FECACA"}}><I n="trash" sz={12} c="#EF4444"/></button>
       </div>
     </div>
-    <div style={{padding:"18px 28px",overflowY:"auto",flex:1}}>
+    <div style={{padding:"16px 20px",overflowY:"auto",flex:1}}>
 
       {contactOpen&&<ContactAction person={person} message={gMsg()} email={emailFor(person,p.config)} onClose={function(){setContactOpen(null)}}/>}
 
