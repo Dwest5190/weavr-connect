@@ -1,19 +1,16 @@
 {
   "name": "weavr-connect",
   "version": "1.0.0",
-  "description": "Weavr Connect — Pastoral follow-up tool for tracking visitors through the connection journey",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "start": "serve dist -s -l $PORT"
+    "start": "node server.js"
   },
   "dependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "serve": "^14.2.0"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",
