@@ -114,7 +114,7 @@ var fallbackCopy=function(text,cb){
 function calcScore(p){var s=50,d=ago(p.lastContactDate);if(d===null)s-=30;else if(d<=1)s+=20;else if(d<=3)s+=10;else if(d<=7)s-=5;else if(d<=14)s-=15;else s-=25;s+=(SIDX[p.currentStage]||0)*5;var ch=p.checkIns||[];s+=Math.min(ch.filter(function(c){return ago(c.date)<=14}).length*5,15);var pos=ch.filter(function(c){return c.type==="conversation"||c.type==="interested"}).length;var neg=ch.filter(function(c){return c.type==="no-response"}).length;if(ch.length>0){s+=Math.round(pos/ch.length*15);s-=Math.round(neg/ch.length*10)}if(ago(p.createdAt)>30&&(SIDX[p.currentStage]||0)===0)s-=10;return Math.max(0,Math.min(100,Math.round(s)))}
 function scoreColor(s){return s>=75?"#10B981":s>=50?"#06B6D4":s>=30?"#F59E0B":"#EF4444"}
 function scoreLabel(s){return s>=75?"Highly Engaged":s>=50?"Engaged":s>=30?"At Risk":"Disengaging"}
-var db={async get(k,fb){try{var r=await window.storage.get(k);return r?JSON.parse(r.value):fb}catch(e){return fb}},async set(k,v){try{await window.storage.set(k,JSON.stringify(v))}catch(e){}}};
+var db={async get(k,fb){try{var p=window.storage.get(k);var timeout=new Promise(function(r){setTimeout(function(){r(null)},2000)});var r=await Promise.race([p,timeout]);return r&&r.value?JSON.parse(r.value):fb}catch(e){return fb}},async set(k,v){try{await window.storage.set(k,JSON.stringify(v))}catch(e){}}};
 
 /* ══════ ICONS ══════ */
 var I=function(props){var n=props.n,size=props.sz||18,col=props.c||"currentColor";var paths={home:<path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" strokeWidth="1.5" strokeLinejoin="round"/>,users:<g><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" strokeWidth="1.5"/><circle cx="9" cy="7" r="4" strokeWidth="1.5"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" strokeWidth="1.5"/></g>,plus:<path d="M12 5v14M5 12h14" strokeWidth="1.5" strokeLinecap="round"/>,upload:<g><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" strokeWidth="1.5" strokeLinecap="round"/><polyline points="17 8 12 3 7 8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><line x1="12" y1="3" x2="12" y2="15" strokeWidth="1.5" strokeLinecap="round"/></g>,search:<g><circle cx="11" cy="11" r="8" strokeWidth="1.5"/><line x1="21" y1="21" x2="16.65" y2="16.65" strokeWidth="1.5" strokeLinecap="round"/></g>,x:<g><line x1="18" y1="6" x2="6" y2="18" strokeWidth="1.5" strokeLinecap="round"/><line x1="6" y1="6" x2="18" y2="18" strokeWidth="1.5" strokeLinecap="round"/></g>,check:<polyline points="20 6 9 17 4 12" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>,up:<polyline points="18 15 12 9 6 15" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>,msg:<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" strokeWidth="1.5" strokeLinejoin="round"/>,edit:<g><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" strokeWidth="1.5"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" strokeWidth="1.5"/></g>,trash:<g><polyline points="3 6 5 6 21 6" strokeWidth="1.5"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" strokeWidth="1.5" strokeLinecap="round"/></g>,gear:<g><circle cx="12" cy="12" r="3" strokeWidth="1.5"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" strokeWidth="1.5"/></g>,dl:<g><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" strokeWidth="1.5"/><polyline points="7 10 12 15 17 10" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><line x1="12" y1="15" x2="12" y2="3" strokeWidth="1.5" strokeLinecap="round"/></g>,phone:<path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z" strokeWidth="1.5"/>,mail:<g><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" strokeWidth="1.5"/><polyline points="22,6 12,13 2,6" strokeWidth="1.5"/></g>,copy:<g><rect x="9" y="9" width="13" height="13" rx="2" ry="2" strokeWidth="1.5"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" strokeWidth="1.5"/></g>,flag:<g><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" strokeWidth="1.5"/><line x1="4" y1="22" x2="4" y2="15" strokeWidth="1.5"/></g>,zap:<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" strokeWidth="1.5" strokeLinejoin="round"/>,chart:<path d="M18 20V10M12 20V4M6 20v-6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>,send:<g><line x1="22" y1="2" x2="11" y2="13" strokeWidth="1.5"/><polygon points="22 2 15 22 11 13 2 9 22 2" strokeWidth="1.5" strokeLinejoin="round"/></g>,card:<g><rect x="2" y="3" width="20" height="18" rx="2" strokeWidth="1.5"/><line x1="2" y1="9" x2="22" y2="9" strokeWidth="1.5"/></g>,sun:<g><circle cx="12" cy="12" r="5" strokeWidth="1.5"/><line x1="12" y1="1" x2="12" y2="3" strokeWidth="1.5" strokeLinecap="round"/><line x1="12" y1="21" x2="12" y2="23" strokeWidth="1.5" strokeLinecap="round"/><line x1="1" y1="12" x2="3" y2="12" strokeWidth="1.5" strokeLinecap="round"/><line x1="21" y1="12" x2="23" y2="12" strokeWidth="1.5" strokeLinecap="round"/></g>,target:<g><circle cx="12" cy="12" r="10" strokeWidth="1.5"/><circle cx="12" cy="12" r="6" strokeWidth="1.5"/><circle cx="12" cy="12" r="2" strokeWidth="1.5"/></g>,cal:<g><rect x="3" y="4" width="18" height="18" rx="2" strokeWidth="1.5"/><line x1="16" y1="2" x2="16" y2="6" strokeWidth="1.5" strokeLinecap="round"/><line x1="8" y1="2" x2="8" y2="6" strokeWidth="1.5" strokeLinecap="round"/><line x1="3" y1="10" x2="21" y2="10" strokeWidth="1.5"/></g>,clock:<g><circle cx="12" cy="12" r="10" strokeWidth="1.5"/><polyline points="12 6 12 12 16 14" strokeWidth="1.5" strokeLinecap="round"/></g>,eye:<g><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" strokeWidth="1.5"/><circle cx="12" cy="12" r="3" strokeWidth="1.5"/></g>,palette:<g><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.1 0 2-.9 2-2 0-.53-.21-1.01-.55-1.37-.33-.35-.55-.83-.55-1.37 0-1.1.9-2 2-2h2.36C19.86 15.26 22 13.13 22 10.5 22 5.81 17.52 2 12 2z" strokeWidth="1.5"/><circle cx="7.5" cy="11.5" r="1.5" fill={col} strokeWidth="0"/><circle cx="10.5" cy="7.5" r="1.5" fill={col} strokeWidth="0"/><circle cx="15.5" cy="7.5" r="1.5" fill={col} strokeWidth="0"/></g>};return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={col} xmlns="http://www.w3.org/2000/svg">{paths[n]}</svg>};
@@ -170,7 +170,7 @@ function Overview(p){
   var mx=Math.max.apply(null,STAGES.map(function(s){return people.filter(function(x){return x.currentStage===s.key}).length}).concat([1]));
   var mml=people.filter(function(x){return!x.fullyConnected}).map(function(x){var sc=calcScore(x),d=ago(x.lastContactDate),pri=100-sc;if(d===null)pri+=30;else if(d>7)pri+=20;else if(d>3)pri+=10;if((SIDX[x.currentStage]||0)<=1)pri+=10;return{...x,engScore:sc,priority:pri}}).sort(function(a,b){return b.priority-a.priority}).slice(0,10);
 
-  if(!total)return <div style={{textAlign:"center",padding:"100px 20px"}}><div style={{width:80,height:80,borderRadius:24,background:"var(--primary-grad)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 24px"}}><I n="users" sz={32} c="#fff"/></div><h2 style={{fontSize:26,fontWeight:700,color:"var(--text)",marginBottom:10}}>Welcome to Connection Engine</h2><p style={{fontSize:15,color:"var(--text-muted)",maxWidth:400,margin:"0 auto 32px",lineHeight:1.8}}>Start tracking your church's connection journey.</p><div style={{display:"flex",gap:12,justifyContent:"center"}}><Btn icon="plus" label="Add Person" onClick={p.onAdd}/><Btn icon="upload" label="Import CSV" onClick={p.onImport} v="ghost"/></div></div>;
+  if(!total)return <div style={{textAlign:"center",padding:"100px 20px"}}><div style={{width:80,height:80,borderRadius:24,background:"var(--primary-grad)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 24px"}}><svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 4 8 12 12 12C16 12 20 4 20 4" stroke="#fff" strokeWidth="2" strokeLinecap="round"/><path d="M4 10C4 10 8 18 12 18C16 18 20 10 20 10" stroke="#fff" strokeWidth="2" strokeLinecap="round" opacity="0.7"/><path d="M4 16C4 16 8 24 12 24C16 24 20 16 20 16" stroke="#fff" strokeWidth="2" strokeLinecap="round" opacity="0.4"/></svg></div><h2 style={{fontSize:26,fontWeight:700,color:"var(--text)",marginBottom:10}}>Welcome to Weavr</h2><p style={{fontSize:15,color:"var(--text-muted)",maxWidth:400,margin:"0 auto 32px",lineHeight:1.8}}>Start weaving people into your church community.</p><div style={{display:"flex",gap:12,justifyContent:"center"}}><Btn icon="plus" label="Add Person" onClick={p.onAdd}/><Btn icon="upload" label="Import CSV" onClick={p.onImport} v="ghost"/></div></div>;
 
   return <div>
     <div style={{background:"var(--sidebar)",borderRadius:24,padding:"28px 32px",marginBottom:24,position:"relative",overflow:"hidden",boxShadow:"0 12px 40px rgba(0,0,0,0.15)"}}>
@@ -201,7 +201,7 @@ function Overview(p){
       </div>
     </div>})()}
 
-    {mml.length>0&&<div style={{background:"var(--card)",borderRadius:18,padding:"16px 24px",marginBottom:24,borderLeft:"4px solid var(--primary)",boxShadow:"0 2px 16px rgba(0,0,0,0.04)"}}>
+    {mml.length>0&&<div style={{background:"var(--card)",borderRadius:18,padding:"16px 24px",marginBottom:24,boxShadow:"0 2px 16px rgba(0,0,0,0.04)"}}>
       <button onClick={function(){setMmlOpen(!mmlOpen)}} style={{width:"100%",display:"flex",alignItems:"center",gap:8,background:"none",border:"none",padding:"4px 0",cursor:"pointer",textAlign:"left"}}>
         <I n="sun" sz={18} c="#F59E0B"/>
         <h3 style={{fontSize:15,fontWeight:700,color:"var(--text)",flex:1}}>Monday Morning List</h3>
@@ -257,6 +257,7 @@ function PeopleView(p){
 function AssignedCards(p){
   var [selTeam,setSelTeam]=useState(p.teams.length>0?p.teams[0].id:"");
   var [workMode,setWorkMode]=useState(false);
+  var [acView,setAcView]=useState("grid");
   var [workIdx,setWorkIdx]=useState(0);
   var [workNote,setWorkNote]=useState("");
   var [workFlash,setWorkFlash]=useState("");
@@ -282,7 +283,12 @@ function AssignedCards(p){
   return <div>
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
       <div><h2 style={{fontSize:21,fontWeight:700,color:"var(--text)",display:"flex",alignItems:"center",gap:10}}><I n="card" sz={22} c="var(--primary)"/>Assigned Cards</h2><p style={{fontSize:12,color:"var(--text-muted)",marginTop:3}}>View and work contacts by team member</p></div>
-      <button onClick={function(){setWorkMode(!workMode);setWorkIdx(0);setWorkFlash("")}} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:12,border:workMode?"2px solid var(--primary)":"2px solid var(--inp-border)",background:workMode?"var(--primary)08":"var(--inp)",fontSize:12,fontWeight:600,color:workMode?"var(--primary)":"var(--text-sub)",cursor:"pointer"}}><I n="zap" sz={14} c={workMode?"var(--primary)":"var(--text-muted)"}/>{workMode?"Grid View":"Work Mode"}</button>
+      <div style={{display:"flex",gap:6}}>
+        <div style={{display:"flex",gap:3,background:"var(--inp)",borderRadius:10,padding:3}}>
+          {["grid","list"].map(function(v){return <button key={v} onClick={function(){setAcView(v);setWorkMode(false)}} style={{padding:"6px 12px",borderRadius:8,border:"none",fontSize:11,fontWeight:600,cursor:"pointer",background:!workMode&&acView===v?"var(--card)":"transparent",color:!workMode&&acView===v?"var(--text)":"var(--text-muted)",boxShadow:!workMode&&acView===v?"0 1px 4px rgba(0,0,0,0.08)":"none"}}>{v==="grid"?"Grid":"List"}</button>})}
+        </div>
+        <button onClick={function(){setWorkMode(!workMode);setWorkIdx(0);setWorkFlash("")}} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:12,border:workMode?"2px solid var(--primary)":"2px solid var(--inp-border)",background:workMode?"var(--primary)08":"var(--inp)",fontSize:12,fontWeight:600,color:workMode?"var(--primary)":"var(--text-sub)",cursor:"pointer"}}><I n="zap" sz={14} c={workMode?"var(--primary)":"var(--text-muted)"}/>{workMode?"Exit Work Mode":"Work Mode"}</button>
+      </div>
     </div>
     <div style={{display:"flex",gap:8,marginBottom:20,flexWrap:"wrap"}}>
       {p.teams.map(function(t){var ct=p.people.filter(function(x){return x.assignedTo===t.id&&!x.fullyConnected}).length;return <button key={t.id} onClick={function(){setSelTeam(t.id);setWorkIdx(0)}} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:12,border:selTeam===t.id?"2px solid "+t.color:"2px solid transparent",background:selTeam===t.id?"var(--card)":"var(--inp)",fontSize:12,fontWeight:600,color:selTeam===t.id?t.color:"var(--text-sub)",cursor:"pointer"}}><div style={{width:24,height:24,borderRadius:8,background:t.color+"20",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:t.color}}>{t.name.charAt(0)}</div>{t.name} ({ct})</button>})}
@@ -334,6 +340,10 @@ function AssignedCards(p){
       </div>
     </div>:
     workMode&&!workPerson?<div style={{background:"var(--card)",borderRadius:18,padding:48,textAlign:"center",color:"var(--text-muted)"}}><I n="check" sz={32} c="#10B981"/><div style={{fontWeight:600,marginTop:12,color:"#10B981"}}>All caught up!</div><div style={{fontSize:12,marginTop:4}}>No pending contacts for {tm?tm.name:"this team"}</div></div>:
+    acView==="list"?<div style={{background:"var(--card)",borderRadius:18,overflow:"hidden",boxShadow:"0 2px 16px rgba(0,0,0,0.04)"}}>
+      {assigned.map(function(x,i){var stg=STAGES.find(function(s){return s.key===x.currentStage});var sc=calcScore(x);var d=ago(x.lastContactDate);return <div key={x.id} style={{display:"flex",alignItems:"center",gap:12,padding:"12px 20px",borderTop:i>0?"1px solid var(--divider)":"none",cursor:"pointer"}} onClick={function(){p.onPerson(x)}}><div style={{width:32,height:32,borderRadius:8,background:stg?stg.color+"15":"var(--inp)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,color:stg?stg.color:"var(--text-muted)"}}>{(x.firstName||"?").charAt(0)}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:13,fontWeight:600,color:"var(--text)"}}>{x.firstName} {x.lastName}</div><div style={{fontSize:11,color:"var(--text-muted)",display:"flex",gap:8}}><span style={{color:stg?stg.color:"#999"}}>{stg?stg.label:"?"}</span><span>{d===null?"Never":d+"d ago"}</span></div></div><ScoreRing score={sc} sz={30}/></div>})}
+      {assigned.length===0&&<div style={{padding:40,textAlign:"center",color:"var(--text-muted)"}}>{tm?"No pending contacts for "+tm.name:"Select a team member"}</div>}
+    </div>:
     <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:14}}>
       {assigned.map(function(x){
         var stg=STAGES.find(function(s){return s.key===x.currentStage});var sc=calcScore(x);var d=ago(x.lastContactDate);
@@ -487,36 +497,34 @@ function Reports(p){
 /* ══════ FULLY CONNECTED ══════ */
 function FullyConnected(p){
   var connected=p.people.filter(function(x){return x.fullyConnected});
+  var [fcView,setFcView]=useState("grid");
   return <div>
-    <div style={{textAlign:"center",marginBottom:28}}>
-      <div style={{width:64,height:64,borderRadius:20,background:"linear-gradient(135deg,#F59E0B,#FBBF24)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 16px",boxShadow:"0 8px 32px rgba(245,158,11,0.3)",fontSize:28}}>&#11088;</div>
-      <h2 style={{fontSize:22,fontWeight:700,color:"var(--text)",marginBottom:4}}>Fully Connected</h2>
-      <p style={{fontSize:13,color:"var(--text-muted)"}}>{connected.length} people in both a BGroup and on the ATeam</p>
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:24}}>
+      <div style={{textAlign:"left"}}>
+        <h2 style={{fontSize:21,fontWeight:700,color:"var(--text)",display:"flex",alignItems:"center",gap:10}}>{"⭐"} Fully Connected</h2>
+        <p style={{fontSize:12,color:"var(--text-muted)",marginTop:3}}>{connected.length} people in both a BGroup and on the ATeam</p>
+      </div>
+      <div style={{display:"flex",gap:4,background:"var(--inp)",borderRadius:10,padding:3}}>
+        {["grid","list"].map(function(v){return <button key={v} onClick={function(){setFcView(v)}} style={{padding:"6px 12px",borderRadius:8,border:"none",fontSize:11,fontWeight:600,cursor:"pointer",background:fcView===v?"var(--card)":"transparent",color:fcView===v?"var(--text)":"var(--text-muted)",boxShadow:fcView===v?"0 1px 4px rgba(0,0,0,0.08)":"none"}}>{v==="grid"?"Grid":"List"}</button>})}
+      </div>
     </div>
-    {connected.length===0?<div style={{background:"var(--card)",borderRadius:18,padding:48,textAlign:"center",color:"var(--text-muted)",boxShadow:"0 2px 16px rgba(0,0,0,0.04)"}}><div style={{fontSize:15,fontWeight:600}}>No one fully connected yet</div><p style={{fontSize:12,marginTop:6}}>When someone joins both a BGroup and the ATeam through Next Steps, they'll appear here.</p></div>:
+    {connected.length===0?<div style={{background:"var(--card)",borderRadius:18,padding:48,textAlign:"center",color:"var(--text-muted)",boxShadow:"0 2px 16px rgba(0,0,0,0.04)"}}><div style={{fontSize:15,fontWeight:600}}>No one fully connected yet</div><p style={{fontSize:12,marginTop:6}}>When someone joins both a BGroup and the ATeam, they'll appear here.</p></div>:
+    fcView==="list"?<div style={{background:"var(--card)",borderRadius:18,overflow:"hidden",boxShadow:"0 2px 16px rgba(0,0,0,0.04)"}}>
+      {connected.map(function(x,i){var ns=(x.milestones||{})["next-steps"]||{};var sc=calcScore(x);return <div key={x.id} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 20px",borderTop:i>0?"1px solid var(--divider)":"none",cursor:"pointer"}} onClick={function(){p.onPerson(x)}}><div style={{width:36,height:36,borderRadius:10,background:scoreColor(sc)+"20",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:700,color:scoreColor(sc)}}>{(x.firstName||"?").charAt(0)}{(x.lastName||"").charAt(0)}</div><div style={{flex:1}}><div style={{fontSize:14,fontWeight:600,color:"var(--text)"}}>{x.firstName} {x.lastName}</div><div style={{fontSize:11,color:"var(--text-muted)",display:"flex",gap:8,marginTop:2}}><span style={{color:"#EC4899"}}>{ns.bGroupLeader||"BGroup"}</span><span style={{color:"#34D399"}}>{ns.aTeamArea||"ATeam"}</span></div></div><ScoreRing score={sc} sz={32}/><div style={{fontSize:10,color:"var(--text-muted)"}}>{fmt(x.fullyConnectedDate)}</div></div>})}
+    </div>:
     <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(320px,1fr))",gap:14}}>
       {connected.map(function(x){
-        var ns=(x.milestones||{})["next-steps"]||{};var stg=STAGES.find(function(s){return s.key===x.currentStage});var sc=calcScore(x);
+        var ns=(x.milestones||{})["next-steps"]||{};var sc=calcScore(x);
         return <div key={x.id} style={{background:"var(--card)",borderRadius:18,padding:"20px 24px",cursor:"pointer",boxShadow:"0 2px 16px rgba(0,0,0,0.04)",border:"2px solid #F59E0B30",position:"relative",overflow:"hidden"}} onClick={function(){p.onPerson(x)}}>
           <div style={{position:"absolute",top:0,right:0,width:60,height:60,background:"#F59E0B08",borderRadius:"0 0 0 60px"}}/>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:12}}>
-            <div>
-              <div style={{fontSize:16,fontWeight:700,color:"var(--text)"}}>{x.firstName} {x.lastName}</div>
-              <div style={{fontSize:11,color:stg?stg.color:"var(--text-muted)",fontWeight:600,marginTop:2}}>{stg?stg.label:"?"}</div>
-            </div>
-            <ScoreRing score={sc} sz={38}/>
+            <div style={{display:"flex",gap:10,alignItems:"center"}}><div style={{width:36,height:36,borderRadius:10,background:scoreColor(sc)+"20",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:700,color:scoreColor(sc)}}>{(x.firstName||"?").charAt(0)}{(x.lastName||"").charAt(0)}</div><div><div style={{fontSize:16,fontWeight:700,color:"var(--text)"}}>{x.firstName} {x.lastName}</div><div style={{fontSize:10,color:"var(--text-muted)"}}>{fmt(x.fullyConnectedDate)}</div></div></div>
+            <ScoreRing score={sc} sz={36}/>
           </div>
           <div style={{display:"flex",gap:8}}>
-            <div style={{flex:1,background:"#EC489910",borderRadius:10,padding:"8px 12px"}}>
-              <div style={{fontSize:10,fontWeight:700,color:"#EC4899",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:2}}>BGroup</div>
-              <div style={{fontSize:12,fontWeight:600,color:"var(--text)"}}>{ns.bGroupLeader||"Connected"}</div>
-            </div>
-            <div style={{flex:1,background:"#34D39910",borderRadius:10,padding:"8px 12px"}}>
-              <div style={{fontSize:10,fontWeight:700,color:"#34D399",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:2}}>ATeam</div>
-              <div style={{fontSize:12,fontWeight:600,color:"var(--text)"}}>{ns.aTeamArea||"Serving"}</div>
-            </div>
+            <div style={{flex:1,background:"#EC489910",borderRadius:10,padding:"8px 12px"}}><div style={{fontSize:10,fontWeight:700,color:"#EC4899",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:2}}>BGroup</div><div style={{fontSize:12,fontWeight:600,color:"var(--text)"}}>{ns.bGroupLeader||"Connected"}</div></div>
+            <div style={{flex:1,background:"#34D39910",borderRadius:10,padding:"8px 12px"}}><div style={{fontSize:10,fontWeight:700,color:"#34D399",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:2}}>ATeam</div><div style={{fontSize:12,fontWeight:600,color:"var(--text)"}}>{ns.aTeamArea||"Serving"}</div></div>
           </div>
-          {x.phone&&<div style={{fontSize:11,color:"var(--text-muted)",marginTop:8}}>{x.phone}</div>}
         </div>;
       })}
     </div>}
@@ -538,7 +546,7 @@ function Settings(p){
   var saveTpl=function(){p.setTemplates(function(prev){return{...prev,[ek]:et}});setSaved(true);setTimeout(function(){setSaved(false)},2500)};
   var goEmailTpl=function(k){setEmailEk(k);setEmailEt(emailTpls[k]||"");setEmailSaved(false)};
   var saveEmailTpl=function(){var ne={...emailTpls};ne[emailEk]=emailEt;p.setConfig({...config,emailTemplates:ne});setEmailSaved(true);setTimeout(function(){setEmailSaved(false)},2500)};
-  var tabs=[{key:"teams",label:"Teams",icon:"users"},{key:"templates",label:"Text Templates",icon:"msg"},{key:"email-tpl",label:"Email Templates",icon:"mail"},{key:"automation",label:"Automation",icon:"zap"},{key:"checkins",label:"Check-ins",icon:"check"},{key:"forms",label:"Form Fields",icon:"card"},{key:"visual",label:"Visual",icon:"palette"},{key:"data",label:"Data",icon:"dl"}];
+  var tabs=[{key:"teams",label:"Teams",icon:"users"},{key:"templates",label:"Text Templates",icon:"msg"},{key:"email-tpl",label:"Email Templates",icon:"mail"},{key:"sequences",label:"Sequences",icon:"clock"},{key:"automation",label:"Automation",icon:"zap"},{key:"checkins",label:"Check-ins",icon:"check"},{key:"forms",label:"Form Fields",icon:"card"},{key:"visual",label:"Visual",icon:"palette"},{key:"data",label:"Data",icon:"dl"}];
 
   return <div>
     <h2 style={{fontSize:21,fontWeight:700,color:"var(--text)",marginBottom:20}}>Settings</h2>
@@ -570,6 +578,30 @@ function Settings(p){
           <div style={{display:"flex",gap:8,marginTop:10,alignItems:"center"}}><Btn label="Save" onClick={saveEmailTpl}/>{emailSaved&&<span style={{fontSize:12,color:"#10B981",fontWeight:600}}>Saved!</span>}</div>
         </div>})():<div style={{color:"var(--text-muted)",fontSize:14,padding:"40px 0",textAlign:"center"}}>Select a stage to edit its email template</div>}</div>
       </div>
+    </div>}
+
+    {tab==="sequences"&&<div style={{background:"var(--card)",borderRadius:18,padding:"22px 24px",boxShadow:"0 2px 16px rgba(0,0,0,0.04)"}}>
+      <h3 style={{fontSize:15,fontWeight:700,color:"var(--text)",marginBottom:4}}>Message Sequences</h3>
+      <p style={{fontSize:12,color:"var(--text-muted)",marginBottom:16}}>Pre-built drip sequences per stage. Each step has suggested timing you can customize.</p>
+      {(function(){var seqs=config.sequences||{};var selSeqStage=ek||"first-visit";var stg=STAGES.find(function(s){return s.key===selSeqStage});var stageSeq=seqs[selSeqStage]||[{day:1,type:"text",message:"Hey {firstName}, it was great having you! How was your experience?"},{day:3,type:"text",message:"Hey {firstName}, just checking in! Would love to connect this week."},{day:7,type:"email",message:"Hi {firstName}, we'd love to see you again. Is there anything we can help with?"}];var updateSeq=function(newSeq){var ns={...seqs};ns[selSeqStage]=newSeq;p.setConfig({...config,sequences:ns})};return <div style={{display:"flex",gap:20}}>
+        <div style={{width:180,flexShrink:0}}>{STAGES.filter(function(s){return s.key!=="bgroup"&&s.key!=="ateam"}).map(function(s){return <button key={s.key} onClick={function(){setEk(s.key)}} style={{display:"flex",alignItems:"center",gap:8,width:"100%",padding:"10px 14px",borderRadius:12,border:"none",fontSize:13,fontWeight:selSeqStage===s.key?600:500,background:selSeqStage===s.key?"var(--primary)08":"transparent",color:selSeqStage===s.key?"var(--primary)":"var(--text-sub)",textAlign:"left",marginBottom:2,cursor:"pointer"}}><Dot color={s.color} sz={7}/>{s.label}</button>})}</div>
+        <div style={{flex:1}}>
+          <div style={{fontSize:14,fontWeight:600,color:"var(--text)",marginBottom:14,display:"flex",alignItems:"center",gap:8}}><Dot color={stg?stg.color:"#ccc"} sz={9}/>{stg?stg.label:""} Sequence</div>
+          {stageSeq.map(function(step,i){return <div key={i} style={{display:"flex",gap:10,marginBottom:12,alignItems:"flex-start"}}>
+            <div style={{width:48,textAlign:"center",flexShrink:0}}><div style={{fontSize:18,fontWeight:700,color:"var(--primary)"}}>{step.day}</div><div style={{fontSize:9,color:"var(--text-muted)",fontWeight:600}}>DAY</div></div>
+            <div style={{flex:1,background:"var(--inp)",borderRadius:12,padding:"10px 14px"}}>
+              <div style={{display:"flex",gap:6,marginBottom:6}}>
+                <select value={step.type} onChange={function(e){var ns=stageSeq.slice();ns[i]={...ns[i],type:e.target.value};updateSeq(ns)}} style={{padding:"4px 8px",borderRadius:6,border:"1px solid var(--inp-border)",background:"var(--card)",color:"var(--text)",fontSize:11,cursor:"pointer"}}><option value="text">Text</option><option value="email">Email</option></select>
+                <input type="number" value={step.day} onChange={function(e){var ns=stageSeq.slice();ns[i]={...ns[i],day:parseInt(e.target.value)||1};updateSeq(ns)}} style={{width:50,padding:"4px 8px",borderRadius:6,border:"1px solid var(--inp-border)",background:"var(--card)",color:"var(--text)",fontSize:11,textAlign:"center"}} min="1"/>
+                <div style={{flex:1}}/>
+                <button onClick={function(){var ns=stageSeq.filter(function(_,j){return j!==i});updateSeq(ns)}} style={{background:"none",border:"none",cursor:"pointer",padding:2}}><I n="x" sz={12} c="#EF4444"/></button>
+              </div>
+              <textarea value={step.message} onChange={function(e){var ns=stageSeq.slice();ns[i]={...ns[i],message:e.target.value};updateSeq(ns)}} style={{width:"100%",minHeight:48,padding:"8px 10px",borderRadius:8,border:"1px solid var(--inp-border)",background:"var(--card)",color:"var(--text)",fontSize:12,lineHeight:1.5,resize:"vertical",boxSizing:"border-box",outline:"none"}}/>
+            </div>
+          </div>})}
+          <button onClick={function(){var ns=stageSeq.concat([{day:stageSeq.length>0?stageSeq[stageSeq.length-1].day+3:1,type:"text",message:""}]);updateSeq(ns)}} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 14px",borderRadius:10,border:"2px dashed var(--inp-border)",background:"transparent",color:"var(--text-muted)",fontSize:12,fontWeight:600,cursor:"pointer",width:"100%",justifyContent:"center"}}><I n="plus" sz={12} c="var(--text-muted)"/>Add Step</button>
+        </div>
+      </div>})()}
     </div>}
 
     {tab==="automation"&&<div style={{background:"var(--card)",borderRadius:18,padding:"22px 24px",boxShadow:"0 2px 16px rgba(0,0,0,0.04)"}}>
@@ -683,9 +715,10 @@ function Panel(p){
     <div style={{padding:"20px",background:"var(--sidebar)",position:"relative",overflow:"hidden"}}>
       <div style={{position:"absolute",top:-30,right:-30,width:140,height:140,borderRadius:"50%",background:"rgba(255,255,255,0.05)",pointerEvents:"none"}}/>
       <button style={{position:"absolute",top:16,right:16,background:"rgba(255,255,255,0.1)",border:"none",borderRadius:10,width:32,height:32,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}} onClick={p.onClose}><I n="x" sz={16} c="rgba(255,255,255,0.7)"/></button>
-      <div style={{position:"relative",zIndex:1,display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
-        <div>
-          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}><Dot color={stColor} sz={9}/><span style={{fontSize:11,fontWeight:700,color:stColor,textTransform:"uppercase",letterSpacing:"0.06em"}}>{stLabel}</span></div>
+      <div style={{position:"relative",zIndex:1,display:"flex",gap:14,alignItems:"flex-start"}}>
+        <div style={{width:48,height:48,borderRadius:14,background:scoreColor(score)+"30",border:"2px solid "+scoreColor(score),display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontWeight:700,color:"#fff",flexShrink:0}}>{(person.firstName||"?").charAt(0)}{(person.lastName||"").charAt(0)}</div>
+        <div style={{flex:1}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}><Dot color={stColor} sz={9}/><span style={{fontSize:11,fontWeight:700,color:stColor,textTransform:"uppercase",letterSpacing:"0.06em"}}>{stLabel}</span></div>
           <h2 style={{fontSize:22,fontWeight:700,color:"#fff"}}>{person.firstName} {person.lastName}</h2>
           {tm&&<div style={{fontSize:11,color:"rgba(255,255,255,0.5)",marginTop:4}}>Assigned to <span style={{color:tm.color,fontWeight:600}}>{tm.name}</span></div>}
         </div>
@@ -709,6 +742,7 @@ function Panel(p){
       </div>
     </div>
     <div style={{padding:"16px 20px",overflowY:"auto",flex:1}}>
+      {(function(){var lastCI=(person.checkIns||[]).slice().reverse().find(function(c){return c.note&&c.note!=="Followed up"});if(!lastCI)return null;var ct=(ciTypes||[]).find(function(t){return t.key===lastCI.type});return <div style={{background:"var(--inp)",borderRadius:10,padding:"8px 12px",marginBottom:14,display:"flex",alignItems:"center",gap:8,fontSize:11}}><I n="msg" sz={12} c={ct?ct.color:"var(--text-muted)"}/><span style={{color:"var(--text-muted)"}}>Last:</span><span style={{color:"var(--text-sub)",flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{lastCI.note}</span><span style={{color:"var(--text-muted)",flexShrink:0}}>{fmtS(lastCI.date)}</span></div>})()}
 
       {contactOpen&&<ContactAction person={person} message={gMsg()} email={emailFor(person,p.config)} onClose={function(){setContactOpen(null)}}/>}
 
@@ -858,12 +892,12 @@ function ImportModal(p){
 }
 
 /* ══════ APP SHELL ══════ */
-export default function App(){
+function AppMain(){
   var [people,setPeople]=useState([]);var [tpl,setTpl]=useState(DEFAULT_TPL);var [teams,setTeams]=useState([]);var [rules,setRules]=useState([]);
   var [config,setConfig]=useState({theme:"light",colorway:"purple",checkInTypes:DEFAULT_CI,formFields:DEFAULT_FIELDS});
   var [view,setView]=useState("overview");var [sf,setSf]=useState(null);var [sel,setSel]=useState(null);var [add,setAdd]=useState(false);var [imp,setImp]=useState(false);var [search,setSearch]=useState("");var [ready,setReady]=useState(false);var [contactTarget,setContactTarget]=useState(null);
 
-  useEffect(function(){Promise.all([db.get("ce5-people",[]),db.get("ce5-tpl",DEFAULT_TPL),db.get("ce5-teams",[]),db.get("ce5-rules",[]),db.get("ce5-config",{theme:"light",colorway:"purple",checkInTypes:DEFAULT_CI,formFields:DEFAULT_FIELDS})]).then(function(res){setPeople(res[0]);setTpl({...DEFAULT_TPL,...res[1]});setTeams(res[2]);setRules(res[3]);setConfig({theme:"light",colorway:"purple",checkInTypes:DEFAULT_CI,formFields:DEFAULT_FIELDS,...res[4]});setReady(true)})},[]);
+  useEffect(function(){Promise.all([db.get("ce5-people",[]),db.get("ce5-tpl",DEFAULT_TPL),db.get("ce5-teams",[]),db.get("ce5-rules",[]),db.get("ce5-config",{theme:"light",colorway:"purple",checkInTypes:DEFAULT_CI,formFields:DEFAULT_FIELDS})]).then(function(res){setPeople(res[0]);setTpl({...DEFAULT_TPL,...res[1]});setTeams(res[2]);setRules(res[3]);setConfig({theme:"light",colorway:"purple",checkInTypes:DEFAULT_CI,formFields:DEFAULT_FIELDS,...res[4]});setReady(true)}).catch(function(){setReady(true)})},[]);
   useEffect(function(){if(ready)db.set("ce5-people",people)},[people,ready]);
   useEffect(function(){if(ready)db.set("ce5-tpl",tpl)},[tpl,ready]);
   useEffect(function(){if(ready)db.set("ce5-teams",teams)},[teams,ready]);
@@ -888,11 +922,11 @@ export default function App(){
   var activeKey=view==="overview"?"overview":view==="settings"?"settings":view==="quick"?"quick":view==="bulk"?"bulk":view==="reports"?"reports":view==="assigned"?"assigned":view==="connected"?"fully-connected":(sf||"all");
 
   return <div style={{display:"flex",height:"100vh",fontFamily:"'DM Sans',sans-serif",background:"var(--bg)",color:"var(--text)",...cssVars}}>
-    <style>{["@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&display=swap');","*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}","::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#64748B;border-radius:3px}","@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}","@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}","input:focus,textarea:focus,select:focus{outline:none;border-color:var(--primary) !important;box-shadow:0 0 0 3px var(--primary)20 !important}","button{cursor:pointer;font-family:'DM Sans',sans-serif}button:active{transform:scale(0.97)}"].join("\n")}</style>
+    <style>{["@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=Nunito:wght@700;800;900&display=swap');","*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}","::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#64748B;border-radius:3px}","@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}","@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}","@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}","@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}","@keyframes confettiFall{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(60px) rotate(360deg);opacity:0}}",".score-ring-pulse{animation:pulse 2s ease-in-out infinite}",".shimmer-btn{background-size:200% 100%;animation:shimmer 2s ease infinite}","input:focus,textarea:focus,select:focus{outline:none;border-color:var(--primary) !important;box-shadow:0 0 0 3px var(--primary)20 !important}","button{cursor:pointer;font-family:'DM Sans',sans-serif}button:active{transform:scale(0.97)}"].join("\n")}</style>
     <aside style={{width:240,background:"var(--sidebar)",display:"flex",flexDirection:"column",flexShrink:0,height:"100vh",position:"sticky",top:0,boxShadow:"4px 0 24px rgba(0,0,0,0.1)"}}>
       <div style={{display:"flex",alignItems:"center",gap:14,padding:"22px 18px",borderBottom:"1px solid rgba(255,255,255,0.06)"}}>
-        <div style={{width:38,height:38,borderRadius:12,background:"var(--logo)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
-        <div><div style={{fontSize:15,fontWeight:700,color:"#fff",lineHeight:1.2}}>Connection</div><div style={{fontSize:10,fontWeight:500,color:"rgba(255,255,255,0.5)",letterSpacing:"0.04em"}}>ENGINE</div></div>
+        <div style={{width:38,height:38,borderRadius:12,background:"var(--logo)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 4 8 12 12 12C16 12 20 4 20 4" stroke="#fff" strokeWidth="2" strokeLinecap="round"/><path d="M4 10C4 10 8 18 12 18C16 18 20 10 20 10" stroke="#fff" strokeWidth="2" strokeLinecap="round" opacity="0.7"/><path d="M4 16C4 16 8 24 12 24C16 24 20 16 20 16" stroke="#fff" strokeWidth="2" strokeLinecap="round" opacity="0.4"/></svg></div>
+        <div><div style={{fontSize:16,fontWeight:800,color:"#fff",lineHeight:1.2,letterSpacing:"0.14em",fontFamily:"'Nunito',sans-serif"}}>WEAVR</div><div style={{fontSize:10,fontWeight:500,color:"rgba(255,255,255,0.5)",letterSpacing:"0.04em"}}>Bethany Church</div></div>
       </div>
       <nav style={{flex:1,padding:"10px 12px",overflowY:"auto"}}>{sideItems.map(function(item,i){if(item.type==="divider")return <div key={"d"+i} style={{height:1,background:"rgba(255,255,255,0.06)",margin:"8px 12px"}}/>;var active=activeKey===item.key;return <button key={item.key} onClick={function(){nav(item.vw,item.sf)}} style={{display:"flex",alignItems:"center",gap:10,width:"100%",padding:"9px 12px",borderRadius:10,border:"none",fontSize:12,fontWeight:active?600:500,background:active?"rgba(255,255,255,0.12)":"transparent",color:active?"#fff":"rgba(255,255,255,0.45)",textAlign:"left",marginBottom:1}}>{item.icon?<I n={item.icon} sz={15} c={active?"#fff":"rgba(255,255,255,0.35)"}/>:<span style={{width:7,height:7,borderRadius:"50%",background:item.color,display:"inline-block"}}/>}<span style={{flex:1}}>{item.label}</span>{item.color&&<span style={{fontSize:10,fontWeight:600,color:"rgba(255,255,255,0.3)"}}>{countForStage(item.key)}</span>}</button>})}</nav>
       <div style={{padding:"12px"}}>
@@ -905,9 +939,12 @@ export default function App(){
       </div>
     </aside>
     <main style={{flex:1,overflowY:"auto",minHeight:"100vh"}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 32px",borderBottom:"1px solid var(--divider)",marginBottom:24,position:"sticky",top:0,background:config.theme==="dark"?"rgba(15,23,42,0.92)":"rgba(240,242,245,0.92)",zIndex:50}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 32px",borderBottom:"1px solid var(--divider)",marginBottom:24,position:"sticky",top:0,background:config.theme==="dark"?"rgba(15,23,42,0.92)":"rgba(240,242,245,0.92)",zIndex:50,backdropFilter:"blur(8px)"}}>
         <div style={{fontSize:12,color:"var(--text-muted)",fontWeight:500}}>{new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"})}</div>
-        <Btn icon="upload" label="Import" onClick={function(){setImp(true)}} v="ghost" sx={{padding:"7px 14px",fontSize:12}}/>
+        <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <button onClick={function(){setConfig({...config,theme:config.theme==="dark"?"light":"dark"})}} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 12px",borderRadius:10,border:"1px solid var(--inp-border)",background:"var(--inp)",cursor:"pointer",fontSize:11,fontWeight:600,color:"var(--text-muted)"}}><I n="sun" sz={13} c="var(--text-muted)"/>{config.theme==="dark"?"Light":"Dark"}</button>
+          <Btn icon="upload" label="Import" onClick={function(){setImp(true)}} v="ghost" sx={{padding:"7px 14px",fontSize:12}}/>
+        </div>
       </div>
       <div style={{padding:"0 32px 32px",animation:"fadeUp 0.4s ease"}}>
         {!ready?<div style={{display:"flex",alignItems:"center",justifyContent:"center",height:400,color:"var(--text-muted)"}}><div style={{fontWeight:600}}>Loading...</div></div>
@@ -925,5 +962,29 @@ export default function App(){
     {add&&<AddModal onClose={function(){setAdd(false)}} onAdd={function(x){setPeople(function(prev){return[...prev,x]})}} teams={teams} config={config}/>}
     {imp&&<ImportModal onClose={function(){setImp(false)}} onImport={function(arr){setPeople(function(prev){return[...prev,...arr]})}}/>}
     {contactTarget&&<ContactAction person={contactTarget} message={tplFor(contactTarget,tpl)} email={emailFor(contactTarget,config)} onClose={function(){setContactTarget(null)}}/>}
+  </div>;
+}
+
+export default function App(){
+  var [authed,setAuthed]=useState(false);
+  var [user,setUser]=useState("");var [pass,setPass]=useState("");var [err,setErr]=useState("");
+  var doLogin=function(){if(user.toLowerCase()==="weavr"&&pass==="Bethany"){setAuthed(true);setErr("")}else{setErr("Invalid credentials")}};
+  if(authed)return <AppMain/>;
+  return <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:"linear-gradient(145deg,#312E81,#1E1B4B 60%,#0F172A)",fontFamily:"'DM Sans',sans-serif"}}>
+    <style>{"@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&display=swap');"}</style>
+    <div style={{width:400,maxWidth:"90vw"}}>
+      <div style={{textAlign:"center",marginBottom:40}}>
+        <div style={{width:72,height:72,borderRadius:20,background:"linear-gradient(135deg,#7C3AED,#6D28D9)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 20px",boxShadow:"0 12px 40px rgba(124,58,237,0.3)"}}><svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 4 8 12 12 12C16 12 20 4 20 4" stroke="#fff" strokeWidth="2" strokeLinecap="round"/><path d="M4 10C4 10 8 18 12 18C16 18 20 10 20 10" stroke="#fff" strokeWidth="2" strokeLinecap="round" opacity="0.7"/><path d="M4 16C4 16 8 24 12 24C16 24 20 16 20 16" stroke="#fff" strokeWidth="2" strokeLinecap="round" opacity="0.4"/></svg></div>
+        <h1 style={{fontSize:36,fontWeight:900,color:"#fff",marginBottom:6,letterSpacing:"0.16em",fontFamily:"'Nunito',sans-serif"}}>WEAVR</h1>
+        <p style={{fontSize:14,color:"rgba(255,255,255,0.4)",fontWeight:500}}>Bethany Church</p>
+      </div>
+      <div style={{background:"rgba(255,255,255,0.06)",borderRadius:24,padding:"32px",border:"1px solid rgba(255,255,255,0.08)",boxShadow:"0 24px 80px rgba(0,0,0,0.3)"}}>
+        <div style={{marginBottom:18}}><div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",color:"rgba(255,255,255,0.4)",marginBottom:6}}>Username</div><input style={{width:"100%",padding:"12px 16px",borderRadius:12,border:"1px solid rgba(255,255,255,0.1)",background:"rgba(255,255,255,0.06)",color:"#fff",fontSize:14,boxSizing:"border-box",outline:"none"}} value={user} onChange={function(e){setUser(e.target.value)}} onKeyDown={function(e){if(e.key==="Enter")doLogin()}} placeholder="Enter username" autoFocus/></div>
+        <div style={{marginBottom:24}}><div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",color:"rgba(255,255,255,0.4)",marginBottom:6}}>Password</div><input type="password" style={{width:"100%",padding:"12px 16px",borderRadius:12,border:"1px solid rgba(255,255,255,0.1)",background:"rgba(255,255,255,0.06)",color:"#fff",fontSize:14,boxSizing:"border-box",outline:"none"}} value={pass} onChange={function(e){setPass(e.target.value)}} onKeyDown={function(e){if(e.key==="Enter")doLogin()}} placeholder="Enter password"/></div>
+        {err&&<div style={{fontSize:12,color:"#EF4444",marginBottom:12,textAlign:"center"}}>{err}</div>}
+        <button onClick={doLogin} style={{width:"100%",padding:"14px",borderRadius:14,border:"none",background:"linear-gradient(135deg,#7C3AED,#6D28D9)",color:"#fff",fontSize:15,fontWeight:600,cursor:"pointer",boxShadow:"0 8px 24px rgba(124,58,237,0.3)"}}>Sign In</button>
+      </div>
+      <p style={{textAlign:"center",fontSize:11,color:"rgba(255,255,255,0.2)",marginTop:24}}>Weavr Connect v1.0</p>
+    </div>
   </div>;
 }
