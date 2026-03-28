@@ -39,10 +39,10 @@ var THEMES={
   dark:{bg:"linear-gradient(145deg,#1A1744,#252262,#1A1744)",card:"rgba(42,38,115,0.65)",cardBorder:"1px solid rgba(255,255,255,0.1)",text:"#F1F5F9",textSub:"#94A3B8",textMuted:"#64748B",inp:"rgba(255,255,255,0.08)",inpBorder:"rgba(255,255,255,0.12)",divider:"rgba(255,255,255,0.07)",hover:"rgba(255,255,255,0.04)",thBg:"rgba(255,255,255,0.04)"}
 };
 var COLORWAYS={
-  purple:{primary:"#7C3AED",primaryGrad:"linear-gradient(135deg,#8B5CF6,#7C3AED)",accent:"#A78BFA",sidebar:"linear-gradient(180deg,#3730A3,#2E2A6E 60%,#1E1B4B)",logo:"linear-gradient(135deg,#7C3AED,#06B6D4)",hero:"linear-gradient(135deg,#5B47B0,#3730A3)",darkBg:"linear-gradient(145deg,#1E1B4B,#2E2A6E,#1E1B4B)",darkCard:"rgba(55,48,163,0.35)",darkSolid:"#2E2A6E"},
-  teal:{primary:"#0891B2",primaryGrad:"linear-gradient(135deg,#22D3EE,#0891B2)",accent:"#67E8F9",sidebar:"linear-gradient(180deg,#1A6B7F,#155E6E 60%,#0E3A4F)",logo:"linear-gradient(135deg,#06B6D4,#10B981)",hero:"linear-gradient(135deg,#0E7490,#1A6B7F)",darkBg:"linear-gradient(145deg,#0E3A4F,#1A6B7F,#0E3A4F)",darkCard:"rgba(26,107,127,0.35)",darkSolid:"#155E6E"},
-  rose:{primary:"#E11D48",primaryGrad:"linear-gradient(135deg,#FB7185,#E11D48)",accent:"#FDA4AF",sidebar:"linear-gradient(180deg,#5C1229,#4A0E20 60%,#3B0A18)",logo:"linear-gradient(135deg,#E11D48,#F59E0B)",hero:"linear-gradient(135deg,#9F1239,#5C1229)",darkBg:"linear-gradient(145deg,#3B0A18,#5C1229,#3B0A18)",darkCard:"rgba(92,18,41,0.35)",darkSolid:"#4A0E20"},
-  emerald:{primary:"#059669",primaryGrad:"linear-gradient(135deg,#34D399,#059669)",accent:"#6EE7B7",sidebar:"linear-gradient(180deg,#0B6B4A,#064E3B 60%,#04362A)",logo:"linear-gradient(135deg,#059669,#06B6D4)",hero:"linear-gradient(135deg,#047857,#0B6B4A)",darkBg:"linear-gradient(145deg,#04362A,#0B6B4A,#04362A)",darkCard:"rgba(11,107,74,0.35)",darkSolid:"#064E3B"}
+  purple:{primary:"#7C3AED",primaryGrad:"linear-gradient(135deg,#8B5CF6,#7C3AED)",accent:"#A78BFA",sidebar:"linear-gradient(180deg,#3730A3,#2E2A6E 60%,#1E1B4B)",logo:"linear-gradient(135deg,#7C3AED,#06B6D4)",hero:"linear-gradient(135deg,#5B47B0,#3730A3)",darkHero:"linear-gradient(135deg,#3730A3,#2E2A6E)",darkBg:"linear-gradient(145deg,#1E1B4B,#2E2A6E,#1E1B4B)",darkCard:"rgba(55,48,163,0.35)",darkSolid:"#2E2A6E"},
+  teal:{primary:"#0891B2",primaryGrad:"linear-gradient(135deg,#22D3EE,#0891B2)",accent:"#67E8F9",sidebar:"linear-gradient(180deg,#1A6B7F,#155E6E 60%,#0E3A4F)",logo:"linear-gradient(135deg,#06B6D4,#10B981)",hero:"linear-gradient(135deg,#0E7490,#1A6B7F)",darkHero:"linear-gradient(135deg,#155E6E,#0E3A4F)",darkBg:"linear-gradient(145deg,#0E3A4F,#1A6B7F,#0E3A4F)",darkCard:"rgba(26,107,127,0.35)",darkSolid:"#155E6E"},
+  rose:{primary:"#E11D48",primaryGrad:"linear-gradient(135deg,#FB7185,#E11D48)",accent:"#FDA4AF",sidebar:"linear-gradient(180deg,#5C1229,#4A0E20 60%,#3B0A18)",logo:"linear-gradient(135deg,#E11D48,#F59E0B)",hero:"linear-gradient(135deg,#9F1239,#5C1229)",darkHero:"linear-gradient(135deg,#4A0E20,#3B0A18)",darkBg:"linear-gradient(145deg,#3B0A18,#5C1229,#3B0A18)",darkCard:"rgba(92,18,41,0.35)",darkSolid:"#4A0E20"},
+  emerald:{primary:"#059669",primaryGrad:"linear-gradient(135deg,#34D399,#059669)",accent:"#6EE7B7",sidebar:"linear-gradient(180deg,#0B6B4A,#064E3B 60%,#04362A)",logo:"linear-gradient(135deg,#059669,#06B6D4)",hero:"linear-gradient(135deg,#047857,#0B6B4A)",darkHero:"linear-gradient(135deg,#064E3B,#04362A)",darkBg:"linear-gradient(145deg,#04362A,#0B6B4A,#04362A)",darkCard:"rgba(11,107,74,0.35)",darkSolid:"#064E3B"}
 };
 
 var uid=function(){return Date.now().toString(36)+Math.random().toString(36).substr(2,8)};
@@ -176,30 +176,155 @@ function MiniCal(p){
 }
 
 /* ══════ OVERVIEW ══════ */
+var OV_WIDGETS=[
+  {key:"next-up",label:"Next Up",icon:"zap"},
+  {key:"mml",label:"Monday Morning List",icon:"sun"},
+  {key:"funnel",label:"Engagement Funnel",icon:"chart"},
+  {key:"weekly-stats",label:"Weekly Stats",icon:"target"},
+  {key:"kpis",label:"KPI Summary",icon:"users"},
+  {key:"distribution",label:"Engagement Distribution",icon:"chart"},
+  {key:"velocity",label:"Stage Velocity",icon:"clock"},
+  {key:"team",label:"Team Performance",icon:"flag"},
+  {key:"recent",label:"Recent Check-ins",icon:"msg"},
+  {key:"stale",label:"Stale Contacts",icon:"eye"},
+  {key:"weekly-summary",label:"This Week Summary",icon:"cal"}
+];
+var DEFAULT_OV_WIDGETS=["next-up","mml","funnel","weekly-stats"];
+
+function WeeklyStats(p){
+  var data=(p.config.weeklyStats||[]).slice();
+  var [tab,setTab]=useState("week");
+  var [showAdd,setShowAdd]=useState(false);
+  var [selCat,setSelCat]=useState("ftg");
+  var [compare,setCompare]=useState("none");
+  var [form,setForm]=useState({ftg:0,salvations:0,baptisms:0,nextSteps:0,ateamAtt:0,newAteam:0,activeBg:0});
+  var cats=[{key:"ftg",label:"First Time Guests",short:"FTG",color:"#6EE7B7",grad:"linear-gradient(135deg,#6EE7B7,#3DD9A0)"},{key:"salvations",label:"Salvations",short:"Salv",color:"#A78BFA",grad:"linear-gradient(135deg,#A78BFA,#8B5CF6)"},{key:"baptisms",label:"Baptisms",short:"Bapt",color:"#67E8F9",grad:"linear-gradient(135deg,#67E8F9,#22D3EE)"},{key:"nextSteps",label:"Next Steps",short:"NS",color:"#FBBF24",grad:"linear-gradient(135deg,#FBBF24,#F59E0B)"},{key:"ateamAtt",label:"ATeam Attend.",short:"AT",color:"#34D399",grad:"linear-gradient(135deg,#34D399,#10B981)"},{key:"newAteam",label:"New ATeamers",short:"New AT",color:"#F9A8D4",grad:"linear-gradient(135deg,#F9A8D4,#EC4899)"},{key:"activeBg",label:"Active BGroups",short:"BG",color:"#818CF8",grad:"linear-gradient(135deg,#818CF8,#6366F1)"}];
+  var addWeek=function(){var entry={...form,week:new Date().toISOString().split("T")[0]};p.setConfig({...p.config,weeklyStats:data.concat([entry])});setShowAdd(false);setForm({ftg:0,salvations:0,baptisms:0,nextSteps:0,ateamAtt:0,newAteam:0,activeBg:0})};
+  var delWeek=function(i){var nd=data.filter(function(_,j){return j!==i});p.setConfig({...p.config,weeklyStats:nd})};
+  var recent=data.slice(-12);
+  var latest=recent.length>0?recent[recent.length-1]:{};
+  var prev=recent.length>1?recent[recent.length-2]:{};
+  var getAvg=function(key){if(recent.length===0)return 0;return Math.round(recent.reduce(function(a,w){return a+(w[key]||0)},0)/recent.length)};
+  var getDelta=function(key){var cur=latest[key]||0;var prv=prev[key]||0;return prv===0?0:cur-prv};
+
+  var makePath=function(key,w,h,pts,maxOverride){if(pts.length<2)return"";var maxV=maxOverride||Math.max.apply(null,pts.map(function(v){return v||0}).concat([1]));var step=w/(pts.length-1);var coords=pts.map(function(v,i){return{x:i*step,y:h-((v||0)/maxV)*(h-8)-4}});var d="M"+coords[0].x+","+coords[0].y;for(var i=1;i<coords.length;i++){var cp1x=coords[i-1].x+(coords[i].x-coords[i-1].x)*0.4;var cp2x=coords[i-1].x+(coords[i].x-coords[i-1].x)*0.6;d+=" C"+cp1x+","+coords[i-1].y+" "+cp2x+","+coords[i].y+" "+coords[i].x+","+coords[i].y}return d};
+  var makeArea=function(key,w,h,pts,maxOverride){var line=makePath(key,w,h,pts,maxOverride);if(!line)return"";return line+" L"+w+","+h+" L0,"+h+" Z"};
+
+  var chartW=480;var chartH=100;
+  var selCatObj=cats.find(function(c){return c.key===selCat})||cats[0];
+  var chartPts=recent.map(function(w){return w[selCat]||0});
+  var avgLine=getAvg(selCat);
+
+  var getCompPts=function(){
+    if(compare==="none"||data.length<2)return null;
+    var len=recent.length;
+    if(compare==="prev-week"&&data.length>=len+1){return data.slice(-(len+1),-1).map(function(w){return w[selCat]||0})}
+    if(compare==="prev-quarter"&&data.length>=len+13){return data.slice(-(len+13),-(13)).map(function(w){return w[selCat]||0})}
+    if(compare==="prev-year"&&data.length>=len+52){return data.slice(-(len+52),-(52)).map(function(w){return w[selCat]||0})}
+    var offset=compare==="prev-week"?1:compare==="prev-quarter"?13:52;
+    if(data.length>offset){var start=Math.max(0,data.length-len-offset);var end=data.length-offset;return data.slice(start,end).map(function(w){return w[selCat]||0})}
+    return null;
+  };
+  var compPts=getCompPts();
+  var allPts=chartPts.concat(compPts||[]).concat([avgLine,1]);
+  var chartMax=Math.max.apply(null,allPts);
+
+  return <div style={{background:"var(--card)",borderRadius:20,overflow:"hidden",boxShadow:"var(--card-shadow)"}}>
+    <div style={{background:"var(--hero)",padding:"20px 24px"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div><h3 style={{fontSize:17,fontWeight:700,color:"#fff",marginBottom:2}}>Weekly Church Stats</h3><p style={{fontSize:11,color:"rgba(255,255,255,0.5)"}}>{data.length} weeks tracked</p></div>
+        <div style={{display:"flex",gap:6}}>
+          {["week","trends","data"].map(function(t){return <button key={t} onClick={function(){setTab(t)}} style={{padding:"6px 14px",borderRadius:8,border:"none",fontSize:11,fontWeight:tab===t?700:500,color:tab===t?"#fff":"rgba(255,255,255,0.5)",background:tab===t?"rgba(255,255,255,0.15)":"transparent",cursor:"pointer"}}>{t==="week"?"This Week":t==="trends"?"Trends":"Data"}</button>})}
+          <button onClick={function(){setShowAdd(!showAdd)}} style={{padding:"6px 14px",borderRadius:8,border:"1px solid rgba(255,255,255,0.2)",background:"rgba(255,255,255,0.08)",fontSize:11,fontWeight:600,color:"#fff",cursor:"pointer"}}>{showAdd?"Cancel":"+ Log Week"}</button>
+        </div>
+      </div>
+    </div>
+
+    <Reveal open={showAdd}><div style={{padding:"16px 24px",background:"var(--inp)",borderBottom:"1px solid var(--divider)"}}>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:10}}>
+        {cats.map(function(c){return <div key={c.key}><div style={{fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.06em",color:c.color,marginBottom:4}}>{c.short}</div><input type="number" min="0" value={form[c.key]} onChange={function(e){var nf={...form};nf[c.key]=parseInt(e.target.value)||0;setForm(nf)}} style={{width:"100%",padding:"10px",borderRadius:10,border:"1px solid var(--inp-border)",background:"var(--card)",color:"var(--text)",fontSize:16,fontWeight:700,textAlign:"center",boxSizing:"border-box"}}/></div>})}
+      </div>
+      <div style={{marginTop:12,textAlign:"right"}}><Btn label="Save Week" onClick={addWeek} sx={{padding:"8px 20px",fontSize:12}}/></div>
+    </div></Reveal>
+
+    <div style={{padding:"20px 24px"}}>
+    {tab==="week"&&<div>
+      {recent.length>0?<div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:10}}>
+        {cats.map(function(c){var val=latest[c.key]||0;var delta=getDelta(c.key);var avg=getAvg(c.key);return <div key={c.key} style={{background:"var(--inp)",borderRadius:14,padding:"16px 14px",position:"relative",overflow:"hidden"}}>
+          <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:c.grad}}/>
+          <div style={{fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.06em",color:c.color,marginBottom:8}}>{c.short}</div>
+          <div style={{fontSize:28,fontWeight:800,color:"var(--text)",lineHeight:1}}>{val}</div>
+          <div style={{display:"flex",alignItems:"center",gap:6,marginTop:6}}>
+            {delta!==0&&<span style={{fontSize:10,fontWeight:700,color:delta>0?"#10B981":"#EF4444",display:"flex",alignItems:"center",gap:2}}><span style={{fontSize:8}}>{delta>0?"\u25B2":"\u25BC"}</span>{Math.abs(delta)}</span>}
+            <span style={{fontSize:9,color:"var(--text-muted)"}}>avg {avg}</span>
+          </div>
+        </div>})}
+      </div>:<div style={{textAlign:"center",padding:"32px 0",color:"var(--text-muted)"}}><div style={{fontSize:14,fontWeight:600}}>No weekly data yet</div><p style={{fontSize:12,marginTop:6}}>Click "+ Log Week" to enter your first week of stats</p></div>}
+    </div>}
+
+    {tab==="trends"&&<div>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+        <div style={{display:"flex",gap:4,flexWrap:"wrap"}}>
+          {cats.map(function(c){return <button key={c.key} onClick={function(){setSelCat(c.key)}} style={{padding:"4px 8px",borderRadius:6,border:selCat===c.key?"1px solid "+c.color:"1px solid var(--inp-border)",background:selCat===c.key?c.color+"15":"var(--inp)",fontSize:9,fontWeight:selCat===c.key?700:500,color:selCat===c.key?c.color:"var(--text-muted)",cursor:"pointer"}}>{c.short}</button>})}
+        </div>
+        <div style={{display:"flex",gap:3}}>
+          {[{k:"none",l:"Current"},{k:"prev-week",l:"vs Prev"},{k:"prev-quarter",l:"vs Qtr"},{k:"prev-year",l:"vs Year"}].map(function(o){return <button key={o.k} onClick={function(){setCompare(o.k)}} style={{padding:"3px 8px",borderRadius:6,border:"none",fontSize:9,fontWeight:compare===o.k?700:500,color:compare===o.k?"var(--primary)":"var(--text-muted)",background:compare===o.k?"var(--primary)10":"transparent",cursor:"pointer"}}>{o.l}</button>})}
+        </div>
+      </div>
+      {chartPts.length>=2?<div>
+        <svg width="100%" viewBox={"0 0 "+chartW+" "+(chartH+20)} preserveAspectRatio="xMidYMid meet" style={{display:"block"}}>
+          <defs><linearGradient id={"wsg-"+selCat} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={selCatObj.color} stopOpacity="0.25"/><stop offset="100%" stopColor={selCatObj.color} stopOpacity="0.02"/></linearGradient></defs>
+          {[0.5,1].map(function(f){var y=chartH-(f)*(chartH-8)-4;return <g key={f}><line x1="0" y1={y} x2={chartW} y2={y} stroke="var(--divider)" strokeWidth="0.5" strokeDasharray="3"/><text x="-2" y={y+3} textAnchor="end" fill="var(--text-muted)" fontSize="8">{Math.round(f*chartMax)}</text></g>})}
+          <path d={makeArea(selCat,chartW,chartH,chartPts,chartMax)} fill={"url(#wsg-"+selCat+")"}/>
+          {compPts&&compPts.length>=2&&<path d={makePath("comp",chartW,chartH,compPts.length>chartPts.length?compPts.slice(0,chartPts.length):compPts,chartMax)} fill="none" stroke="var(--text-muted)" strokeWidth="1.5" strokeLinecap="round" strokeDasharray="4" opacity="0.4"/>}
+          <path d={makePath(selCat,chartW,chartH,chartPts,chartMax)} fill="none" stroke={selCatObj.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          {chartPts.map(function(v,i){var step=chartPts.length>1?chartW/(chartPts.length-1):chartW;var x=i*step;var y=chartH-((v||0)/chartMax)*(chartH-8)-4;return <g key={i}><circle cx={x} cy={y} r="3" fill={selCatObj.color} stroke="var(--card-solid)" strokeWidth="1.5"/><text x={x} y={chartH+14} textAnchor="middle" fill="var(--text-muted)" fontSize="7">{recent[i]&&recent[i].week?recent[i].week.slice(5):""}</text></g>})}
+          {avgLine>0&&<line x1="0" y1={chartH-(avgLine/chartMax)*(chartH-8)-4} x2={chartW} y2={chartH-(avgLine/chartMax)*(chartH-8)-4} stroke={selCatObj.color} strokeWidth="0.8" strokeDasharray="4" opacity="0.4"/>}
+        </svg>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginTop:6}}>
+          <div style={{display:"flex",alignItems:"baseline",gap:6}}><span style={{fontWeight:700,color:selCatObj.color,fontSize:18}}>{chartPts[chartPts.length-1]||0}</span><span style={{fontSize:10,color:"var(--text-muted)"}}>{selCatObj.label}</span></div>
+          <div style={{display:"flex",alignItems:"center",gap:10}}>
+            {compPts&&<span style={{fontSize:9,color:"var(--text-muted)",display:"flex",alignItems:"center",gap:4}}><span style={{width:12,height:0,borderTop:"1.5px dashed var(--text-muted)",display:"inline-block"}}/>{compare==="prev-week"?"prev week":compare==="prev-quarter"?"prev quarter":"prev year"}</span>}
+            <span style={{fontSize:10,color:"var(--text-muted)"}}>avg <span style={{fontWeight:700,color:selCatObj.color}}>{avgLine}</span></span>
+          </div>
+        </div>
+      </div>:<div style={{textAlign:"center",padding:"20px 0",color:"var(--text-muted)",fontSize:12}}>Need at least 2 weeks for trends</div>}
+    </div>}
+
+    {tab==="data"&&<div>
+      {data.length===0?<div style={{textAlign:"center",padding:"32px 0",color:"var(--text-muted)",fontSize:13}}>No data yet</div>:
+      <div style={{maxHeight:320,overflowY:"auto"}}>
+        <table style={{width:"100%",borderCollapse:"collapse"}}><thead><tr><th style={{padding:"8px",fontSize:9,fontWeight:700,textTransform:"uppercase",color:"var(--text-muted)",textAlign:"left",borderBottom:"1px solid var(--divider)"}}>Week</th>{cats.map(function(c){return <th key={c.key} style={{padding:"8px",fontSize:9,fontWeight:700,textTransform:"uppercase",color:c.color,textAlign:"center",borderBottom:"1px solid var(--divider)"}}>{c.short}</th>})}<th style={{padding:"8px",width:30,borderBottom:"1px solid var(--divider)"}}></th></tr></thead>
+        <tbody>{data.slice().reverse().map(function(w,i){var oi=data.length-1-i;return <tr key={i}><td style={{padding:"6px 8px",fontSize:12,color:"var(--text)",borderBottom:"1px solid var(--divider)"}}>{w.week||"?"}</td>{cats.map(function(c){return <td key={c.key} style={{padding:"6px 8px",fontSize:13,fontWeight:600,color:"var(--text)",textAlign:"center",borderBottom:"1px solid var(--divider)"}}>{w[c.key]||0}</td>})}<td style={{padding:"6px 8px",borderBottom:"1px solid var(--divider)"}}><button onClick={function(){delWeek(oi)}} style={{background:"none",border:"none",cursor:"pointer",opacity:0.3,padding:2}} onMouseEnter={function(e){e.currentTarget.style.opacity="1"}} onMouseLeave={function(e){e.currentTarget.style.opacity="0.3"}}><I n="x" sz={10} c="#EF4444"/></button></td></tr>})}</tbody></table>
+      </div>}
+    </div>}
+    </div>
+  </div>;
+}
+
 function Overview(p){
   var people=p.people,teams=p.teams,total=people.length;
   var [mmlOpen,setMmlOpen]=useState(false);
   var [dragIdx,setDragIdx]=useState(null);
   var [mmlCustom,setMmlCustom]=useState(null);
+  var [showWidgetPicker,setShowWidgetPicker]=useState(false);
+  var ovWidgets=p.config.overviewWidgets||DEFAULT_OV_WIDGETS;
+  var [dragWidget,setDragWidget]=useState(null);
   var mx=Math.max.apply(null,STAGES.map(function(s){return people.filter(function(x){return x.currentStage===s.key}).length}).concat([1]));
   var mmlBase=people.filter(function(x){return!x.fullyConnected}).map(function(x){var sc=calcScore(x),d=ago(x.lastContactDate),pri=100-sc;if(d===null)pri+=30;else if(d>7)pri+=20;else if(d>3)pri+=10;if((SIDX[x.currentStage]||0)<=1)pri+=10;return{...x,engScore:sc,priority:pri}}).sort(function(a,b){return b.priority-a.priority}).slice(0,10);
   var mml=mmlCustom||mmlBase;
   var onDragStart=function(i){setDragIdx(i)};
   var onDragOver=function(e,i){e.preventDefault();if(dragIdx===null||dragIdx===i)return;var arr=mml.slice();var item=arr.splice(dragIdx,1)[0];arr.splice(i,0,item);setMmlCustom(arr);setDragIdx(i)};
   var onDragEnd=function(){setDragIdx(null)};
+  var toggleWidget=function(key){var nw=ovWidgets.indexOf(key)>=0?ovWidgets.filter(function(k){return k!==key}):ovWidgets.concat([key]);p.setConfig({...p.config,overviewWidgets:nw})};
+  var onWDragStart=function(i){setDragWidget(i)};
+  var onWDragOver=function(e,i){e.preventDefault();if(dragWidget===null||dragWidget===i)return;var arr=ovWidgets.slice();var item=arr.splice(dragWidget,1)[0];arr.splice(i,0,item);p.setConfig({...p.config,overviewWidgets:arr});setDragWidget(i)};
+  var onWDragEnd=function(){setDragWidget(null)};
 
   if(!total)return <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"70vh",textAlign:"center",padding:"20px"}}><div><div style={{width:80,height:80,borderRadius:24,background:"var(--primary-grad)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 24px"}}><WeavrLogo sz={42}/></div><h2 style={{fontSize:26,fontWeight:700,color:"var(--text)",marginBottom:10}}>Welcome to WEAVR</h2><p style={{fontSize:15,color:"var(--text-muted)",maxWidth:400,margin:"0 auto 32px",lineHeight:1.8}}>Start weaving people into your church community.</p><div style={{display:"flex",gap:12,justifyContent:"center"}}><Btn icon="plus" label="Add Person" onClick={p.onAdd}/><Btn icon="upload" label="Import CSV" onClick={p.onImport} v="ghost"/></div></div></div>;
 
-  return <div>
-    <div style={{background:"var(--hero)",borderRadius:24,padding:"28px 32px",marginBottom:24,position:"relative",overflow:"hidden",boxShadow:"0 12px 40px rgba(0,0,0,0.12)"}}>
-      <div style={{position:"relative",zIndex:1}}>
-        <h2 style={{fontSize:22,fontWeight:700,color:"#fff",marginBottom:4}}>Engagement Pipeline</h2>
-        <p style={{fontSize:13,color:"rgba(255,255,255,0.5)",marginBottom:24}}>{total} people tracked</p>
-        <div className="weavr-pipeline-grid" style={{display:"grid",gridTemplateColumns:"repeat(6,1fr)",gap:14}}>{STAGES.map(function(s,i){var ct=s.key==="bgroup"?people.filter(function(x){return x.stages&&x.stages.bgroup&&x.stages.bgroup.completed}).length:s.key==="ateam"?people.filter(function(x){return x.stages&&x.stages.ateam&&x.stages.ateam.completed}).length:people.filter(function(x){return x.currentStage===s.key}).length;var prev=i>0?people.filter(function(x){return x.currentStage===STAGES[i-1].key}).length:total;var conv=i>0&&prev>0?Math.round(ct/prev*100):null;return <div key={s.key} style={{background:"rgba(255,255,255,0.06)",borderRadius:16,padding:"16px 10px",cursor:"pointer",border:"1px solid rgba(255,255,255,0.08)",textAlign:"center"}} onClick={function(){p.navTo("people",s.key)}} onMouseEnter={function(e){e.currentTarget.style.background="rgba(255,255,255,0.12)"}} onMouseLeave={function(e){e.currentTarget.style.background="rgba(255,255,255,0.06)"}}><div style={{display:"flex",justifyContent:"center",marginBottom:10}}><RingMini value={ct} max={mx} color={s.color} sz={48}/></div><div style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.8)"}}>{s.label}</div>{conv!==null&&<div style={{fontSize:10,fontWeight:600,color:s.color,marginTop:3}}>{conv}%</div>}</div>})}</div>
-      </div>
-    </div>
-
-    {(function(){var top1=mml[0];if(!top1)return null;var stg=STAGES.find(function(s){return s.key===top1.currentStage});var d=ago(top1.lastContactDate);var tm=teams.find(function(t){return t.id===top1.assignedTo});return <div style={{display:"flex",gap:14,marginBottom:24}}>
+  var renderWidget=function(key){
+    if(key==="next-up"){var top1=mml[0];if(!top1)return null;var stg=STAGES.find(function(s){return s.key===top1.currentStage});var d=ago(top1.lastContactDate);var tm=teams.find(function(t){return t.id===top1.assignedTo});return <div style={{display:"flex",gap:14}}>
       <div style={{flex:1,background:"var(--card)",borderRadius:18,padding:"20px 24px",boxShadow:"var(--card-shadow)",display:"flex",alignItems:"center",gap:16,cursor:"pointer"}} onClick={function(){p.onPerson(top1)}}>
         <div style={{width:48,height:48,borderRadius:14,background:stg?stg.grad:"var(--divider)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><I n="zap" sz={20} c="#fff"/></div>
         <div style={{flex:1,minWidth:0}}>
@@ -216,9 +341,9 @@ function Overview(p){
       <div style={{display:"flex",flexDirection:"column",gap:6}}>
         {[{l:"New This Week",v:people.filter(function(x){return ago(x.createdAt)<=7}).length,c:"#10B981"},{l:"Need Follow-Up",v:people.filter(function(x){return!x.fullyConnected&&(ago(x.lastContactDate)===null||ago(x.lastContactDate)>3)}).length,c:"#EF4444"},{l:"Fully Connected",v:people.filter(function(x){return x.fullyConnected}).length,c:"#F59E0B"}].map(function(k){return <div key={k.l} style={{background:"var(--card)",borderRadius:12,padding:"10px 18px",display:"flex",alignItems:"center",gap:10,boxShadow:"0 1px 6px rgba(0,0,0,0.03)",minWidth:170}}><div style={{fontSize:20,fontWeight:700,color:k.c}}>{k.v}</div><div style={{fontSize:10,fontWeight:600,color:"var(--text-muted)",lineHeight:1.3}}>{k.l}</div></div>})}
       </div>
-    </div>})()}
+    </div>}
 
-    {mml.length>0&&<div style={{background:"var(--card)",borderRadius:18,padding:"16px 24px",marginBottom:24,boxShadow:"var(--card-shadow)"}}>
+    if(key==="mml"&&mml.length>0)return <div style={{background:"var(--card)",borderRadius:18,padding:"16px 24px",boxShadow:"var(--card-shadow)"}}>
       <button onClick={function(){setMmlOpen(!mmlOpen)}} style={{width:"100%",display:"flex",alignItems:"center",gap:8,background:"none",border:"none",padding:"4px 0",cursor:"pointer",textAlign:"left"}}>
         <I n="sun" sz={18} c="#F59E0B"/>
         <h3 style={{fontSize:15,fontWeight:700,color:"var(--text)",flex:1}}>Monday Morning List</h3>
@@ -229,12 +354,56 @@ function Overview(p){
       <Reveal open={mmlOpen}><div style={{marginTop:12}}>
         {mml.map(function(x,i){var stg=STAGES.find(function(s){return s.key===x.currentStage});var d=ago(x.lastContactDate);var tm=teams.find(function(t){return t.id===x.assignedTo});return <div key={x.id} draggable onDragStart={function(){onDragStart(i)}} onDragOver={function(e){onDragOver(e,i)}} onDragEnd={onDragEnd} style={{display:"flex",alignItems:"center",gap:14,padding:"12px 0",borderTop:i>0?"1px solid var(--divider)":"none",cursor:"grab",opacity:dragIdx===i?0.5:1,transition:"opacity 0.15s"}} onClick={function(){p.onPerson(x)}}><div style={{display:"flex",flexDirection:"column",gap:2,opacity:0.3,cursor:"grab",flexShrink:0,padding:"0 2px"}}><div style={{width:12,height:2,background:"var(--text-muted)",borderRadius:1}}/><div style={{width:12,height:2,background:"var(--text-muted)",borderRadius:1}}/><div style={{width:12,height:2,background:"var(--text-muted)",borderRadius:1}}/></div><div style={{width:28,height:28,borderRadius:10,background:"var(--hero)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,color:"#fff",flexShrink:0}}>{i+1}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:600,color:"var(--text)"}}>{x.firstName} {x.lastName}</div><div style={{fontSize:11,color:"var(--text-muted)",display:"flex",alignItems:"center",gap:8,marginTop:2}}><span style={{color:stg?stg.color:"#999",fontWeight:600}}>{stg?stg.label:"?"}</span><span>{d===null?"Never":d+"d ago"}</span>{tm&&<span style={{color:tm.color}}>{tm.name}</span>}</div></div><ScoreRing score={x.engScore} sz={36}/><div style={{fontSize:11,color:"var(--text-muted)",width:90,textAlign:"right"}}>{NEXT_ACT[x.currentStage]}</div></div>})}
       </div></Reveal>
-    </div>}
+    </div>;
 
-    <div style={{background:"var(--card)",borderRadius:18,padding:"22px 24px",boxShadow:"var(--card-shadow)"}}>
+    if(key==="funnel")return <div style={{background:"var(--card)",borderRadius:18,padding:"22px 24px",boxShadow:"var(--card-shadow)"}}>
       <h3 style={{fontSize:15,fontWeight:700,color:"var(--text)",marginBottom:20}}>Engagement Funnel</h3>
       {STAGES.map(function(s){var ct=s.key==="bgroup"?people.filter(function(x){return x.stages&&x.stages.bgroup&&x.stages.bgroup.completed}).length:s.key==="ateam"?people.filter(function(x){return x.stages&&x.stages.ateam&&x.stages.ateam.completed}).length:people.filter(function(x){return x.currentStage===s.key}).length;return <div key={s.key} style={{display:"flex",alignItems:"center",gap:16,marginBottom:10,cursor:"pointer"}} onClick={function(){p.navTo("people",s.key)}}><div style={{width:85,fontSize:12,fontWeight:600,color:"var(--text-sub)",textAlign:"right",flexShrink:0}}>{s.label}</div><div style={{flex:1,height:32,background:"var(--divider)",borderRadius:10,overflow:"hidden"}}><div style={{height:"100%",width:Math.max(ct/mx*100,5)+"%",background:s.grad,borderRadius:10,display:"flex",alignItems:"center",paddingLeft:14,transition:"width 1s ease"}}><span style={{fontSize:12,fontWeight:700,color:"#fff"}}>{ct}</span></div></div></div>})}
       {(function(){var fc=people.filter(function(x){return x.fullyConnected}).length;if(fc===0)return null;return <div style={{display:"flex",alignItems:"center",gap:16,marginTop:4,cursor:"pointer",padding:"6px 0",borderTop:"1px solid var(--divider)"}} onClick={function(){p.navTo("connected")}}><div style={{width:85,fontSize:12,fontWeight:700,color:"#F59E0B",textAlign:"right",flexShrink:0}}>Connected</div><div style={{flex:1,height:32,background:"var(--divider)",borderRadius:10,overflow:"hidden"}}><div style={{height:"100%",width:Math.max(fc/mx*100,5)+"%",background:"linear-gradient(135deg,#F59E0B,#FBBF24)",borderRadius:10,display:"flex",alignItems:"center",paddingLeft:14}}><span style={{fontSize:12,fontWeight:700,color:"#fff"}}>{fc}</span></div></div></div>})()}
+    </div>;
+
+    if(key==="weekly-stats")return <WeeklyStats config={p.config} setConfig={p.setConfig}/>;
+
+    if(key==="kpis"){var added7=people.filter(function(x){return ago(x.createdAt)<=7}).length;var needFollow=people.filter(function(x){return!x.fullyConnected&&(ago(x.lastContactDate)===null||ago(x.lastContactDate)>3)}).length;var avgScore=total>0?Math.round(people.map(calcScore).reduce(function(a,b){return a+b},0)/total):0;return <div className="weavr-kpi-grid" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:14}}>{[{l:"Total People",v:total,i:"users",c:"var(--primary)"},{l:"Added (7d)",v:added7,i:"plus",c:"#10B981"},{l:"Need Follow-Up",v:needFollow,i:"flag",c:"#EF4444"},{l:"Avg Score",v:avgScore,i:"target",c:"#06B6D4"}].map(function(k){return <div key={k.l} style={{background:"var(--card)",borderRadius:16,padding:"20px",display:"flex",alignItems:"center",gap:14,boxShadow:"var(--card-shadow)"}}><div style={{width:44,height:44,borderRadius:14,background:k.c+"15",display:"flex",alignItems:"center",justifyContent:"center"}}><I n={k.i} sz={20} c={k.c}/></div><div><div style={{fontSize:24,fontWeight:700,color:"var(--text)"}}>{k.v}</div><div style={{fontSize:11,color:"var(--text-muted)",fontWeight:600}}>{k.l}</div></div></div>})}</div>}
+
+    if(key==="stale"){var stale=people.filter(function(x){return!x.fullyConnected}).filter(function(x){var d=ago(x.lastContactDate);return d===null||d>=14}).sort(function(a,b){var da=ago(a.lastContactDate),db=ago(b.lastContactDate);return(db===null?999:db)-(da===null?999:da)});return <div style={{background:"var(--card)",borderRadius:18,padding:"22px 24px",boxShadow:"var(--card-shadow)"}}><h3 style={{fontSize:15,fontWeight:700,color:"var(--text)",marginBottom:16}}>Stale Contacts (14d+)</h3>{stale.length===0?<div style={{color:"var(--text-muted)",padding:"20px 0",textAlign:"center",fontSize:13}}>No stale contacts</div>:<div style={{maxHeight:300,overflowY:"auto"}}>{stale.slice(0,15).map(function(x,i){var d=ago(x.lastContactDate);var stg=STAGES.find(function(s){return s.key===x.currentStage});return <div key={x.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderTop:i>0?"1px solid var(--divider)":"none",cursor:"pointer"}} onClick={function(){p.onPerson(x)}}><Dot color={stg?stg.color:"#ccc"} sz={8}/><div style={{flex:1,fontSize:12,color:"var(--text)"}}>{x.firstName} {x.lastName}</div><span style={{fontSize:11,fontWeight:600,color:"#EF4444"}}>{d===null?"Never":d+"d"}</span></div>})}</div>}</div>}
+
+    if(key==="recent"){var recentCI=[];people.forEach(function(x){(x.checkIns||[]).forEach(function(c){if(ago(c.date)<=7)recentCI.push({...c,person:x})})});recentCI.sort(function(a,b){return new Date(b.date)-new Date(a.date)});var ciTypes=p.config.checkInTypes||DEFAULT_CI;return <div style={{background:"var(--card)",borderRadius:18,padding:"22px 24px",boxShadow:"var(--card-shadow)"}}><h3 style={{fontSize:15,fontWeight:700,color:"var(--text)",marginBottom:16}}>Recent Check-ins (7d)</h3>{recentCI.length===0?<div style={{color:"var(--text-muted)",padding:"20px 0",textAlign:"center",fontSize:13}}>No recent check-ins</div>:<div style={{maxHeight:300,overflowY:"auto"}}>{recentCI.slice(0,15).map(function(c,i){var ct=ciTypes.find(function(t){return t.key===c.type});return <div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 0",borderTop:i>0?"1px solid var(--divider)":"none"}}><I n={ct?ct.icon:"msg"} sz={12} c={ct?ct.color:"var(--text-muted)"}/><div style={{flex:1,fontSize:12,color:"var(--text-sub)"}}>{c.person.firstName} {c.person.lastName} - {ct?ct.label:c.type}</div><div style={{fontSize:10,color:"var(--text-muted)"}}>{fmtS(c.date)}</div></div>})}</div>}</div>}
+
+    if(key==="weekly-summary"){var w7=people.filter(function(x){return ago(x.createdAt)<=7}).length;var fu7=0;var adv7=0;var fc7=people.filter(function(x){return x.fullyConnected&&ago(x.fullyConnectedDate)<=7}).length;people.forEach(function(x){(x.checkIns||[]).forEach(function(c){if(ago(c.date)<=7)fu7++});STAGES.forEach(function(s){if(s.key!=="first-visit"&&x.stages&&x.stages[s.key]&&ago(x.stages[s.key].date)<=7)adv7++})});return <div style={{background:"var(--card)",borderRadius:18,padding:"22px 24px",boxShadow:"var(--card-shadow)"}}><h3 style={{fontSize:15,fontWeight:700,color:"var(--text)",marginBottom:14}}>This Week</h3><div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10}}>{[{l:"New People",v:w7,c:"#10B981",i:"plus"},{l:"Follow-ups Done",v:fu7,c:"var(--primary)",i:"check"},{l:"Stage Advances",v:adv7,c:"#06B6D4",i:"up"},{l:"Fully Connected",v:fc7,c:"#F59E0B",i:"target"}].map(function(k){return <div key={k.l} style={{background:"var(--inp)",borderRadius:12,padding:"14px 16px",display:"flex",alignItems:"center",gap:10}}><div style={{width:36,height:36,borderRadius:10,background:k.c+"15",display:"flex",alignItems:"center",justifyContent:"center"}}><I n={k.i} sz={16} c={k.c}/></div><div><div style={{fontSize:20,fontWeight:700,color:"var(--text)"}}>{k.v}</div><div style={{fontSize:10,color:"var(--text-muted)",fontWeight:600}}>{k.l}</div></div></div>})}</div></div>}
+
+    if(key==="distribution"){var scoreDist=[{label:"0-25 (Cold)",color:"#EF4444",count:people.filter(function(x){var s=calcScore(x);return s>=0&&s<=25}).length},{label:"26-50 (Warming)",color:"#F59E0B",count:people.filter(function(x){var s=calcScore(x);return s>25&&s<=50}).length},{label:"51-75 (Engaged)",color:"#06B6D4",count:people.filter(function(x){var s=calcScore(x);return s>50&&s<=75}).length},{label:"76-100 (Connected)",color:"#10B981",count:people.filter(function(x){var s=calcScore(x);return s>75}).length}];var maxB=Math.max.apply(null,scoreDist.map(function(b){return b.count}).concat([1]));return <div style={{background:"var(--card)",borderRadius:18,padding:"22px 24px",boxShadow:"var(--card-shadow)"}}><h3 style={{fontSize:15,fontWeight:700,color:"var(--text)",marginBottom:16}}>Engagement Distribution</h3>{scoreDist.map(function(b){return <div key={b.label} style={{display:"flex",alignItems:"center",gap:12,marginBottom:10}}><div style={{width:50,fontSize:20,fontWeight:700,color:b.color,textAlign:"right"}}>{b.count}</div><div style={{flex:1}}><div style={{height:28,background:"var(--divider)",borderRadius:8,overflow:"hidden"}}><div style={{height:"100%",width:Math.max(b.count/maxB*100,3)+"%",background:b.color,borderRadius:8}}/></div><div style={{fontSize:10,color:"var(--text-muted)",marginTop:3}}>{b.label}</div></div></div>})}</div>}
+
+    if(key==="velocity"){var stageStats=STAGES.filter(function(s){return s.key!=="bgroup"&&s.key!=="ateam"}).map(function(s){var inStg=people.filter(function(x){return x.currentStage===s.key});var avgD=0;if(inStg.length>0){avgD=Math.round(inStg.reduce(function(a,x){var sd=x.stages&&x.stages[s.key]?x.stages[s.key].date:x.createdAt;return a+(ago(sd)||0)},0)/inStg.length)}return{...s,count:inStg.length,avgDays:avgD}});return <div style={{background:"var(--card)",borderRadius:18,padding:"22px 24px",boxShadow:"var(--card-shadow)"}}><h3 style={{fontSize:15,fontWeight:700,color:"var(--text)",marginBottom:16}}>Stage Velocity</h3>{stageStats.map(function(s){return <div key={s.key} style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}><Dot color={s.color} sz={8}/><div style={{flex:1,fontSize:13,fontWeight:500,color:"var(--text-sub)"}}>{s.label}</div><div style={{fontSize:11,color:"var(--text-muted)"}}>{s.count}</div><div style={{width:60,textAlign:"right"}}><span style={{fontSize:16,fontWeight:700,color:"var(--text)"}}>{s.avgDays}</span><span style={{fontSize:11,color:"var(--text-muted)"}}>d</span></div></div>})}</div>}
+
+    if(key==="team"){var teamStats=teams.map(function(t){var assigned=people.filter(function(x){return x.assignedTo===t.id});var followedUp=assigned.filter(function(x){return ago(x.lastContactDate)!==null&&ago(x.lastContactDate)<=7}).length;var asc=assigned.length>0?Math.round(assigned.map(calcScore).reduce(function(a,b){return a+b},0)/assigned.length):0;return{...t,assigned:assigned.length,followedUp:followedUp,avgScore:asc}}).filter(function(t){return t.assigned>0});if(teamStats.length===0)return null;return <div style={{background:"var(--card)",borderRadius:18,padding:"22px 24px",boxShadow:"var(--card-shadow)"}}><h3 style={{fontSize:15,fontWeight:700,color:"var(--text)",marginBottom:16}}>Team Performance</h3>{teamStats.map(function(t){var rate=t.assigned>0?Math.round(t.followedUp/t.assigned*100):0;return <div key={t.id} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 14px",background:"var(--inp)",borderRadius:12,marginBottom:6}}><div style={{width:36,height:36,borderRadius:10,background:t.color+"20",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:700,color:t.color}}>{t.name.charAt(0)}</div><div style={{flex:1}}><div style={{fontSize:13,fontWeight:600,color:"var(--text)"}}>{t.name}</div><div style={{fontSize:11,color:"var(--text-muted)"}}>{t.assigned} assigned - {rate}% followed up</div></div><ScoreRing score={t.avgScore} sz={36}/></div>})}</div>}
+
+    return null;
+  };
+
+  return <div>
+    <div style={{background:"var(--hero)",borderRadius:24,padding:"28px 32px",marginBottom:24,position:"relative",overflow:"hidden",boxShadow:"0 12px 40px rgba(0,0,0,0.12)"}}>
+      <div style={{position:"relative",zIndex:1}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+          <div><h2 style={{fontSize:22,fontWeight:700,color:"#fff",marginBottom:4}}>Engagement Pipeline</h2><p style={{fontSize:13,color:"rgba(255,255,255,0.5)",marginBottom:24}}>{total} people tracked</p></div>
+          <button onClick={function(){setShowWidgetPicker(!showWidgetPicker)}} style={{padding:"6px 10px",borderRadius:8,background:"rgba(255,255,255,0.1)",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:4,fontSize:10,fontWeight:600,color:"rgba(255,255,255,0.7)"}}><I n="gear" sz={12} c="rgba(255,255,255,0.7)"/>Widgets</button>
+        </div>
+        <div className="weavr-pipeline-grid" style={{display:"grid",gridTemplateColumns:"repeat(6,1fr)",gap:14}}>{STAGES.map(function(s,i){var ct=s.key==="bgroup"?people.filter(function(x){return x.stages&&x.stages.bgroup&&x.stages.bgroup.completed}).length:s.key==="ateam"?people.filter(function(x){return x.stages&&x.stages.ateam&&x.stages.ateam.completed}).length:people.filter(function(x){return x.currentStage===s.key}).length;var prev=i>0?people.filter(function(x){return x.currentStage===STAGES[i-1].key}).length:total;var conv=i>0&&prev>0?Math.round(ct/prev*100):null;return <div key={s.key} style={{background:"rgba(255,255,255,0.06)",borderRadius:16,padding:"16px 10px",cursor:"pointer",border:"1px solid rgba(255,255,255,0.08)",textAlign:"center"}} onClick={function(){p.navTo("people",s.key)}} onMouseEnter={function(e){e.currentTarget.style.background="rgba(255,255,255,0.12)"}} onMouseLeave={function(e){e.currentTarget.style.background="rgba(255,255,255,0.06)"}}><div style={{display:"flex",justifyContent:"center",marginBottom:10}}><RingMini value={ct} max={mx} color={s.color} sz={48}/></div><div style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.8)"}}>{s.label}</div>{conv!==null&&<div style={{fontSize:10,fontWeight:600,color:s.color,marginTop:3}}>{conv}%</div>}</div>})}</div>
+      </div>
+    </div>
+
+    <Reveal open={showWidgetPicker}><div style={{background:"var(--card)",borderRadius:18,padding:"20px 24px",marginBottom:24,boxShadow:"var(--card-shadow)"}}>
+      <div style={{fontSize:13,fontWeight:700,color:"var(--text)",marginBottom:12}}>Customize Overview Widgets</div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
+        {OV_WIDGETS.map(function(w){var on=ovWidgets.indexOf(w.key)>=0;return <button key={w.key} onClick={function(){toggleWidget(w.key)}} style={{display:"flex",alignItems:"center",gap:8,padding:"10px 14px",borderRadius:12,border:on?"1px solid var(--primary)":"1px solid var(--inp-border)",background:on?"var(--primary)08":"var(--inp)",cursor:"pointer",textAlign:"left"}}><I n={w.icon} sz={14} c={on?"var(--primary)":"var(--text-muted)"}/><span style={{fontSize:12,fontWeight:on?600:500,color:on?"var(--primary)":"var(--text-muted)"}}>{w.label}</span></button>})}
+      </div>
+      {ovWidgets.length>0&&<div style={{marginTop:14}}><div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.06em",color:"var(--text-muted)",marginBottom:6}}>Order (drag to reorder)</div>
+        {ovWidgets.map(function(key,i){var w=OV_WIDGETS.find(function(o){return o.key===key});if(!w)return null;return <div key={key} draggable onDragStart={function(){onWDragStart(i)}} onDragOver={function(e){onWDragOver(e,i)}} onDragEnd={onWDragEnd} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 10px",background:dragWidget===i?"var(--primary)08":"var(--inp)",borderRadius:8,marginBottom:4,cursor:"grab",opacity:dragWidget===i?0.5:1}}><div style={{display:"flex",flexDirection:"column",gap:1.5,opacity:0.3}}><div style={{width:10,height:1.5,background:"var(--text-muted)",borderRadius:1}}/><div style={{width:10,height:1.5,background:"var(--text-muted)",borderRadius:1}}/><div style={{width:10,height:1.5,background:"var(--text-muted)",borderRadius:1}}/></div><span style={{fontSize:11,fontWeight:600,color:"var(--text-sub)"}}>{w.label}</span></div>})}
+      </div>}
+    </div></Reveal>
+
+    <div style={{display:"flex",flexDirection:"column",gap:24}}>
+      {ovWidgets.map(function(key){var el=renderWidget(key);if(!el)return null;return <div key={key}>{el}</div>})}
     </div>
   </div>;
 }
@@ -756,8 +925,10 @@ function Panel(p){
     <div style={{padding:"10px 20px",borderBottom:"1px solid var(--divider)",background:"var(--card-solid)",position:"sticky",top:0,zIndex:10}}>
       <div style={{display:"flex",alignItems:"center",gap:5,flexWrap:"wrap"}}>
         <Btn icon="check" label={justFollowed?"Logged!":"Followed Up"} onClick={function(){if(justFollowed)return;setShowFollowUp(!showFollowUp)}} v={justFollowed?"green":"green"} sx={{padding:"6px 12px",fontSize:11}}/>
-        {linIdx>0&&<button onClick={stepBack} style={{display:"inline-flex",alignItems:"center",gap:3,padding:"6px 10px",borderRadius:10,fontSize:11,fontWeight:600,cursor:"pointer",border:"1px solid var(--inp-border)",background:"var(--card)",color:"var(--text-sub)"}}><span style={{transform:"rotate(180deg)",display:"inline-block"}}><I n="up" sz={12}/></span>Back</button>}
-        {linIdx<linearStages.length-1&&<Btn icon="up" label="Advance" onClick={adv} sx={{padding:"6px 12px",fontSize:11}}/>}
+        <div style={{display:"inline-flex",alignItems:"center",gap:0,borderRadius:10,overflow:"hidden",border:"1px solid var(--inp-border)"}}>
+          {linIdx>0&&<button onClick={stepBack} style={{display:"inline-flex",alignItems:"center",padding:"6px 8px",cursor:"pointer",border:"none",background:"var(--card)",color:"var(--text-sub)",borderRight:"1px solid var(--inp-border)"}} title="Step Back"><span style={{transform:"rotate(180deg)",display:"inline-flex"}}><I n="up" sz={12} c="var(--text-sub)"/></span></button>}
+          {linIdx<linearStages.length-1&&<button onClick={adv} style={{display:"inline-flex",alignItems:"center",gap:4,padding:"6px 10px",cursor:"pointer",border:"none",background:"var(--primary)",color:"#fff",fontSize:11,fontWeight:600}}><I n="up" sz={12} c="#fff"/>Advance</button>}
+        </div>
         <Btn icon="msg" label="Text" onClick={function(){setContactOpen("text")}} sx={{padding:"6px 12px",fontSize:11}}/>
         <Btn icon="mail" label="Email" onClick={function(){setContactOpen("email")}} v="ghost" sx={{padding:"6px 12px",fontSize:11,opacity:person.email?1:0.4}}/>
         <Btn icon="cal" label="" onClick={function(){setShowCal(!showCal)}} v="ghost" sx={{padding:"6px 8px",fontSize:11}}/>
@@ -951,7 +1122,7 @@ function AppMain(p){
   window.__ceNav=nav;
   var theme=THEMES[config.theme||"light"];var cw=COLORWAYS[config.colorway||"purple"];
   var isDark=config.theme==="dark";
-  var cssVars={"--bg":isDark?cw.darkBg:theme.bg,"--card":isDark?cw.darkCard:theme.card,"--card-solid":isDark?cw.darkSolid:"#fff","--card-border":isDark?theme.cardBorder:"none","--card-shadow":isDark?"0 2px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)":"0 2px 16px rgba(0,0,0,0.04)","--text":theme.text,"--text-sub":theme.textSub,"--text-muted":theme.textMuted,"--inp":theme.inp,"--inp-border":theme.inpBorder,"--divider":theme.divider,"--hover":theme.hover,"--th-bg":theme.thBg,"--primary":cw.primary,"--primary-grad":cw.primaryGrad,"--accent":cw.accent,"--sidebar":cw.sidebar,"--logo":cw.logo,"--hero":cw.hero};
+  var cssVars={"--bg":isDark?cw.darkBg:theme.bg,"--card":isDark?cw.darkCard:theme.card,"--card-solid":isDark?cw.darkSolid:"#fff","--card-border":isDark?theme.cardBorder:"none","--card-shadow":isDark?"0 2px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)":"0 2px 16px rgba(0,0,0,0.04)","--text":theme.text,"--text-sub":theme.textSub,"--text-muted":theme.textMuted,"--inp":theme.inp,"--inp-border":theme.inpBorder,"--divider":theme.divider,"--hover":theme.hover,"--th-bg":theme.thBg,"--primary":cw.primary,"--primary-grad":cw.primaryGrad,"--accent":cw.accent,"--sidebar":cw.sidebar,"--logo":cw.logo,"--hero":isDark?cw.darkHero:cw.hero};
 
   var countForStage=function(key){
     if(key==="bgroup")return people.filter(function(x){return x.stages&&x.stages.bgroup&&x.stages.bgroup.completed}).length;
@@ -992,7 +1163,7 @@ function AppMain(p){
       <div className="weavr-main-content" style={{padding:"0 32px 32px",animation:"fadeUp 0.5s cubic-bezier(0.22,1,0.36,1)"}}>
         {(function(){var sq=search.toLowerCase().trim();var fp=sq?people.filter(function(x){return(x.firstName+" "+(x.lastName||"")).toLowerCase().includes(sq)||(x.phone||"").includes(sq)||(x.email||"").toLowerCase().includes(sq)}):people;return !ready?<div style={{display:"flex",alignItems:"center",justifyContent:"center",height:400,color:"var(--text-muted)"}}><div style={{fontWeight:600}}>Loading...</div></div>
         :search.trim()&&view!=="settings"?<PeopleView people={fp} teams={teams} stageFilter={null} search={search} setSearch={setSearch} onPerson={setSel} onImport={function(){setImp(true)}} onDelete={function(id){setPeople(function(prev){return prev.filter(function(x){return x.id!==id})})}}/>
-        :view==="overview"?<Overview people={fp} teams={teams} onPerson={setSel} navTo={nav} onAdd={function(){setAdd(true)}} onImport={function(){setImp(true)}} templates={tpl} config={config} onContact={setContactTarget}/>
+        :view==="overview"?<Overview people={fp} teams={teams} onPerson={setSel} navTo={nav} onAdd={function(){setAdd(true)}} onImport={function(){setImp(true)}} templates={tpl} config={config} setConfig={setConfig} onContact={setContactTarget}/>
         :view==="settings"?<Settings templates={tpl} setTemplates={setTpl} people={people} setPeople={setPeople} teams={teams} setTeams={setTeams} rules={rules} setRules={setRules} config={config} setConfig={setConfig}/>
         :view==="quick"?<QuickEntry onAdd={function(x){setPeople(function(prev){return[...prev,x]})}} teams={teams} config={config}/>
         :view==="bulk"?<BulkMessage people={fp} templates={tpl}/>
@@ -1030,9 +1201,6 @@ var WeavrLogo=function(p){var sz=p.sz||20;return <svg width={sz} height={sz} vie
 function Portal(p){
   return <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#252262 0%,#3730A3 30%,#3B3795 55%,#252262 100%)",fontFamily:"'Nunito',sans-serif",position:"relative",overflow:"hidden"}}>
     <style>{"@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap');*{font-family:'Nunito',sans-serif !important}"}</style>
-    <div style={{position:"absolute",top:-120,right:-80,width:400,height:400,borderRadius:"50%",background:"radial-gradient(circle,rgba(124,58,237,0.15),transparent 70%)",pointerEvents:"none"}}/>
-    <div style={{position:"absolute",bottom:-100,left:-60,width:350,height:350,borderRadius:"50%",background:"radial-gradient(circle,rgba(6,182,212,0.1),transparent 70%)",pointerEvents:"none"}}/>
-    <div style={{position:"absolute",top:"40%",right:"15%",width:200,height:200,borderRadius:"50%",background:"radial-gradient(circle,rgba(236,72,153,0.08),transparent 70%)",pointerEvents:"none"}}/>
 
     <div style={{maxWidth:1100,margin:"0 auto",padding:"48px 24px 40px",position:"relative",zIndex:1}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:56}}>
@@ -1050,8 +1218,6 @@ function Portal(p){
 
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:16}}>
         {TOOLS.map(function(t){return <div key={t.key} onClick={t.ready?function(){p.onTool(t.key)}:undefined} style={{borderRadius:20,padding:"26px 22px",cursor:t.ready?"pointer":"default",opacity:t.ready?1:0.45,transition:"all 0.25s ease",background:t.ready?t.grad:"rgba(255,255,255,0.03)",border:t.ready?"none":"1px solid rgba(255,255,255,0.06)",position:"relative",overflow:"hidden"}} onMouseEnter={t.ready?function(e){e.currentTarget.style.transform="translateY(-4px)";e.currentTarget.style.boxShadow="0 12px 40px "+t.color+"40"}:undefined} onMouseLeave={t.ready?function(e){e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.boxShadow="none"}:undefined}>
-            {t.ready&&<div style={{position:"absolute",top:-20,right:-20,width:80,height:80,borderRadius:"50%",background:"rgba(255,255,255,0.1)",pointerEvents:"none"}}/>}
-            {t.ready&&<div style={{position:"absolute",bottom:-30,left:-10,width:60,height:60,borderRadius:"50%",background:"rgba(255,255,255,0.06)",pointerEvents:"none"}}/>}
             <div style={{width:44,height:44,borderRadius:12,background:t.ready?"rgba(255,255,255,0.2)":"rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",marginBottom:14,backdropFilter:"blur(4px)"}}><I n={t.icon} sz={20} c="#fff"/></div>
             <div style={{fontSize:16,fontWeight:700,color:"#fff",marginBottom:4}}>Weavr {t.name}</div>
             <div style={{fontSize:12,color:t.ready?"rgba(255,255,255,0.7)":"rgba(255,255,255,0.3)",lineHeight:1.6}}>{t.desc}</div>
