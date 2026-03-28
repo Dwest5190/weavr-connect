@@ -36,13 +36,13 @@ var DEFAULT_FIELDS=[
 var TC=["#7C3AED","#06B6D4","#EC4899","#F59E0B","#10B981","#EF4444","#6366F1","#14B8A6"];
 var THEMES={
   light:{bg:"linear-gradient(145deg,#F0F2F5,#E8EAF0,#F0ECF5)",card:"rgba(255,255,255,0.9)",cardBorder:"none",text:"#1E1B4B",textSub:"#6B7280",textMuted:"#9CA3AF",inp:"#FAFAFA",inpBorder:"#E5E7EB",divider:"#F3F4F6",hover:"rgba(124,58,237,0.02)",thBg:"#FAFAFA"},
-  dark:{bg:"linear-gradient(145deg,#0F172A,#1E1B4B,#0F172A)",card:"rgba(30,27,75,0.6)",cardBorder:"1px solid rgba(255,255,255,0.08)",text:"#F1F5F9",textSub:"#94A3B8",textMuted:"#64748B",inp:"rgba(255,255,255,0.06)",inpBorder:"rgba(255,255,255,0.1)",divider:"rgba(255,255,255,0.06)",hover:"rgba(255,255,255,0.03)",thBg:"rgba(255,255,255,0.03)"}
+  dark:{bg:"linear-gradient(145deg,#1A1744,#252262,#1A1744)",card:"rgba(37,34,98,0.6)",cardBorder:"1px solid rgba(255,255,255,0.08)",text:"#F1F5F9",textSub:"#94A3B8",textMuted:"#64748B",inp:"rgba(255,255,255,0.06)",inpBorder:"rgba(255,255,255,0.1)",divider:"rgba(255,255,255,0.06)",hover:"rgba(255,255,255,0.03)",thBg:"rgba(255,255,255,0.03)"}
 };
 var COLORWAYS={
-  purple:{primary:"#7C3AED",primaryGrad:"linear-gradient(135deg,#7C3AED,#6D28D9)",accent:"#A78BFA",sidebar:"linear-gradient(180deg,#312E81,#1E1B4B 60%,#0F172A)",logo:"linear-gradient(135deg,#7C3AED,#06B6D4)",darkBg:"linear-gradient(145deg,#0F172A,#1E1B4B,#0F172A)",darkCard:"rgba(30,27,75,0.6)",darkSolid:"#1E1B4B"},
-  teal:{primary:"#0891B2",primaryGrad:"linear-gradient(135deg,#06B6D4,#0891B2)",accent:"#67E8F9",sidebar:"linear-gradient(180deg,#164E63,#0E3A4F 60%,#0A2533)",logo:"linear-gradient(135deg,#06B6D4,#10B981)",darkBg:"linear-gradient(145deg,#0A2533,#164E63,#0A2533)",darkCard:"rgba(14,58,79,0.6)",darkSolid:"#0E3A4F"},
-  rose:{primary:"#E11D48",primaryGrad:"linear-gradient(135deg,#FB7185,#E11D48)",accent:"#FDA4AF",sidebar:"linear-gradient(180deg,#4C0519,#3B0412 60%,#1C0208)",logo:"linear-gradient(135deg,#E11D48,#F59E0B)",darkBg:"linear-gradient(145deg,#1C0208,#3B0412,#1C0208)",darkCard:"rgba(59,4,18,0.6)",darkSolid:"#3B0412"},
-  emerald:{primary:"#059669",primaryGrad:"linear-gradient(135deg,#34D399,#059669)",accent:"#6EE7B7",sidebar:"linear-gradient(180deg,#064E3B,#022C22 60%,#011A14)",logo:"linear-gradient(135deg,#059669,#06B6D4)",darkBg:"linear-gradient(145deg,#011A14,#022C22,#011A14)",darkCard:"rgba(2,44,34,0.6)",darkSolid:"#022C22"}
+  purple:{primary:"#7C3AED",primaryGrad:"linear-gradient(135deg,#8B5CF6,#7C3AED)",accent:"#A78BFA",sidebar:"linear-gradient(180deg,#3730A3,#2E2A6E 60%,#1E1B4B)",logo:"linear-gradient(135deg,#7C3AED,#06B6D4)",hero:"linear-gradient(135deg,#5B47B0,#3730A3)",darkBg:"linear-gradient(145deg,#1E1B4B,#2E2A6E,#1E1B4B)",darkCard:"rgba(46,42,110,0.6)",darkSolid:"#2E2A6E"},
+  teal:{primary:"#0891B2",primaryGrad:"linear-gradient(135deg,#22D3EE,#0891B2)",accent:"#67E8F9",sidebar:"linear-gradient(180deg,#1A6B7F,#155E6E 60%,#0E3A4F)",logo:"linear-gradient(135deg,#06B6D4,#10B981)",hero:"linear-gradient(135deg,#0E7490,#1A6B7F)",darkBg:"linear-gradient(145deg,#0E3A4F,#1A6B7F,#0E3A4F)",darkCard:"rgba(21,94,110,0.6)",darkSolid:"#155E6E"},
+  rose:{primary:"#E11D48",primaryGrad:"linear-gradient(135deg,#FB7185,#E11D48)",accent:"#FDA4AF",sidebar:"linear-gradient(180deg,#5C1229,#4A0E20 60%,#3B0A18)",logo:"linear-gradient(135deg,#E11D48,#F59E0B)",hero:"linear-gradient(135deg,#9F1239,#5C1229)",darkBg:"linear-gradient(145deg,#3B0A18,#5C1229,#3B0A18)",darkCard:"rgba(74,14,32,0.6)",darkSolid:"#4A0E20"},
+  emerald:{primary:"#059669",primaryGrad:"linear-gradient(135deg,#34D399,#059669)",accent:"#6EE7B7",sidebar:"linear-gradient(180deg,#0B6B4A,#064E3B 60%,#04362A)",logo:"linear-gradient(135deg,#059669,#06B6D4)",hero:"linear-gradient(135deg,#047857,#0B6B4A)",darkBg:"linear-gradient(145deg,#04362A,#0B6B4A,#04362A)",darkCard:"rgba(6,78,59,0.6)",darkSolid:"#064E3B"}
 };
 
 var uid=function(){return Date.now().toString(36)+Math.random().toString(36).substr(2,8)};
@@ -129,7 +129,18 @@ function Btn(p){var v=p.v||"default";return <button style={{display:"inline-flex
 
 function Field(p){return <div><div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",color:"var(--text-muted)",marginBottom:6}}>{p.label}</div><input style={{width:"100%",padding:"10px 14px",borderRadius:10,border:"1px solid var(--inp-border)",background:"var(--inp)",color:"var(--text)",fontSize:13,boxSizing:"border-box",outline:"none"}} value={p.value} onChange={function(e){p.onChange(e.target.value)}} autoFocus={p.autoFocus} placeholder={p.placeholder}/></div>}
 
-function Modal(p){return <div style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.4)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center"}} onClick={p.onClose}><div style={{background:"var(--card-solid)",borderRadius:22,padding:28,width:p.wide?680:480,maxWidth:"92vw",maxHeight:"85vh",overflowY:"auto",boxShadow:"0 24px 80px rgba(0,0,0,0.2)"}} onClick={function(e){e.stopPropagation()}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:24}}><h3 style={{fontSize:19,fontWeight:700,color:"var(--text)"}}>{p.title}</h3><button style={{background:"var(--inp)",border:"none",borderRadius:10,width:32,height:32,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}} onClick={p.onClose}><I n="x" sz={16} c="var(--text-muted)"/></button></div>{p.children}</div></div>}
+function Reveal(p){
+  var [vis,setVis]=useState(false);var [closing,setClosing]=useState(false);
+  useEffect(function(){if(p.open&&!vis){setVis(true);setClosing(false)}if(!p.open&&vis&&!closing){setClosing(true);setTimeout(function(){setVis(false);setClosing(false)},420)}},[p.open]);
+  if(!vis)return null;
+  return <div style={{animation:closing?"revealUp 0.42s cubic-bezier(0.4,0,0.2,1) forwards":"revealDown 0.42s cubic-bezier(0.4,0,0.2,1)",overflow:"hidden"}}>{p.children}</div>;
+}
+
+var SORT_OPTS=[{key:"newest",label:"Newest"},{key:"oldest",label:"Oldest"},{key:"name-az",label:"Name A-Z"},{key:"name-za",label:"Name Z-A"},{key:"last-contact",label:"Last Contacted"},{key:"score-high",label:"Score High"},{key:"score-low",label:"Score Low"}];
+var sortPeople=function(list,sortKey){var arr=list.slice();if(sortKey==="newest")arr.sort(function(a,b){return new Date(b.createdAt||0)-new Date(a.createdAt||0)});if(sortKey==="oldest")arr.sort(function(a,b){return new Date(a.createdAt||0)-new Date(b.createdAt||0)});if(sortKey==="name-az")arr.sort(function(a,b){return(a.firstName||"").localeCompare(b.firstName||"")});if(sortKey==="name-za")arr.sort(function(a,b){return(b.firstName||"").localeCompare(a.firstName||"")});if(sortKey==="last-contact")arr.sort(function(a,b){var da=a.lastContactDate?new Date(a.lastContactDate):new Date(0);var db=b.lastContactDate?new Date(b.lastContactDate):new Date(0);return da-db});if(sortKey==="score-high")arr.sort(function(a,b){return calcScore(b)-calcScore(a)});if(sortKey==="score-low")arr.sort(function(a,b){return calcScore(a)-calcScore(b)});return arr};
+function SortBar(p){return <div style={{display:"flex",gap:4,flexWrap:"wrap"}}>{(p.opts||SORT_OPTS).map(function(o){var active=p.value===o.key;return <button key={o.key} onClick={function(){p.onChange(active?"newest":o.key)}} style={{padding:"5px 10px",borderRadius:8,border:active?"1px solid var(--primary)":"1px solid var(--inp-border)",background:active?"var(--primary)08":"var(--inp)",fontSize:10,fontWeight:active?700:500,color:active?"var(--primary)":"var(--text-muted)",cursor:"pointer",transition:"all 0.15s"}}>{o.label}</button>})}</div>}
+
+function Modal(p){return <div style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.4)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",animation:"gentleFade 0.3s ease"}} onClick={p.onClose}><div style={{background:"var(--card-solid)",borderRadius:22,padding:28,width:p.wide?680:480,maxWidth:"92vw",maxHeight:"85vh",overflowY:"auto",boxShadow:"0 24px 80px rgba(0,0,0,0.2)",animation:"gentleFade 0.35s cubic-bezier(0.22,1,0.36,1)"}} onClick={function(e){e.stopPropagation()}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:24}}><h3 style={{fontSize:19,fontWeight:700,color:"var(--text)"}}>{p.title}</h3><button style={{background:"var(--inp)",border:"none",borderRadius:10,width:32,height:32,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}} onClick={p.onClose}><I n="x" sz={16} c="var(--text-muted)"/></button></div>{p.children}</div></div>}
 
 /* ══════ MINI CALENDAR ══════ */
 function MiniCal(p){
@@ -168,13 +179,19 @@ function MiniCal(p){
 function Overview(p){
   var people=p.people,teams=p.teams,total=people.length;
   var [mmlOpen,setMmlOpen]=useState(false);
+  var [dragIdx,setDragIdx]=useState(null);
+  var [mmlCustom,setMmlCustom]=useState(null);
   var mx=Math.max.apply(null,STAGES.map(function(s){return people.filter(function(x){return x.currentStage===s.key}).length}).concat([1]));
-  var mml=people.filter(function(x){return!x.fullyConnected}).map(function(x){var sc=calcScore(x),d=ago(x.lastContactDate),pri=100-sc;if(d===null)pri+=30;else if(d>7)pri+=20;else if(d>3)pri+=10;if((SIDX[x.currentStage]||0)<=1)pri+=10;return{...x,engScore:sc,priority:pri}}).sort(function(a,b){return b.priority-a.priority}).slice(0,10);
+  var mmlBase=people.filter(function(x){return!x.fullyConnected}).map(function(x){var sc=calcScore(x),d=ago(x.lastContactDate),pri=100-sc;if(d===null)pri+=30;else if(d>7)pri+=20;else if(d>3)pri+=10;if((SIDX[x.currentStage]||0)<=1)pri+=10;return{...x,engScore:sc,priority:pri}}).sort(function(a,b){return b.priority-a.priority}).slice(0,10);
+  var mml=mmlCustom||mmlBase;
+  var onDragStart=function(i){setDragIdx(i)};
+  var onDragOver=function(e,i){e.preventDefault();if(dragIdx===null||dragIdx===i)return;var arr=mml.slice();var item=arr.splice(dragIdx,1)[0];arr.splice(i,0,item);setMmlCustom(arr);setDragIdx(i)};
+  var onDragEnd=function(){setDragIdx(null)};
 
-  if(!total)return <div style={{textAlign:"center",padding:"100px 20px"}}><div style={{width:80,height:80,borderRadius:24,background:"var(--primary-grad)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 24px"}}><svg width="42" height="42" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 2C7 2 7 7 12 12C17 17 17 22 17 22" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"/><path d="M12 2C12 2 12 7 12 12C12 17 12 22 12 22" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" opacity="0.6"/><path d="M17 2C17 2 17 7 12 12C7 17 7 22 7 22" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" opacity="0.35"/></svg></div><h2 style={{fontSize:26,fontWeight:700,color:"var(--text)",marginBottom:10}}>Welcome to WEAVR</h2><p style={{fontSize:15,color:"var(--text-muted)",maxWidth:400,margin:"0 auto 32px",lineHeight:1.8}}>Start weaving people into your church community.</p><div style={{display:"flex",gap:12,justifyContent:"center"}}><Btn icon="plus" label="Add Person" onClick={p.onAdd}/><Btn icon="upload" label="Import CSV" onClick={p.onImport} v="ghost"/></div></div>;
+  if(!total)return <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"70vh",textAlign:"center",padding:"20px"}}><div><div style={{width:80,height:80,borderRadius:24,background:"var(--primary-grad)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 24px"}}><WeavrLogo sz={42}/></div><h2 style={{fontSize:26,fontWeight:700,color:"var(--text)",marginBottom:10}}>Welcome to WEAVR</h2><p style={{fontSize:15,color:"var(--text-muted)",maxWidth:400,margin:"0 auto 32px",lineHeight:1.8}}>Start weaving people into your church community.</p><div style={{display:"flex",gap:12,justifyContent:"center"}}><Btn icon="plus" label="Add Person" onClick={p.onAdd}/><Btn icon="upload" label="Import CSV" onClick={p.onImport} v="ghost"/></div></div></div>;
 
   return <div>
-    <div style={{background:"var(--sidebar)",borderRadius:24,padding:"28px 32px",marginBottom:24,position:"relative",overflow:"hidden",boxShadow:"0 12px 40px rgba(0,0,0,0.15)"}}>
+    <div style={{background:"var(--hero)",borderRadius:24,padding:"28px 32px",marginBottom:24,position:"relative",overflow:"hidden",boxShadow:"0 12px 40px rgba(0,0,0,0.12)"}}>
       <div style={{position:"relative",zIndex:1}}>
         <h2 style={{fontSize:22,fontWeight:700,color:"#fff",marginBottom:4}}>Engagement Pipeline</h2>
         <p style={{fontSize:13,color:"rgba(255,255,255,0.5)",marginBottom:24}}>{total} people tracked</p>
@@ -205,12 +222,13 @@ function Overview(p){
       <button onClick={function(){setMmlOpen(!mmlOpen)}} style={{width:"100%",display:"flex",alignItems:"center",gap:8,background:"none",border:"none",padding:"4px 0",cursor:"pointer",textAlign:"left"}}>
         <I n="sun" sz={18} c="#F59E0B"/>
         <h3 style={{fontSize:15,fontWeight:700,color:"var(--text)",flex:1}}>Monday Morning List</h3>
+        {mmlCustom&&<button onClick={function(){setMmlCustom(null)}} style={{fontSize:10,fontWeight:600,color:"var(--text-muted)",background:"var(--inp)",border:"1px solid var(--inp-border)",borderRadius:6,padding:"3px 8px",cursor:"pointer"}}>Reset Order</button>}
         <span style={{fontSize:12,color:"var(--text-muted)",fontWeight:600,background:"var(--inp)",padding:"3px 10px",borderRadius:8}}>{mml.length}</span>
         <span style={{fontSize:14,color:"var(--text-muted)",transform:mmlOpen?"rotate(180deg)":"rotate(0)",transition:"transform 0.2s"}}>{"\u25BE"}</span>
       </button>
-      {mmlOpen&&<div style={{marginTop:12}}>
-        {mml.map(function(x,i){var stg=STAGES.find(function(s){return s.key===x.currentStage});var d=ago(x.lastContactDate);var tm=teams.find(function(t){return t.id===x.assignedTo});return <div key={x.id} style={{display:"flex",alignItems:"center",gap:14,padding:"12px 0",borderTop:i>0?"1px solid var(--divider)":"none",cursor:"pointer"}} onClick={function(){p.onPerson(x)}}><div style={{width:28,height:28,borderRadius:10,background:"var(--sidebar)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,color:"#fff",flexShrink:0}}>{i+1}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:600,color:"var(--text)"}}>{x.firstName} {x.lastName}</div><div style={{fontSize:11,color:"var(--text-muted)",display:"flex",alignItems:"center",gap:8,marginTop:2}}><span style={{color:stg?stg.color:"#999",fontWeight:600}}>{stg?stg.label:"?"}</span><span>{d===null?"Never":d+"d ago"}</span>{tm&&<span style={{color:tm.color}}>{tm.name}</span>}</div></div><ScoreRing score={x.engScore} sz={36}/><div style={{fontSize:11,color:"var(--text-muted)",width:90,textAlign:"right"}}>{NEXT_ACT[x.currentStage]}</div></div>})}
-      </div>}
+      <Reveal open={mmlOpen}><div style={{marginTop:12}}>
+        {mml.map(function(x,i){var stg=STAGES.find(function(s){return s.key===x.currentStage});var d=ago(x.lastContactDate);var tm=teams.find(function(t){return t.id===x.assignedTo});return <div key={x.id} draggable onDragStart={function(){onDragStart(i)}} onDragOver={function(e){onDragOver(e,i)}} onDragEnd={onDragEnd} style={{display:"flex",alignItems:"center",gap:14,padding:"12px 0",borderTop:i>0?"1px solid var(--divider)":"none",cursor:"grab",opacity:dragIdx===i?0.5:1,transition:"opacity 0.15s"}} onClick={function(){p.onPerson(x)}}><div style={{display:"flex",flexDirection:"column",gap:2,opacity:0.3,cursor:"grab",flexShrink:0,padding:"0 2px"}}><div style={{width:12,height:2,background:"var(--text-muted)",borderRadius:1}}/><div style={{width:12,height:2,background:"var(--text-muted)",borderRadius:1}}/><div style={{width:12,height:2,background:"var(--text-muted)",borderRadius:1}}/></div><div style={{width:28,height:28,borderRadius:10,background:"var(--hero)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,color:"#fff",flexShrink:0}}>{i+1}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:14,fontWeight:600,color:"var(--text)"}}>{x.firstName} {x.lastName}</div><div style={{fontSize:11,color:"var(--text-muted)",display:"flex",alignItems:"center",gap:8,marginTop:2}}><span style={{color:stg?stg.color:"#999",fontWeight:600}}>{stg?stg.label:"?"}</span><span>{d===null?"Never":d+"d ago"}</span>{tm&&<span style={{color:tm.color}}>{tm.name}</span>}</div></div><ScoreRing score={x.engScore} sz={36}/><div style={{fontSize:11,color:"var(--text-muted)",width:90,textAlign:"right"}}>{NEXT_ACT[x.currentStage]}</div></div>})}
+      </div></Reveal>
     </div>}
 
     <div style={{background:"var(--card)",borderRadius:18,padding:"22px 24px",boxShadow:"0 2px 16px rgba(0,0,0,0.04)"}}>
@@ -223,19 +241,22 @@ function Overview(p){
 
 /* ══════ PEOPLE TABLE ══════ */
 function PeopleView(p){
-  var stObj=p.stageFilter?STAGES.find(function(s){return s.key===p.stageFilter}):null;var [teamF,setTeamF]=useState("");
-  var fil=p.people.filter(function(x){
+  var stObj=p.stageFilter?STAGES.find(function(s){return s.key===p.stageFilter}):null;var [teamF,setTeamF]=useState("");var [sortKey,setSortKey]=useState("newest");
+  var fil=sortPeople(p.people.filter(function(x){
     if(!p.stageFilter)return true;
     if(p.stageFilter==="bgroup")return x.stages&&x.stages.bgroup&&x.stages.bgroup.completed;
     if(p.stageFilter==="ateam")return x.stages&&x.stages.ateam&&x.stages.ateam.completed;
     return x.currentStage===p.stageFilter;
-  }).filter(function(x){return !teamF||x.assignedTo===teamF||(teamF==="none"&&!x.assignedTo)}).filter(function(x){if(!p.search)return true;var q=p.search.toLowerCase();return(x.firstName+" "+x.lastName).toLowerCase().includes(q)||(x.phone||"").includes(q)||(x.email||"").toLowerCase().includes(q)}).sort(function(a,b){return a.firstName.localeCompare(b.firstName)});
+  }).filter(function(x){return !teamF||x.assignedTo===teamF||(teamF==="none"&&!x.assignedTo)}).filter(function(x){if(!p.search)return true;var q=p.search.toLowerCase();return(x.firstName+" "+x.lastName).toLowerCase().includes(q)||(x.phone||"").includes(q)||(x.email||"").toLowerCase().includes(q)}),sortKey);
   return <div>
-    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}}>
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
       <div><h2 style={{fontSize:21,fontWeight:700,color:"var(--text)",display:"flex",alignItems:"center",gap:10}}>{stObj&&<Dot color={stObj.color} sz={10}/>}{stObj?stObj.label:"All People"}</h2><p style={{fontSize:12,color:"var(--text-muted)",marginTop:3}}>{fil.length} people</p></div>
       <div style={{display:"flex",gap:8}}>{p.teams.length>0&&<select style={{padding:"8px 12px",fontSize:12,borderRadius:10,border:"1px solid var(--inp-border)",background:"var(--inp)",color:"var(--text)",cursor:"pointer"}} value={teamF} onChange={function(e){setTeamF(e.target.value)}}><option value="">All Members</option>{p.teams.map(function(t){return <option key={t.id} value={t.id}>{t.name}</option>})}<option value="none">Unassigned</option></select>}<Btn icon="upload" label="Import" onClick={p.onImport} v="ghost"/></div>
     </div>
-    <div style={{display:"flex",alignItems:"center",gap:12,background:"var(--card)",borderRadius:16,padding:"0 18px",marginBottom:16,border:"1px solid var(--inp-border)"}}><I n="search" sz={16} c="var(--text-muted)"/><input style={{flex:1,padding:"13px 0",border:"none",background:"transparent",color:"var(--text)",fontSize:14,outline:"none"}} placeholder="Search..." value={p.search} onChange={function(e){p.setSearch(e.target.value)}}/>{p.search&&<button style={{background:"none",border:"none",padding:4,cursor:"pointer"}} onClick={function(){p.setSearch("")}}><I n="x" sz={14} c="var(--text-muted)"/></button>}</div>
+    <div style={{display:"flex",gap:12,alignItems:"center",marginBottom:16}}>
+      <div style={{flex:1,display:"flex",alignItems:"center",gap:12,background:"var(--card)",borderRadius:16,padding:"0 18px",border:"1px solid var(--inp-border)"}}><I n="search" sz={16} c="var(--text-muted)"/><input style={{flex:1,padding:"13px 0",border:"none",background:"transparent",color:"var(--text)",fontSize:14,outline:"none"}} placeholder="Search..." value={p.search} onChange={function(e){p.setSearch(e.target.value)}}/>{p.search&&<button style={{background:"none",border:"none",padding:4,cursor:"pointer"}} onClick={function(){p.setSearch("")}}><I n="x" sz={14} c="var(--text-muted)"/></button>}</div>
+      <SortBar value={sortKey} onChange={setSortKey}/>
+    </div>
     <div style={{background:"var(--card)",borderRadius:18,padding:0,overflow:"hidden",boxShadow:"0 2px 16px rgba(0,0,0,0.04)"}}>
       <table style={{width:"100%",borderCollapse:"collapse"}}><thead><tr>{["Name","Stage","Score","Assigned","Status","Contact","Next",""].map(function(h){return <th key={h||"act"} style={{padding:"10px 14px",fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.06em",color:"var(--text-muted)",textAlign:"left",borderBottom:"1px solid var(--divider)",background:"var(--th-bg)",width:h===""?40:"auto"}}>{h}</th>})}</tr></thead>
       <tbody>{fil.map(function(x){var s=STAGES.find(function(st){return st.key===x.currentStage});var d=ago(x.lastContactDate);var urg=d===null||d>3;var sc=calcScore(x);var tm=p.teams.find(function(t){return t.id===x.assignedTo});return <tr key={x.id} style={{cursor:"pointer"}} onMouseEnter={function(e){e.currentTarget.style.background="var(--hover)"}} onMouseLeave={function(e){e.currentTarget.style.background=""}}>
@@ -258,11 +279,12 @@ function AssignedCards(p){
   var [selTeam,setSelTeam]=useState(p.teams.length>0?p.teams[0].id:"");
   var [workMode,setWorkMode]=useState(false);
   var [acView,setAcView]=useState("grid");
+  var [acSort,setAcSort]=useState("last-contact");
   var [workIdx,setWorkIdx]=useState(0);
   var [workNote,setWorkNote]=useState("");
   var [workFlash,setWorkFlash]=useState("");
   var tm=p.teams.find(function(t){return t.id===selTeam});
-  var assigned=p.people.filter(function(x){return x.assignedTo===selTeam&&!x.fullyConnected}).sort(function(a,b){return calcScore(a)-calcScore(b)});
+  var assigned=sortPeople(p.people.filter(function(x){return x.assignedTo===selTeam&&!x.fullyConnected}),acSort);
   var workPerson=assigned[workIdx];
   var workStg=workPerson?STAGES.find(function(s){return s.key===workPerson.currentStage}):null;
   var workScore=workPerson?calcScore(workPerson):0;
@@ -293,8 +315,9 @@ function AssignedCards(p){
     <div style={{display:"flex",gap:8,marginBottom:20,flexWrap:"wrap"}}>
       {p.teams.map(function(t){var ct=p.people.filter(function(x){return x.assignedTo===t.id&&!x.fullyConnected}).length;return <button key={t.id} onClick={function(){setSelTeam(t.id);setWorkIdx(0)}} style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:12,border:selTeam===t.id?"2px solid "+t.color:"2px solid transparent",background:selTeam===t.id?"var(--card)":"var(--inp)",fontSize:12,fontWeight:600,color:selTeam===t.id?t.color:"var(--text-sub)",cursor:"pointer"}}><div style={{width:24,height:24,borderRadius:8,background:t.color+"20",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700,color:t.color}}>{t.name.charAt(0)}</div>{t.name} ({ct})</button>})}
     </div>
+    {!workMode&&<div style={{marginBottom:16}}><SortBar value={acSort} onChange={setAcSort}/></div>}
     {p.teams.length===0?<div style={{background:"var(--card)",borderRadius:18,padding:40,textAlign:"center",color:"var(--text-muted)"}}><I n="users" sz={28} c="var(--text-muted)"/><div style={{fontWeight:600,marginTop:10}}>Add team members in Settings first</div></div>:
-    workMode&&workPerson?<div style={{background:"var(--card)",borderRadius:22,overflow:"hidden",boxShadow:"0 4px 24px rgba(0,0,0,0.06)"}}>
+    workMode&&workPerson?<div style={{background:"var(--card)",borderRadius:22,overflow:"hidden",boxShadow:"0 4px 24px rgba(0,0,0,0.06)",animation:"gentleFade 0.4s cubic-bezier(0.22,1,0.36,1)"}}>
       <div style={{background:workStg?workStg.grad:"var(--sidebar)",padding:"24px 32px",position:"relative",overflow:"hidden"}}>
         <div style={{position:"relative",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
           <div>
@@ -319,7 +342,7 @@ function AssignedCards(p){
         {workPerson.currentStage==="next-steps"&&<div style={{background:"var(--inp)",borderRadius:12,padding:"12px 14px",marginBottom:14}}>
           {[{k:"textSent",l:"Text/Email Sent"},{k:"registered",l:"Registered"},{k:"attended",l:"Attended"}].map(function(item){return <div key={item.k} style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}><input type="checkbox" checked={!!workMs[item.k]} onChange={function(){var nd={};nd[item.k]=!workMs[item.k];if(!workMs[item.k])nd[item.k+"Date"]=new Date().toISOString().split("T")[0];workUpMs(nd)}} style={{width:15,height:15,accentColor:"#FBBF24"}}/><span style={{fontSize:11,color:"var(--text)",flex:1}}>{item.l}</span>{workMs[item.k]&&<input type="date" value={workMs[item.k+"Date"]||""} onChange={function(e){var nd={};nd[item.k+"Date"]=e.target.value;workUpMs(nd)}} style={{padding:"3px 6px",borderRadius:6,border:"1px solid var(--inp-border)",background:"var(--card)",color:"var(--text)",fontSize:10,width:120}}/>}</div>})}
         </div>}
-        {(function(){var wHasBG=workPerson.stages&&workPerson.stages.bgroup&&workPerson.stages.bgroup.completed;var wHasAT=workPerson.stages&&workPerson.stages.ateam&&workPerson.stages.ateam.completed;var wToggleBG=function(){var ns={...workPerson.stages};var nc=workPerson.currentStage;if(wHasBG){delete ns.bgroup;nc=ns.ateam&&ns.ateam.completed?"ateam":"next-steps"}else{ns.bgroup={date:new Date().toISOString(),completed:true};if(SIDX.bgroup>SIDX[nc])nc="bgroup"}p.onUpdate({...workPerson,stages:ns,currentStage:nc})};var wToggleAT=function(){var ns={...workPerson.stages};var nc=workPerson.currentStage;if(wHasAT){delete ns.ateam;nc=ns.bgroup&&ns.bgroup.completed?"bgroup":"next-steps"}else{ns.ateam={date:new Date().toISOString(),completed:true};if(SIDX.ateam>SIDX[nc])nc="ateam"}p.onUpdate({...workPerson,stages:ns,currentStage:nc})};return <div style={{marginBottom:14}}>
+        {(function(){var wHasBG=workPerson.stages&&workPerson.stages.bgroup&&workPerson.stages.bgroup.completed;var wHasAT=workPerson.stages&&workPerson.stages.ateam&&workPerson.stages.ateam.completed;var wToggleBG=function(){var ns={...workPerson.stages};if(wHasBG){delete ns.bgroup}else{ns.bgroup={date:new Date().toISOString(),completed:true}}p.onUpdate({...workPerson,stages:ns})};var wToggleAT=function(){var ns={...workPerson.stages};if(wHasAT){delete ns.ateam}else{ns.ateam={date:new Date().toISOString(),completed:true}}p.onUpdate({...workPerson,stages:ns})};return <div style={{marginBottom:14}}>
           <div style={{display:"flex",gap:8}}>
             <button onClick={wToggleBG} style={{flex:1,padding:"10px 14px",borderRadius:10,border:wHasBG?"2px solid #EC4899":"2px dashed var(--inp-border)",background:wHasBG?"#EC489908":"var(--inp)",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}><div style={{width:18,height:18,borderRadius:5,background:wHasBG?"#EC4899":"var(--divider)",display:"flex",alignItems:"center",justifyContent:"center"}}>{wHasBG&&<I n="check" sz={10} c="#fff"/>}</div><span style={{fontSize:12,fontWeight:600,color:wHasBG?"#EC4899":"var(--text-muted)"}}>BGroup</span></button>
             <button onClick={wToggleAT} style={{flex:1,padding:"10px 14px",borderRadius:10,border:wHasAT?"2px solid #34D399":"2px dashed var(--inp-border)",background:wHasAT?"#34D39908":"var(--inp)",cursor:"pointer",display:"flex",alignItems:"center",gap:6}}><div style={{width:18,height:18,borderRadius:5,background:wHasAT?"#34D399":"var(--divider)",display:"flex",alignItems:"center",justifyContent:"center"}}>{wHasAT&&<I n="check" sz={10} c="#fff"/>}</div><span style={{fontSize:12,fontWeight:600,color:wHasAT?"#34D399":"var(--text-muted)"}}>ATeam</span></button>
@@ -495,10 +518,10 @@ function Reports(p){
 
 /* ══════ FULLY CONNECTED ══════ */
 function FullyConnected(p){
-  var connected=p.people.filter(function(x){return x.fullyConnected});
-  var [fcView,setFcView]=useState("grid");
+  var [fcView,setFcView]=useState("grid");var [fcSort,setFcSort]=useState("newest");
+  var connected=sortPeople(p.people.filter(function(x){return x.fullyConnected}),fcSort);
   return <div>
-    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:24}}>
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
       <div style={{textAlign:"left"}}>
         <h2 style={{fontSize:21,fontWeight:700,color:"var(--text)",display:"flex",alignItems:"center",gap:10}}>{"⭐"} Fully Connected</h2>
         <p style={{fontSize:12,color:"var(--text-muted)",marginTop:3}}>{connected.length} people in both a BGroup and on the ATeam</p>
@@ -507,6 +530,7 @@ function FullyConnected(p){
         {["grid","list"].map(function(v){return <button key={v} onClick={function(){setFcView(v)}} style={{padding:"6px 12px",borderRadius:8,border:"none",fontSize:11,fontWeight:600,cursor:"pointer",background:fcView===v?"var(--card)":"transparent",color:fcView===v?"var(--text)":"var(--text-muted)",boxShadow:fcView===v?"0 1px 4px rgba(0,0,0,0.08)":"none"}}>{v==="grid"?"Grid":"List"}</button>})}
       </div>
     </div>
+    <div style={{marginBottom:16}}><SortBar value={fcSort} onChange={setFcSort}/></div>
     {connected.length===0?<div style={{background:"var(--card)",borderRadius:18,padding:48,textAlign:"center",color:"var(--text-muted)",boxShadow:"0 2px 16px rgba(0,0,0,0.04)"}}><div style={{fontSize:15,fontWeight:600}}>No one fully connected yet</div><p style={{fontSize:12,marginTop:6}}>When someone joins both a BGroup and the ATeam, they'll appear here.</p></div>:
     fcView==="list"?<div style={{background:"var(--card)",borderRadius:18,overflow:"hidden",boxShadow:"0 2px 16px rgba(0,0,0,0.04)"}}>
       {connected.map(function(x,i){var ns=(x.milestones||{})["next-steps"]||{};var sc=calcScore(x);return <div key={x.id} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 20px",borderTop:i>0?"1px solid var(--divider)":"none",cursor:"pointer"}} onClick={function(){p.onPerson(x)}}><div style={{width:36,height:36,borderRadius:10,background:scoreColor(sc)+"20",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:700,color:scoreColor(sc)}}>{(x.firstName||"?").charAt(0)}{(x.lastName||"").charAt(0)}</div><div style={{flex:1}}><div style={{fontSize:14,fontWeight:600,color:"var(--text)"}}>{x.firstName} {x.lastName}</div><div style={{fontSize:11,color:"var(--text-muted)",display:"flex",gap:8,marginTop:2}}><span style={{color:"#EC4899"}}>{ns.bGroupLeader||"BGroup"}</span><span style={{color:"#34D399"}}>{ns.aTeamArea||"ATeam"}</span></div></div><ScoreRing score={sc} sz={32}/><div style={{fontSize:10,color:"var(--text-muted)"}}>{fmt(x.fullyConnectedDate)}</div></div>})}
@@ -690,12 +714,14 @@ function Panel(p){
   var [edit,setEdit]=useState(false);var [form,setForm]=useState({...person});
   var [note,setNote]=useState("");var [msg,setMsg]=useState(false);var [ciNote,setCiNote]=useState("");
   var [showCal,setShowCal]=useState(false);var [fuType,setFuType]=useState("remind");var [fuDate,setFuDate]=useState("");
-  var [copied,setCopied]=useState(false);var [justFollowed,setJustFollowed]=useState(false);var [contactOpen,setContactOpen]=useState(null);
+  var [copied,setCopied]=useState(false);var [justFollowed,setJustFollowed]=useState(false);var [contactOpen,setContactOpen]=useState(null);var [showFollowUp,setShowFollowUp]=useState(false);
   var stg=STAGES.find(function(s){return s.key===person.currentStage});
   var idx=SIDX[person.currentStage];var d=ago(person.lastContactDate);
   var stColor=stg?stg.color:"#9CA3AF";var stLabel=stg?stg.label:"Unknown";
   var score=calcScore(person);var tm=teams.find(function(t){return t.id===person.assignedTo});
   var ciTypes=p.config.checkInTypes||DEFAULT_CI;
+
+  var exportReport=function(){var lines=[];lines.push("WEAVR CONNECT - PERSON REPORT");lines.push("Generated: "+new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"}));lines.push("==================================================");lines.push("");lines.push("NAME: "+person.firstName+" "+(person.lastName||""));lines.push("PHONE: "+(person.phone?fmtPhone(person.phone):"N/A"));lines.push("EMAIL: "+(person.email||"N/A"));lines.push("STAGE: "+stLabel);lines.push("SCORE: "+score+"/100 ("+scoreLabel(score)+")");lines.push("ASSIGNED TO: "+(tm?tm.name:"Unassigned"));lines.push("ADDED: "+(person.createdAt?fmt(person.createdAt):"Unknown"));lines.push("LAST CONTACT: "+(person.lastContactDate?fmt(person.lastContactDate):"Never"));lines.push("");lines.push("-- CONNECT STATUS --");var hasBGx=person.stages&&person.stages.bgroup&&person.stages.bgroup.completed;var hasATx=person.stages&&person.stages.ateam&&person.stages.ateam.completed;lines.push("BGroup: "+(hasBGx?"Yes":"No"));lines.push("ATeam: "+(hasATx?"Yes":"No"));lines.push("Fully Connected: "+(person.fullyConnected?"Yes - "+fmt(person.fullyConnectedDate):"No"));lines.push("");if((person.checkIns||[]).length>0){lines.push("-- FOLLOW-UP HISTORY --");(person.checkIns||[]).slice().reverse().forEach(function(c){var ct=ciTypes.find(function(t){return t.key===c.type});lines.push(fmtS(c.date)+" - "+(ct?ct.label:c.type)+(c.loggedBy?" (by "+c.loggedBy+")":"")+(c.note&&c.note!=="Followed up"?" - "+c.note:""))});lines.push("")}if((person.notes||[]).length>0){lines.push("-- NOTES --");(person.notes||[]).slice().reverse().forEach(function(n){lines.push(fmt(n.date)+": "+n.text)});lines.push("")}lines.push("-- END OF REPORT --");var text=lines.join("\n");copyText(text,function(ok){if(ok){setCopied(true);setTimeout(function(){setCopied(false)},2000)}});var w=window.open("","_blank");if(w){w.document.write("<pre style='font-family:monospace;font-size:13px;padding:20px;white-space:pre-wrap'>"+text.replace(/</g,"&lt;")+"</pre>");w.document.title=person.firstName+" "+(person.lastName||"")+" - Weavr Report"}};
 
   var linearStages=STAGES.filter(function(s){return s.key!=="bgroup"&&s.key!=="ateam"});
   var linIdx=linearStages.findIndex(function(s){return s.key===person.currentStage});
@@ -704,14 +730,14 @@ function Panel(p){
   var done=function(){p.onUpdate({...person,lastContactDate:new Date().toISOString(),checkIns:[...(person.checkIns||[]),{type:"conversation",note:"Followed up",date:new Date().toISOString()}]})};
   var sEdit=function(){p.onUpdate({...form});setEdit(false)};
   var gMsg=function(){var t=templates[person.currentStage]||DEFAULT_TPL[person.currentStage];return t.replace("{firstName}",person.firstName).replace("{lastName}",person.lastName)};
-  var addCI=function(type){p.onUpdate({...person,checkIns:[...(person.checkIns||[]),{type:type,note:ciNote,date:new Date().toISOString()}],lastContactDate:new Date().toISOString()});setCiNote("")};
+  var addCI=function(type){p.onUpdate({...person,checkIns:[...(person.checkIns||[]),{type:type,note:ciNote,date:new Date().toISOString(),loggedBy:p.userName||"Staff"}],lastContactDate:new Date().toISOString()});setCiNote("");setJustFollowed(true);setTimeout(function(){setShowFollowUp(false);setJustFollowed(false)},800)};
   var sNote=function(){if(!note.trim())return;p.onUpdate({...person,notes:[...(person.notes||[]),{text:note,date:new Date().toISOString()}]});setNote("")};
   var addFollowUp=function(){if(!fuDate)return;var fu={date:fuDate,type:fuType,completed:false,id:uid()};p.onUpdate({...person,followUps:[...(person.followUps||[]),fu]});setShowCal(false);setFuDate("")};
   var completeFollowUp=function(fid){p.onUpdate({...person,followUps:(person.followUps||[]).map(function(f){return f.id===fid?{...f,completed:true}:f})})};
   var doDelete=function(){p.onDelete(person.id);p.onClose()};
 
-  return <div style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.4)",zIndex:200,display:"flex",justifyContent:"flex-end"}} onClick={p.onClose}><div className="weavr-panel" style={{width:560,maxWidth:"100vw",height:"100vh",background:"var(--card-solid)",display:"flex",flexDirection:"column",animation:"slideIn 0.35s ease",overflowY:"auto",boxShadow:"-8px 0 40px rgba(0,0,0,0.1)"}} onClick={function(e){e.stopPropagation()}}>
-    <div style={{padding:"20px",background:"var(--sidebar)",position:"relative",overflow:"hidden"}}>
+  return <div style={{position:"fixed",inset:0,background:"rgba(15,23,42,0.4)",zIndex:200,display:"flex",justifyContent:"flex-end"}} onClick={p.onClose}><div className="weavr-panel" style={{width:560,maxWidth:"100vw",height:"100vh",background:"var(--card-solid)",display:"flex",flexDirection:"column",animation:"panelSlide 0.4s cubic-bezier(0.22,1,0.36,1)",overflowY:"auto",boxShadow:"-8px 0 40px rgba(0,0,0,0.15)"}} onClick={function(e){e.stopPropagation()}}>
+    <div style={{padding:"20px",background:"var(--hero)",position:"relative",overflow:"hidden"}}>
       <button style={{position:"absolute",top:12,left:10,background:"none",border:"none",borderRadius:6,width:20,height:20,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2,opacity:0.5}} onMouseEnter={function(e){e.currentTarget.style.opacity="1"}} onMouseLeave={function(e){e.currentTarget.style.opacity="0.5"}} onClick={p.onClose}><I n="x" sz={12} c="rgba(255,255,255,0.8)"/></button>
       <div style={{position:"relative",zIndex:1,display:"flex",gap:14,alignItems:"flex-start",paddingLeft:16}}>
         <div style={{width:48,height:48,borderRadius:14,background:scoreColor(score)+"30",border:"2px solid "+scoreColor(score),display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,fontWeight:700,color:"#fff",flexShrink:0}}>{(person.firstName||"?").charAt(0)}{(person.lastName||"").charAt(0)}</div>
@@ -729,13 +755,14 @@ function Panel(p){
     </div>
     <div style={{padding:"10px 20px",borderBottom:"1px solid var(--divider)",background:"var(--card-solid)",position:"sticky",top:0,zIndex:10}}>
       <div style={{display:"flex",alignItems:"center",gap:5,flexWrap:"wrap"}}>
-        <Btn icon="check" label={justFollowed?"Logged!":"Followed Up"} onClick={function(){done();setJustFollowed(true);setTimeout(function(){setJustFollowed(false)},2000)}} v="green" sx={{padding:"6px 12px",fontSize:11}}/>
+        <Btn icon="check" label={justFollowed?"Logged!":"Followed Up"} onClick={function(){if(justFollowed)return;setShowFollowUp(!showFollowUp)}} v={justFollowed?"green":"green"} sx={{padding:"6px 12px",fontSize:11}}/>
         {linIdx>0&&<button onClick={stepBack} style={{display:"inline-flex",alignItems:"center",gap:3,padding:"6px 10px",borderRadius:10,fontSize:11,fontWeight:600,cursor:"pointer",border:"1px solid var(--inp-border)",background:"var(--card)",color:"var(--text-sub)"}}><span style={{transform:"rotate(180deg)",display:"inline-block"}}><I n="up" sz={12}/></span>Back</button>}
         {linIdx<linearStages.length-1&&<Btn icon="up" label="Advance" onClick={adv} sx={{padding:"6px 12px",fontSize:11}}/>}
         <Btn icon="msg" label="Text" onClick={function(){setContactOpen("text")}} sx={{padding:"6px 12px",fontSize:11}}/>
         <Btn icon="mail" label="Email" onClick={function(){setContactOpen("email")}} v="ghost" sx={{padding:"6px 12px",fontSize:11,opacity:person.email?1:0.4}}/>
         <Btn icon="cal" label="" onClick={function(){setShowCal(!showCal)}} v="ghost" sx={{padding:"6px 8px",fontSize:11}}/>
         <Btn icon="edit" label="" onClick={function(){setEdit(!edit)}} v="ghost" sx={{padding:"6px 8px",fontSize:11}}/>
+        <Btn icon="dl" label="" onClick={exportReport} v="ghost" sx={{padding:"6px 8px",fontSize:11}}/>
         <button onClick={function(){if(confirm("Delete "+person.firstName+"?")){p.onDelete(person.id);p.onClose()}}} style={{display:"inline-flex",alignItems:"center",padding:"6px 8px",borderRadius:10,fontSize:11,cursor:"pointer",background:"transparent",color:"#EF4444",border:"1px solid #FECACA"}}><I n="trash" sz={12} c="#EF4444"/></button>
       </div>
     </div>
@@ -744,7 +771,7 @@ function Panel(p){
 
       {contactOpen&&<ContactAction person={person} message={gMsg()} email={emailFor(person,p.config)} onClose={function(){setContactOpen(null)}}/>}
 
-      {showCal&&<div style={{background:"var(--card)",borderRadius:14,padding:"14px 18px",marginBottom:16,boxShadow:"0 2px 8px rgba(0,0,0,0.04)"}}>
+      <Reveal open={showCal}><div style={{background:"var(--card)",borderRadius:14,padding:"14px 18px",marginBottom:16,boxShadow:"0 2px 8px rgba(0,0,0,0.04)"}}>
         <div style={{fontSize:12,fontWeight:700,color:"var(--text)",marginBottom:10}}>Schedule Follow-Up</div>
         <div style={{display:"flex",gap:10,marginBottom:12}}>
           {[{key:"remind",label:"Remind Me"},{key:"text",label:"Auto-Send Text"},{key:"email",label:"Auto-Send Email"}].map(function(t){return <button key={t.key} onClick={function(){setFuType(t.key)}} style={{padding:"6px 12px",borderRadius:8,border:fuType===t.key?"2px solid var(--primary)":"2px solid var(--inp-border)",background:fuType===t.key?"var(--primary)08":"var(--inp)",fontSize:11,fontWeight:600,color:fuType===t.key?"var(--primary)":"var(--text-sub)",cursor:"pointer"}}>{t.label}</button>})}
@@ -752,7 +779,7 @@ function Panel(p){
         {(function(){var sug=FU_SUGGEST[person.currentStage];if(!sug)return null;var sugDate=new Date();sugDate.setDate(sugDate.getDate()+sug.days);var sugStr=sugDate.toISOString().split("T")[0];return <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10,padding:"8px 12px",background:"var(--primary)06",borderRadius:10,border:"1px solid var(--primary)15"}}><I n="zap" sz={12} c="var(--primary)"/><span style={{fontSize:11,color:"var(--text-sub)"}}>Suggested: <b style={{color:"var(--primary)"}}>{sug.label}</b> for {stLabel}</span><button onClick={function(){setFuDate(sugStr)}} style={{marginLeft:"auto",padding:"3px 10px",borderRadius:6,background:"var(--primary)",color:"#fff",border:"none",fontSize:10,fontWeight:600,cursor:"pointer"}}>Use</button></div>})()}
         <MiniCal selected={fuDate} onSelect={setFuDate}/>
         {fuDate&&<div style={{marginTop:12,display:"flex",gap:8,alignItems:"center"}}><span style={{fontSize:12,color:"var(--text-sub)"}}>Selected: <b style={{color:"var(--text)"}}>{fmt(fuDate)}</b></span><Btn label="Confirm" v="green" sx={{padding:"6px 14px",fontSize:11}} onClick={addFollowUp}/></div>}
-      </div>}
+      </div></Reveal>
 
       {(person.followUps||[]).filter(function(f){return!f.completed}).length>0&&<div style={{marginBottom:16}}>
         <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",color:"var(--text-muted)",marginBottom:6}}>Scheduled Follow-Ups</div>
@@ -763,18 +790,32 @@ function Panel(p){
         </div>})}
       </div>}
 
-      <div style={{marginBottom:18}}>
-        <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",color:"var(--text-muted)",marginBottom:6}}>Log Check-In</div>
-        <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:8}}>
-          {ciTypes.map(function(ct){return <button key={ct.key} onClick={function(){addCI(ct.key)}} style={{display:"flex",alignItems:"center",gap:4,padding:"5px 10px",borderRadius:8,border:"1px solid var(--inp-border)",background:"var(--card)",fontSize:11,fontWeight:600,color:ct.color,cursor:"pointer"}}><I n={ct.icon||"check"} sz={11} c={ct.color}/>{ct.label}</button>})}
+      <Reveal open={showFollowUp}><div style={{marginBottom:16}}>
+        <div style={{background:"var(--card)",borderRadius:14,padding:"14px 16px",border:"1px solid var(--primary)20",boxShadow:"0 2px 12px rgba(0,0,0,0.04)"}}>
+          <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",color:"var(--text-muted)",marginBottom:10}}>Log Follow-Up</div>
+          <div style={{display:"flex",gap:5,flexWrap:"wrap",marginBottom:10}}>
+            {ciTypes.map(function(ct){return <button key={ct.key} onClick={function(){addCI(ct.key)}} style={{display:"flex",alignItems:"center",gap:5,padding:"8px 14px",borderRadius:10,border:"none",background:ct.color+"12",fontSize:12,fontWeight:600,color:ct.color,cursor:"pointer",transition:"all 0.2s"}} onMouseEnter={function(e){e.currentTarget.style.background=ct.color+"25"}} onMouseLeave={function(e){e.currentTarget.style.background=ct.color+"12"}}><I n={ct.icon||"check"} sz={12} c={ct.color}/>{ct.label}</button>})}
+          </div>
+          <input style={{width:"100%",padding:"10px 14px",borderRadius:10,border:"1px solid var(--inp-border)",background:"var(--inp)",color:"var(--text)",fontSize:12,boxSizing:"border-box",outline:"none"}} placeholder="Add a note..." value={ciNote} onChange={function(e){setCiNote(e.target.value)}} onKeyDown={function(e){if(e.key==="Enter"&&ciNote.trim())addCI("conversation")}}/>
         </div>
-        <input style={{width:"100%",padding:"8px 12px",borderRadius:8,border:"1px solid var(--inp-border)",background:"var(--inp)",color:"var(--text)",fontSize:12,boxSizing:"border-box",outline:"none"}} placeholder="Optional note..." value={ciNote} onChange={function(e){setCiNote(e.target.value)}}/>
-      </div>
+      </div></Reveal>
 
       {(person.checkIns||[]).length>0&&<div style={{marginBottom:16}}>
-        <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",color:"var(--text-muted)",marginBottom:6}}>Check-In History</div>
-        <div style={{background:"var(--card)",borderRadius:14,padding:"10px 14px",boxShadow:"0 1px 4px rgba(0,0,0,0.03)"}}>
-          {(person.checkIns||[]).slice().reverse().slice(0,8).map(function(c,i){var ct=ciTypes.find(function(t){return t.key===c.type});return <div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"5px 0",borderTop:i>0?"1px solid var(--divider)":"none"}}><I n={ct?ct.icon||"check":"msg"} sz={11} c={ct?ct.color:"var(--text-muted)"}/><div style={{flex:1,fontSize:11,color:"var(--text-sub)"}}>{ct?ct.label:c.type}{c.note?" - "+c.note:""}</div><div style={{fontSize:10,color:"var(--text-muted)"}}>{fmtS(c.date)}</div></div>})}
+        <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",color:"var(--text-muted)",marginBottom:8}}>Follow-Up History</div>
+        <div style={{position:"relative",paddingLeft:16}}>
+          <div style={{position:"absolute",left:5,top:4,bottom:4,width:2,background:"var(--divider)",borderRadius:1}}/>
+          {(person.checkIns||[]).slice().reverse().slice(0,10).map(function(c,i){var ct=ciTypes.find(function(t){return t.key===c.type});var origIdx=(person.checkIns||[]).length-1-i;return <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"8px 0",position:"relative",animation:i===0&&justFollowed?"gentleFade 0.4s ease":"none"}}>
+            <div style={{position:"absolute",left:-14,top:10,width:10,height:10,borderRadius:"50%",background:ct?ct.color:"var(--text-muted)",border:"2px solid var(--card-solid)",zIndex:1}}/>
+            <div style={{flex:1,marginLeft:4}}>
+              <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}>
+                <span style={{fontSize:12,fontWeight:600,color:ct?ct.color:"var(--text-sub)"}}>{ct?ct.label:c.type}</span>
+                <span style={{fontSize:10,color:"var(--text-muted)"}}>{fmtS(c.date)}</span>
+                {c.loggedBy&&<span style={{fontSize:9,color:"var(--text-muted)",background:"var(--inp)",padding:"1px 6px",borderRadius:4}}>by {c.loggedBy}</span>}
+                <button onClick={function(){var nci=(person.checkIns||[]).filter(function(_,j){return j!==origIdx});p.onUpdate({...person,checkIns:nci})}} style={{marginLeft:"auto",background:"none",border:"none",cursor:"pointer",padding:2,opacity:0.3,display:"flex"}} onMouseEnter={function(e){e.currentTarget.style.opacity="1"}} onMouseLeave={function(e){e.currentTarget.style.opacity="0.3"}}><I n="x" sz={10} c="#EF4444"/></button>
+              </div>
+              {c.note&&c.note!=="Followed up"&&<div style={{fontSize:11,color:"var(--text-sub)",lineHeight:1.4}}>{c.note}</div>}
+            </div>
+          </div>})}
         </div>
       </div>}
 
@@ -787,7 +828,7 @@ function Panel(p){
         </div>
       </div>}
 
-      {edit&&<div style={{background:"var(--card)",borderRadius:14,padding:"14px 18px",marginBottom:16,boxShadow:"0 1px 4px rgba(0,0,0,0.03)"}}>
+      <Reveal open={edit}><div style={{background:"var(--card)",borderRadius:14,padding:"14px 18px",marginBottom:16,boxShadow:"0 1px 4px rgba(0,0,0,0.03)"}}>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
           <Field label="First Name" value={form.firstName} onChange={function(v){setForm({...form,firstName:v})}}/>
           <Field label="Last Name" value={form.lastName} onChange={function(v){setForm({...form,lastName:v})}}/>
@@ -802,7 +843,7 @@ function Panel(p){
           <div style={{flex:1}}/>
           <button onClick={function(){if(confirm("Permanently delete "+person.firstName+" "+person.lastName+"?"))doDelete()}} style={{display:"inline-flex",alignItems:"center",gap:6,padding:"9px 18px",borderRadius:12,fontSize:13,fontWeight:600,cursor:"pointer",background:"linear-gradient(135deg,#FEE2E2,#FECACA)",color:"#EF4444",border:"none"}}><I n="trash" sz={14} c="#EF4444"/>Delete</button>
         </div>
-      </div>}
+      </div></Reveal>
 
       <div style={{marginBottom:16}}>
         <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",color:"var(--text-muted)",marginBottom:6}}>Journey</div>
@@ -816,12 +857,12 @@ function Panel(p){
         if(person.currentStage==="next-steps")return <div style={{marginBottom:16}}><div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",color:"var(--text-muted)",marginBottom:6}}>Next Steps Progress</div><div style={{background:"var(--card)",borderRadius:14,padding:"12px 16px"}}>{[{k:"textSent",l:"Text/Email Sent"},{k:"registered",l:"Registered"},{k:"attended",l:"Attended"}].map(function(item){return <div key={item.k} style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}><input type="checkbox" checked={!!ms[item.k]} onChange={function(){var nd={};nd[item.k]=!ms[item.k];if(!ms[item.k])nd[item.k+"Date"]=new Date().toISOString().split("T")[0];upMs(nd)}} style={{width:16,height:16,accentColor:"#FBBF24"}}/><span style={{fontSize:12,color:"var(--text)",flex:1}}>{item.l}</span>{ms[item.k]&&<input type="date" value={ms[item.k+"Date"]||""} onChange={function(e){var nd={};nd[item.k+"Date"]=e.target.value;upMs(nd)}} style={{padding:"4px 8px",borderRadius:6,border:"1px solid var(--inp-border)",background:"var(--inp)",color:"var(--text)",fontSize:11,width:130}}/>}</div>})}</div></div>;
         return null})()}
       {(function(){var nsMs=(person.milestones||{})["next-steps"]||{};var bgMs=(person.milestones||{}).bgroup||{};var atMs=(person.milestones||{}).ateam||{};var hasBG=person.stages&&person.stages.bgroup&&person.stages.bgroup.completed;var hasAT=person.stages&&person.stages.ateam&&person.stages.ateam.completed;
-        var toggleBG=function(){var newStages={...person.stages};var newCurrent=person.currentStage;if(hasBG){delete newStages.bgroup;var atDone=newStages.ateam&&newStages.ateam.completed;newCurrent=atDone?"ateam":"next-steps"}else{newStages.bgroup={date:new Date().toISOString(),completed:true};if(SIDX.bgroup>SIDX[newCurrent])newCurrent="bgroup"}p.onUpdate({...person,stages:newStages,currentStage:newCurrent})};
-        var toggleAT=function(){var newStages={...person.stages};var newCurrent=person.currentStage;if(hasAT){delete newStages.ateam;var bgDone=newStages.bgroup&&newStages.bgroup.completed;newCurrent=bgDone?"bgroup":"next-steps"}else{newStages.ateam={date:new Date().toISOString(),completed:true};if(SIDX.ateam>SIDX[newCurrent])newCurrent="ateam"}p.onUpdate({...person,stages:newStages,currentStage:newCurrent})};
+        var toggleBG=function(){var newStages={...person.stages};if(hasBG){delete newStages.bgroup}else{newStages.bgroup={date:new Date().toISOString(),completed:true}}p.onUpdate({...person,stages:newStages})};
+        var toggleAT=function(){var newStages={...person.stages};if(hasAT){delete newStages.ateam}else{newStages.ateam={date:new Date().toISOString(),completed:true}}p.onUpdate({...person,stages:newStages})};
         var saveBGLeader=function(v){var allMs={...(person.milestones||{})};allMs.bgroup={...(allMs.bgroup||{}),bGroupLeader:v};allMs["next-steps"]={...(allMs["next-steps"]||{}),bGroupLeader:v};p.onUpdate({...person,milestones:allMs})};
         var saveATArea=function(v){var allMs={...(person.milestones||{})};allMs.ateam={...(allMs.ateam||{}),aTeamArea:v};allMs["next-steps"]={...(allMs["next-steps"]||{}),aTeamArea:v};p.onUpdate({...person,milestones:allMs})};
         return <div style={{marginBottom:16}}>
-          <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",color:"var(--text-muted)",marginBottom:8}}>Plug-In Status</div>
+          <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",color:"var(--text-muted)",marginBottom:8}}>Connect Status</div>
           <div style={{display:"flex",gap:10}}>
             <button onClick={toggleBG} style={{flex:1,padding:"14px 16px",borderRadius:14,border:hasBG?"2px solid #EC4899":"2px dashed var(--inp-border)",background:hasBG?"#EC489910":"var(--inp)",cursor:"pointer",textAlign:"left",transition:"all 0.2s"}}>
               <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:hasBG?8:0}}>
@@ -848,7 +889,7 @@ function Panel(p){
       <div>
         <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",color:"var(--text-muted)",marginBottom:6}}>Notes</div>
         <div style={{display:"flex",gap:6,marginBottom:10}}><input style={{flex:1,padding:"8px 12px",borderRadius:8,border:"1px solid var(--inp-border)",background:"var(--inp)",color:"var(--text)",fontSize:12,boxSizing:"border-box",outline:"none"}} placeholder="Add a note..." value={note} onChange={function(e){setNote(e.target.value)}} onKeyDown={function(e){if(e.key==="Enter")sNote()}}/><Btn label="Save" onClick={sNote} v="ghost" sx={{padding:"7px 12px",fontSize:11}}/></div>
-        {(person.notes||[]).slice().reverse().map(function(n,i){return <div key={i} style={{borderTop:"1px solid var(--divider)",padding:"8px 0"}}><div style={{fontSize:10,color:"var(--text-muted)",marginBottom:2}}>{fmt(n.date)}</div><div style={{fontSize:12,color:"var(--text-sub)",lineHeight:1.6}}>{n.text}</div></div>})}
+        {(person.notes||[]).slice().reverse().map(function(n,i){var origIdx=(person.notes||[]).length-1-i;return <div key={i} style={{borderTop:"1px solid var(--divider)",padding:"8px 0",display:"flex",alignItems:"flex-start",gap:8}}><div style={{flex:1}}><div style={{fontSize:10,color:"var(--text-muted)",marginBottom:2}}>{fmt(n.date)}</div><div style={{fontSize:12,color:"var(--text-sub)",lineHeight:1.6}}>{n.text}</div></div><button onClick={function(){var nn=(person.notes||[]).filter(function(_,j){return j!==origIdx});p.onUpdate({...person,notes:nn})}} style={{background:"none",border:"none",cursor:"pointer",padding:2,opacity:0.3,display:"flex",flexShrink:0,marginTop:2}} onMouseEnter={function(e){e.currentTarget.style.opacity="1"}} onMouseLeave={function(e){e.currentTarget.style.opacity="0.3"}}><I n="x" sz={10} c="#EF4444"/></button></div>})}
       </div>
     </div>
   </div></div>;
@@ -896,7 +937,7 @@ function AppMain(p){
   var [view,setView]=useState("overview");var [sf,setSf]=useState(null);var [sel,setSel]=useState(null);var [add,setAdd]=useState(false);var [imp,setImp]=useState(false);var [search,setSearch]=useState("");var [ready,setReady]=useState(false);var [contactTarget,setContactTarget]=useState(null);
 
   useEffect(function(){Promise.all([db.get("ce5-people",[]),db.get("ce5-tpl",DEFAULT_TPL),db.get("ce5-teams",[]),db.get("ce5-rules",[]),db.get("ce5-config",{theme:"light",colorway:"purple",checkInTypes:DEFAULT_CI,formFields:DEFAULT_FIELDS})]).then(function(res){setPeople(res[0]);setTpl({...DEFAULT_TPL,...res[1]});setTeams(res[2]);setRules(res[3]);setConfig({theme:"light",colorway:"purple",checkInTypes:DEFAULT_CI,formFields:DEFAULT_FIELDS,...res[4]});setReady(true)}).catch(function(){setReady(true)})},[]);
-  useEffect(function(){if(!document.querySelector('meta[name="viewport"]')){var m=document.createElement("meta");m.name="viewport";m.content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover";document.head.appendChild(m)}},[]);
+  useEffect(function(){if(!document.querySelector('meta[name="viewport"]')){var m=document.createElement("meta");m.name="viewport";m.content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover";document.head.appendChild(m)}if(!document.querySelector('link[href*="Nunito"]')){var l=document.createElement("link");l.rel="stylesheet";l.href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap";document.head.appendChild(l)}},[]);
   useEffect(function(){if(ready)db.set("ce5-people",people)},[people,ready]);
   useEffect(function(){if(ready)db.set("ce5-tpl",tpl)},[tpl,ready]);
   useEffect(function(){if(ready)db.set("ce5-teams",teams)},[teams,ready]);
@@ -910,7 +951,7 @@ function AppMain(p){
   window.__ceNav=nav;
   var theme=THEMES[config.theme||"light"];var cw=COLORWAYS[config.colorway||"purple"];
   var isDark=config.theme==="dark";
-  var cssVars={"--bg":isDark?cw.darkBg:theme.bg,"--card":isDark?cw.darkCard:theme.card,"--card-solid":isDark?cw.darkSolid:"#fff","--card-border":theme.cardBorder,"--text":theme.text,"--text-sub":theme.textSub,"--text-muted":theme.textMuted,"--inp":theme.inp,"--inp-border":theme.inpBorder,"--divider":theme.divider,"--hover":theme.hover,"--th-bg":theme.thBg,"--primary":cw.primary,"--primary-grad":cw.primaryGrad,"--accent":cw.accent,"--sidebar":cw.sidebar,"--logo":cw.logo};
+  var cssVars={"--bg":isDark?cw.darkBg:theme.bg,"--card":isDark?cw.darkCard:theme.card,"--card-solid":isDark?cw.darkSolid:"#fff","--card-border":theme.cardBorder,"--text":theme.text,"--text-sub":theme.textSub,"--text-muted":theme.textMuted,"--inp":theme.inp,"--inp-border":theme.inpBorder,"--divider":theme.divider,"--hover":theme.hover,"--th-bg":theme.thBg,"--primary":cw.primary,"--primary-grad":cw.primaryGrad,"--accent":cw.accent,"--sidebar":cw.sidebar,"--logo":cw.logo,"--hero":cw.hero};
 
   var countForStage=function(key){
     if(key==="bgroup")return people.filter(function(x){return x.stages&&x.stages.bgroup&&x.stages.bgroup.completed}).length;
@@ -922,11 +963,11 @@ function AppMain(p){
   var activeKey=view==="overview"?"overview":view==="settings"?"settings":view==="quick"?"quick":view==="bulk"?"bulk":view==="reports"?"reports":view==="assigned"?"assigned":view==="connected"?"fully-connected":(sf||"all");
 
   return <div style={{display:"flex",height:"100vh",fontFamily:"'Nunito',sans-serif",background:"var(--bg)",color:"var(--text)",...cssVars}}>
-    <style>{["@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=Nunito:wght@300;400;500;600;700;800;900&display=swap');","*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}","::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#64748B;border-radius:3px}","@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}","@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}","@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}","@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}","@keyframes confettiFall{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(60px) rotate(360deg);opacity:0}}",".score-ring-pulse{animation:pulse 2s ease-in-out infinite}",".shimmer-btn{background-size:200% 100%;animation:shimmer 2s ease infinite}","input:focus,textarea:focus,select:focus{outline:none;border-color:var(--primary) !important;box-shadow:0 0 0 3px var(--primary)20 !important}","button{cursor:pointer;font-family:'Nunito',sans-serif}button:active{transform:scale(0.97)}","@media(max-width:768px){.weavr-sidebar{display:none !important}.weavr-mobile-nav{display:flex !important}.weavr-main{margin-left:0 !important}.weavr-main-header{padding:12px 16px !important}.weavr-main-content{padding:0 16px 100px !important}.weavr-pipeline-grid{grid-template-columns:repeat(3,1fr) !important;gap:8px !important}.weavr-kpi-grid{grid-template-columns:repeat(2,1fr) !important}.weavr-card-grid{grid-template-columns:1fr !important}.weavr-panel{width:100vw !important;max-width:100vw !important}.weavr-qe-layout{flex-direction:column !important}.weavr-qe-recent{width:100% !important}}"].join("\n")}</style>
+    <style>{["@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap');","*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;font-family:'Nunito',sans-serif !important}","::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#64748B;border-radius:3px}","@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}","@keyframes panelSlide{from{transform:translateX(100%)}to{transform:translateX(0)}}","@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}","@keyframes revealDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}","@keyframes revealUp{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-12px)}}","@keyframes gentleFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}","@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}","@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}","@keyframes confettiFall{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(60px) rotate(360deg);opacity:0}}",".score-ring-pulse{animation:pulse 2s ease-in-out infinite}",".shimmer-btn{background-size:200% 100%;animation:shimmer 2s ease infinite}","input:focus,textarea:focus,select:focus{outline:none;border-color:var(--primary) !important;box-shadow:0 0 0 3px var(--primary)20 !important}","button{cursor:pointer;font-family:'Nunito',sans-serif !important}button:active{transform:scale(0.97)}","@media(max-width:768px){.weavr-sidebar{display:none !important}.weavr-mobile-nav{display:flex !important}.weavr-main{margin-left:0 !important}.weavr-main-header{padding:12px 16px !important}.weavr-main-content{padding:0 16px 100px !important}.weavr-pipeline-grid{grid-template-columns:repeat(3,1fr) !important;gap:8px !important}.weavr-kpi-grid{grid-template-columns:repeat(2,1fr) !important}.weavr-card-grid{grid-template-columns:1fr !important}.weavr-panel{width:100vw !important;max-width:100vw !important}.weavr-qe-layout{flex-direction:column !important}.weavr-qe-recent{width:100% !important}}"].join("\n")}</style>
     <aside className="weavr-sidebar" style={{width:240,background:"var(--sidebar)",display:"flex",flexDirection:"column",flexShrink:0,height:"100vh",position:"sticky",top:0,boxShadow:"4px 0 24px rgba(0,0,0,0.1)"}}>
       <div style={{display:"flex",alignItems:"center",gap:14,padding:"22px 18px",borderBottom:"1px solid rgba(255,255,255,0.06)"}}>
         <button onClick={p.onBackToPortal} style={{width:26,height:26,borderRadius:8,background:"rgba(255,255,255,0.08)",border:"none",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0}} title="Back to Portal"><I n="back" sz={13} c="rgba(255,255,255,0.5)"/></button>
-        <div style={{width:38,height:38,borderRadius:12,background:"var(--logo)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><svg width="23" height="23" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 2C7 2 7 7 12 12C17 17 17 22 17 22" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"/><path d="M12 2C12 2 12 7 12 12C12 17 12 22 12 22" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" opacity="0.6"/><path d="M17 2C17 2 17 7 12 12C7 17 7 22 7 22" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" opacity="0.35"/></svg></div>
+        <div style={{width:38,height:38,borderRadius:12,background:"var(--logo)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}><WeavrLogo sz={23}/></div>
         <div><div style={{fontSize:16,fontWeight:800,color:"#fff",lineHeight:1.2,letterSpacing:"0.14em",fontFamily:"'Nunito',sans-serif"}}>WEAVR</div><div style={{fontSize:10,fontWeight:500,color:"rgba(255,255,255,0.5)",letterSpacing:"0.04em"}}>Bethany Church</div></div>
       </div>
       <nav style={{flex:1,padding:"10px 12px",overflowY:"auto"}}>{sideItems.map(function(item,i){if(item.type==="divider")return <div key={"d"+i} style={{height:1,background:"rgba(255,255,255,0.06)",margin:"8px 12px"}}/>;var active=activeKey===item.key;return <button key={item.key} onClick={function(){nav(item.vw,item.sf)}} style={{display:"flex",alignItems:"center",gap:10,width:"100%",padding:"9px 12px",borderRadius:10,border:"none",fontSize:12,fontWeight:active?600:500,background:active?"rgba(255,255,255,0.12)":"transparent",color:active?"#fff":"rgba(255,255,255,0.45)",textAlign:"left",marginBottom:1}}>{item.icon?<I n={item.icon} sz={15} c={active?"#fff":"rgba(255,255,255,0.35)"}/>:<span style={{width:7,height:7,borderRadius:"50%",background:item.color,display:"inline-block"}}/>}<span style={{flex:1}}>{item.label}</span>{item.color&&<span style={{fontSize:10,fontWeight:600,color:"rgba(255,255,255,0.3)"}}>{countForStage(item.key)}</span>}</button>})}</nav>
@@ -943,26 +984,28 @@ function AppMain(p){
       <div className="weavr-main-header" style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 32px",borderBottom:"1px solid var(--divider)",marginBottom:24,position:"sticky",top:0,background:isDark?cw.darkSolid+"E8":"rgba(240,242,245,0.92)",zIndex:50,backdropFilter:"blur(8px)"}}>
         <div style={{fontSize:12,color:"var(--text-muted)",fontWeight:500}}>{new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"})}</div>
         <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <div style={{position:"relative",display:"flex",alignItems:"center",background:"var(--inp)",borderRadius:10,border:"1px solid var(--inp-border)",padding:"0 10px"}}><I n="search" sz={14} c="var(--text-muted)"/><input value={search} onChange={function(e){setSearch(e.target.value)}} placeholder="Search people..." style={{width:search?200:140,padding:"7px 8px",borderRadius:10,border:"none",background:"transparent",color:"var(--text)",fontSize:12,outline:"none",boxSizing:"border-box",transition:"width 0.3s"}}/>{search&&<button onClick={function(){setSearch("")}} style={{background:"none",border:"none",cursor:"pointer",padding:0,display:"flex"}}><I n="x" sz={12} c="var(--text-muted)"/></button>}</div>
           <button onClick={function(){setConfig({...config,theme:config.theme==="dark"?"light":"dark"})}} style={{display:"flex",alignItems:"center",gap:6,padding:"6px 12px",borderRadius:10,border:"1px solid var(--inp-border)",background:"var(--inp)",cursor:"pointer",fontSize:11,fontWeight:600,color:"var(--text-muted)"}}><I n="sun" sz={13} c="var(--text-muted)"/>{config.theme==="dark"?"Light":"Dark"}</button>
           <Btn icon="upload" label="Import" onClick={function(){setImp(true)}} v="ghost" sx={{padding:"7px 14px",fontSize:12}}/>
         </div>
       </div>
-      <div className="weavr-main-content" style={{padding:"0 32px 32px",animation:"fadeUp 0.4s ease"}}>
-        {!ready?<div style={{display:"flex",alignItems:"center",justifyContent:"center",height:400,color:"var(--text-muted)"}}><div style={{fontWeight:600}}>Loading...</div></div>
-        :view==="overview"?<Overview people={people} teams={teams} onPerson={setSel} navTo={nav} onAdd={function(){setAdd(true)}} onImport={function(){setImp(true)}} templates={tpl} config={config} onContact={setContactTarget}/>
+      <div className="weavr-main-content" style={{padding:"0 32px 32px",animation:"fadeUp 0.5s cubic-bezier(0.22,1,0.36,1)"}}>
+        {(function(){var sq=search.toLowerCase().trim();var fp=sq?people.filter(function(x){return(x.firstName+" "+(x.lastName||"")).toLowerCase().includes(sq)||(x.phone||"").includes(sq)||(x.email||"").toLowerCase().includes(sq)}):people;return !ready?<div style={{display:"flex",alignItems:"center",justifyContent:"center",height:400,color:"var(--text-muted)"}}><div style={{fontWeight:600}}>Loading...</div></div>
+        :search.trim()&&view!=="settings"?<PeopleView people={fp} teams={teams} stageFilter={null} search={search} setSearch={setSearch} onPerson={setSel} onImport={function(){setImp(true)}} onDelete={function(id){setPeople(function(prev){return prev.filter(function(x){return x.id!==id})})}}/>
+        :view==="overview"?<Overview people={fp} teams={teams} onPerson={setSel} navTo={nav} onAdd={function(){setAdd(true)}} onImport={function(){setImp(true)}} templates={tpl} config={config} onContact={setContactTarget}/>
         :view==="settings"?<Settings templates={tpl} setTemplates={setTpl} people={people} setPeople={setPeople} teams={teams} setTeams={setTeams} rules={rules} setRules={setRules} config={config} setConfig={setConfig}/>
         :view==="quick"?<QuickEntry onAdd={function(x){setPeople(function(prev){return[...prev,x]})}} teams={teams} config={config}/>
-        :view==="bulk"?<BulkMessage people={people} templates={tpl}/>
-        :view==="reports"?<Reports people={people} teams={teams} config={config} onPerson={setSel}/>
-        :view==="assigned"?<AssignedCards people={people} teams={teams} onPerson={setSel} templates={tpl} config={config} onContact={setContactTarget} onUpdate={function(u){setPeople(function(prev){return prev.map(function(x){return x.id===u.id?u:x})})}}/>
-        :view==="connected"?<FullyConnected people={people} onPerson={setSel}/>
-        :<PeopleView people={people} teams={teams} stageFilter={sf} search={search} setSearch={setSearch} onPerson={setSel} onImport={function(){setImp(true)}} onDelete={function(id){setPeople(function(prev){return prev.filter(function(x){return x.id!==id})})}}/>}
+        :view==="bulk"?<BulkMessage people={fp} templates={tpl}/>
+        :view==="reports"?<Reports people={fp} teams={teams} config={config} onPerson={setSel}/>
+        :view==="assigned"?<AssignedCards people={fp} teams={teams} onPerson={setSel} templates={tpl} config={config} onContact={setContactTarget} onUpdate={function(u){setPeople(function(prev){return prev.map(function(x){return x.id===u.id?u:x})})}}/>
+        :view==="connected"?<FullyConnected people={fp} onPerson={setSel}/>
+        :<PeopleView people={fp} teams={teams} stageFilter={sf} search={search} setSearch={setSearch} onPerson={setSel} onImport={function(){setImp(true)}} onDelete={function(id){setPeople(function(prev){return prev.filter(function(x){return x.id!==id})})}}/>})()}
       </div>
     </main>
     <div className="weavr-mobile-nav" style={{display:"none",position:"fixed",bottom:0,left:0,right:0,background:isDark?cw.darkSolid:"#fff",borderTop:"1px solid var(--divider)",padding:"8px 0 env(safe-area-inset-bottom,8px)",zIndex:100,justifyContent:"space-around"}}>
       {[{k:"overview",i:"home",l:"Home"},{k:"people",i:"users",l:"People"},{k:"quick-entry",i:"plus",l:"Add"},{k:"assigned",i:"card",l:"Cards"},{k:"settings",i:"gear",l:"Settings"}].map(function(t){var active=view===t.k||(t.k==="people"&&view==="people");return <button key={t.k} onClick={function(){nav(t.k,t.k==="people"?"all":null)}} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2,background:"none",border:"none",padding:"4px 12px",fontSize:10,fontWeight:active?700:500,color:active?"var(--primary)":"var(--text-muted)"}}><I n={t.i} sz={20} c={active?"var(--primary)":"var(--text-muted)"}/>{t.l}</button>})}
     </div>
-    {sel&&<Panel person={sel} teams={teams} templates={tpl} config={config} onClose={function(){setSel(null)}} onUpdate={function(u){setPeople(function(prev){return prev.map(function(x){return x.id===u.id?u:x})});setSel(u)}} onDelete={function(id){setPeople(function(prev){return prev.filter(function(x){return x.id!==id})});setSel(null)}}/> }
+    {sel&&<Panel person={sel} teams={teams} templates={tpl} config={config} userName={p.userName||"Staff"} onClose={function(){setSel(null)}} onUpdate={function(u){setPeople(function(prev){return prev.map(function(x){return x.id===u.id?u:x})});setSel(u)}} onDelete={function(id){setPeople(function(prev){return prev.filter(function(x){return x.id!==id})});setSel(null)}}/> }
     {add&&<AddModal onClose={function(){setAdd(false)}} onAdd={function(x){setPeople(function(prev){return[...prev,x]})}} teams={teams} config={config}/>}
     {imp&&<ImportModal onClose={function(){setImp(false)}} onImport={function(arr){setPeople(function(prev){return[...prev,...arr]})}}/>}
     {contactTarget&&<ContactAction person={contactTarget} message={tplFor(contactTarget,tpl)} email={emailFor(contactTarget,config)} onClose={function(){setContactTarget(null)}}/>}
@@ -981,57 +1024,103 @@ var TOOLS=[
   {key:"pulse",name:"Pulse",desc:"Church health analytics",icon:"chart",color:"#EF4444",grad:"linear-gradient(135deg,#FCA5A5,#EF4444)",ready:false}
 ];
 
+/* ══════ WEAVR LOGO ══════ */
+var WeavrLogo=function(p){var sz=p.sz||20;return <svg width={sz} height={sz} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 2C7 2 7 7 12 12C17 17 17 22 17 22" stroke={p.c||"#fff"} strokeWidth="2.5" strokeLinecap="round"/><path d="M12 2C12 2 12 7 12 12C12 17 12 22 12 22" stroke={p.c||"#fff"} strokeWidth="2.5" strokeLinecap="round" opacity="0.6"/><path d="M17 2C17 2 17 7 12 12C7 17 7 22 7 22" stroke={p.c||"#fff"} strokeWidth="2.5" strokeLinecap="round" opacity="0.35"/></svg>};
+
 function Portal(p){
-  return <div style={{minHeight:"100vh",background:"linear-gradient(145deg,#0F172A,#1E1B4B 40%,#312E81 70%,#0F172A)",fontFamily:"'Nunito',sans-serif",padding:"0 20px"}}>
-    <div style={{maxWidth:1100,margin:"0 auto",paddingTop:60}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:48}}>
-        <div style={{display:"flex",alignItems:"center",gap:16}}>
-          <div style={{width:48,height:48,borderRadius:14,background:"linear-gradient(135deg,#7C3AED,#06B6D4)",display:"flex",alignItems:"center",justifyContent:"center"}}><svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 2C7 2 7 7 12 12C17 17 17 22 17 22" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"/><path d="M12 2C12 2 12 7 12 12C12 17 12 22 12 22" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" opacity="0.6"/><path d="M17 2C17 2 17 7 12 12C7 17 7 22 7 22" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" opacity="0.35"/></svg></div>
-          <div><div style={{fontFamily:"'Nunito',sans-serif",fontSize:22,fontWeight:800,color:"#fff",letterSpacing:"0.14em"}}>WEAVR</div><div style={{fontSize:11,color:"rgba(255,255,255,0.4)"}}>Bethany Church</div></div>
+  return <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#252262 0%,#3730A3 30%,#3B3795 55%,#252262 100%)",fontFamily:"'Nunito',sans-serif",position:"relative",overflow:"hidden"}}>
+    <style>{"@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap');*{font-family:'Nunito',sans-serif !important}"}</style>
+    <div style={{position:"absolute",top:-120,right:-80,width:400,height:400,borderRadius:"50%",background:"radial-gradient(circle,rgba(124,58,237,0.15),transparent 70%)",pointerEvents:"none"}}/>
+    <div style={{position:"absolute",bottom:-100,left:-60,width:350,height:350,borderRadius:"50%",background:"radial-gradient(circle,rgba(6,182,212,0.1),transparent 70%)",pointerEvents:"none"}}/>
+    <div style={{position:"absolute",top:"40%",right:"15%",width:200,height:200,borderRadius:"50%",background:"radial-gradient(circle,rgba(236,72,153,0.08),transparent 70%)",pointerEvents:"none"}}/>
+
+    <div style={{maxWidth:1100,margin:"0 auto",padding:"48px 24px 40px",position:"relative",zIndex:1}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:56}}>
+        <div style={{display:"flex",alignItems:"center",gap:14}}>
+          <div style={{width:46,height:46,borderRadius:14,background:"linear-gradient(135deg,#7C3AED,#06B6D4)",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 20px rgba(124,58,237,0.3)"}}><WeavrLogo sz={24}/></div>
+          <div><div style={{fontSize:20,fontWeight:800,color:"#fff",letterSpacing:"0.14em"}}>WEAVR</div><div style={{fontSize:11,color:"rgba(255,255,255,0.4)",fontWeight:500}}>Bethany Church</div></div>
         </div>
-        <button onClick={p.onLogout} style={{padding:"8px 18px",borderRadius:10,border:"1px solid rgba(255,255,255,0.12)",background:"rgba(255,255,255,0.06)",color:"rgba(255,255,255,0.5)",fontSize:12,fontWeight:600,cursor:"pointer"}}>Sign Out</button>
+        <button onClick={p.onLogout} style={{padding:"8px 20px",borderRadius:12,border:"1px solid rgba(255,255,255,0.1)",background:"rgba(255,255,255,0.04)",color:"rgba(255,255,255,0.5)",fontSize:12,fontWeight:600,cursor:"pointer",backdropFilter:"blur(8px)"}}>Sign Out</button>
       </div>
-      <div style={{marginBottom:40}}>
-        <h1 style={{fontSize:26,fontWeight:800,color:"#fff",marginBottom:8,fontFamily:"'Nunito',sans-serif",letterSpacing:"0.01em"}}>Ministry Tools That Keep Your Church Connected</h1>
+
+      <div style={{textAlign:"center",marginBottom:52}}>
+        <h1 style={{fontSize:30,fontWeight:800,color:"#fff",marginBottom:10,lineHeight:1.3}}>Ministry Tools That Keep<br/>Your Church Connected</h1>
+        <p style={{fontSize:14,color:"rgba(255,255,255,0.35)",maxWidth:460,margin:"0 auto"}}>Everything your team needs to track, connect, and care for every person who walks through your doors.</p>
       </div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:18}}>
-        {TOOLS.map(function(t){return <div key={t.key} onClick={t.ready?function(){p.onTool(t.key)}:undefined} style={{background:"rgba(255,255,255,0.05)",borderRadius:20,padding:"28px 24px",border:"1px solid rgba(255,255,255,0.08)",cursor:t.ready?"pointer":"default",opacity:t.ready?1:0.5,transition:"all 0.2s"}} onMouseEnter={t.ready?function(e){e.currentTarget.style.background="rgba(255,255,255,0.1)";e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 8px 32px rgba(0,0,0,0.2)"}:undefined} onMouseLeave={t.ready?function(e){e.currentTarget.style.background="rgba(255,255,255,0.05)";e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.boxShadow="none"}:undefined}>
-            <div style={{width:48,height:48,borderRadius:14,background:t.grad,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:16,boxShadow:"0 4px 16px "+t.color+"30"}}><I n={t.icon} sz={22} c="#fff"/></div>
-            <div style={{fontSize:17,fontWeight:700,color:"#fff",marginBottom:4,fontFamily:"'Nunito',sans-serif"}}>Weavr {t.name}</div>
-            <div style={{fontSize:12,color:"rgba(255,255,255,0.4)",lineHeight:1.5}}>{t.desc}</div>
-            {!t.ready&&<div style={{marginTop:12,fontSize:10,fontWeight:600,color:"rgba(255,255,255,0.25)",textTransform:"uppercase",letterSpacing:"0.1em"}}>Coming Soon</div>}
-            {t.ready&&<div style={{marginTop:12,fontSize:11,fontWeight:600,color:t.color,display:"flex",alignItems:"center",gap:4}}>Open {"→"}</div>}
+
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:16}}>
+        {TOOLS.map(function(t){return <div key={t.key} onClick={t.ready?function(){p.onTool(t.key)}:undefined} style={{borderRadius:20,padding:"26px 22px",cursor:t.ready?"pointer":"default",opacity:t.ready?1:0.45,transition:"all 0.25s ease",background:t.ready?t.grad:"rgba(255,255,255,0.03)",border:t.ready?"none":"1px solid rgba(255,255,255,0.06)",position:"relative",overflow:"hidden"}} onMouseEnter={t.ready?function(e){e.currentTarget.style.transform="translateY(-4px)";e.currentTarget.style.boxShadow="0 12px 40px "+t.color+"40"}:undefined} onMouseLeave={t.ready?function(e){e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.boxShadow="none"}:undefined}>
+            {t.ready&&<div style={{position:"absolute",top:-20,right:-20,width:80,height:80,borderRadius:"50%",background:"rgba(255,255,255,0.1)",pointerEvents:"none"}}/>}
+            {t.ready&&<div style={{position:"absolute",bottom:-30,left:-10,width:60,height:60,borderRadius:"50%",background:"rgba(255,255,255,0.06)",pointerEvents:"none"}}/>}
+            <div style={{width:44,height:44,borderRadius:12,background:t.ready?"rgba(255,255,255,0.2)":"rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",marginBottom:14,backdropFilter:"blur(4px)"}}><I n={t.icon} sz={20} c="#fff"/></div>
+            <div style={{fontSize:16,fontWeight:700,color:"#fff",marginBottom:4}}>Weavr {t.name}</div>
+            <div style={{fontSize:12,color:t.ready?"rgba(255,255,255,0.7)":"rgba(255,255,255,0.3)",lineHeight:1.6}}>{t.desc}</div>
+            {!t.ready&&<div style={{marginTop:14,fontSize:10,fontWeight:700,color:"rgba(255,255,255,0.2)",textTransform:"uppercase",letterSpacing:"0.12em"}}>Coming Soon</div>}
+            {t.ready&&<div style={{marginTop:14,display:"flex",alignItems:"center",gap:6,fontSize:12,fontWeight:700,color:"rgba(255,255,255,0.9)"}}><span>Launch</span><span style={{fontSize:16}}>{"→"}</span></div>}
           </div>})}
       </div>
-      <p style={{textAlign:"center",fontSize:11,color:"rgba(255,255,255,0.15)",marginTop:48,paddingBottom:40}}>Weavr Platform v1.0 · Bethany Church</p>
+
+      <div style={{textAlign:"center",marginTop:56,paddingBottom:32}}>
+        <div style={{display:"inline-flex",alignItems:"center",gap:8,padding:"10px 20px",borderRadius:14,background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.06)"}}>
+          <WeavrLogo sz={14} c="rgba(255,255,255,0.3)"/>
+          <span style={{fontSize:11,color:"rgba(255,255,255,0.2)",fontWeight:600}}>Weavr Platform v1.0</span>
+        </div>
+      </div>
     </div>
   </div>;
 }
 
 export default function App(){
   var [authed,setAuthed]=useState(false);var [activeTool,setActiveTool]=useState(null);
-  var [user,setUser]=useState("");var [pass,setPass]=useState("");var [err,setErr]=useState("");
-  var doLogin=function(){if(user.toLowerCase()==="weavr"&&pass==="Bethany"){setAuthed(true);setErr("")}else{setErr("Invalid credentials")}};
+  var [user,setUser]=useState("");var [pass,setPass]=useState("");var [confirmPass,setConfirmPass]=useState("");var [err,setErr]=useState("");
+  var [authTab,setAuthTab]=useState("signin");var [authAnim,setAuthAnim]=useState(false);
+  var doLogin=function(){if(!user.trim()||!pass.trim()){setErr("Please fill in all fields");return}setAuthAnim(true);setTimeout(function(){setAuthed(true);setErr("")},600)};
+  var doSignup=function(){if(!user.trim()||!pass.trim()){setErr("Please fill in all fields");return}if(pass!==confirmPass){setErr("Passwords don't match");return}setAuthAnim(true);setTimeout(function(){setAuthed(true);setErr("")},600)};
 
-  if(!authed) return <div style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:"linear-gradient(145deg,#312E81,#1E1B4B 60%,#0F172A)",fontFamily:"'Nunito',sans-serif"}}>
-    <style>{"@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=Nunito:wght@300;400;500;600;700;800;900&display=swap');"}</style>
-    <div style={{width:400,maxWidth:"90vw"}}>
-      <div style={{textAlign:"center",marginBottom:40}}>
-        <div style={{width:72,height:72,borderRadius:20,background:"linear-gradient(135deg,#7C3AED,#6D28D9)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 20px",boxShadow:"0 12px 40px rgba(124,58,237,0.3)"}}><svg width="38" height="38" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 2C7 2 7 7 12 12C17 17 17 22 17 22" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"/><path d="M12 2C12 2 12 7 12 12C12 17 12 22 12 22" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" opacity="0.6"/><path d="M17 2C17 2 17 7 12 12C7 17 7 22 7 22" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" opacity="0.35"/></svg></div>
-        <h1 style={{fontSize:36,fontWeight:800,color:"#fff",marginBottom:6,letterSpacing:"0.14em",fontFamily:"'Nunito',sans-serif"}}>WEAVR</h1>
-        <p style={{fontSize:14,color:"rgba(255,255,255,0.4)",fontWeight:500}}>Bethany Church</p>
-      </div>
-      <div style={{background:"rgba(255,255,255,0.06)",borderRadius:24,padding:"32px",border:"1px solid rgba(255,255,255,0.08)",boxShadow:"0 24px 80px rgba(0,0,0,0.3)"}}>
-        <div style={{marginBottom:18}}><div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",color:"rgba(255,255,255,0.4)",marginBottom:6}}>Username</div><input style={{width:"100%",padding:"12px 16px",borderRadius:12,border:"1px solid rgba(255,255,255,0.1)",background:"rgba(255,255,255,0.06)",color:"#fff",fontSize:14,boxSizing:"border-box",outline:"none"}} value={user} onChange={function(e){setUser(e.target.value)}} onKeyDown={function(e){if(e.key==="Enter")doLogin()}} placeholder="Enter username" autoFocus/></div>
-        <div style={{marginBottom:24}}><div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.08em",color:"rgba(255,255,255,0.4)",marginBottom:6}}>Password</div><input type="password" style={{width:"100%",padding:"12px 16px",borderRadius:12,border:"1px solid rgba(255,255,255,0.1)",background:"rgba(255,255,255,0.06)",color:"#fff",fontSize:14,boxSizing:"border-box",outline:"none"}} value={pass} onChange={function(e){setPass(e.target.value)}} onKeyDown={function(e){if(e.key==="Enter")doLogin()}} placeholder="Enter password"/></div>
-        {err&&<div style={{fontSize:12,color:"#EF4444",marginBottom:12,textAlign:"center"}}>{err}</div>}
-        <button onClick={doLogin} style={{width:"100%",padding:"14px",borderRadius:14,border:"none",background:"linear-gradient(135deg,#7C3AED,#6D28D9)",color:"#fff",fontSize:15,fontWeight:600,cursor:"pointer",boxShadow:"0 8px 24px rgba(124,58,237,0.3)"}}>Sign In</button>
-      </div>
-      <p style={{textAlign:"center",fontSize:11,color:"rgba(255,255,255,0.2)",marginTop:24}}>Weavr Platform v1.0</p>
+  if(activeTool==="connect") return <AppMain onBackToPortal={function(){setActiveTool(null)}} userName={user}/>;
+
+  return <div style={{position:"relative",minHeight:"100vh",fontFamily:"'Nunito',sans-serif"}}>
+    <style>{"@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap');*{font-family:'Nunito',sans-serif !important}@keyframes authFadeIn{from{opacity:0;transform:scale(0.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}@keyframes authFadeOut{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(0.9) translateY(-20px)}}@keyframes portalUnblur{from{filter:blur(12px) brightness(0.5)}to{filter:blur(0) brightness(1)}}"}</style>
+
+    <div style={{filter:!authed?"blur(12px) brightness(0.5)":"none",transition:"filter 0.8s ease",pointerEvents:!authed?"none":"auto"}}>
+      <Portal onTool={setActiveTool} onLogout={function(){setAuthed(false);setActiveTool(null);setUser("");setPass("");setConfirmPass("");setAuthTab("signin");setAuthAnim(false)}}/>
     </div>
-  </div>;
 
-  if(!activeTool) return <Portal onTool={setActiveTool} onLogout={function(){setAuthed(false);setActiveTool(null)}}/>;
-  if(activeTool==="connect") return <AppMain onBackToPortal={function(){setActiveTool(null)}}/>;
-  return <Portal onTool={setActiveTool} onLogout={function(){setAuthed(false);setActiveTool(null)}}/>;
+    {!authed&&<div style={{position:"fixed",inset:0,display:"flex",alignItems:"center",justifyContent:"center",zIndex:300,background:"rgba(15,23,42,0.3)"}}>
+      <div style={{width:420,maxWidth:"92vw",animation:authAnim?"authFadeOut 0.6s ease forwards":"authFadeIn 0.5s ease"}}>
+        <div style={{textAlign:"center",marginBottom:32}}>
+          <div style={{width:64,height:64,borderRadius:18,background:"linear-gradient(135deg,#7C3AED,#06B6D4)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 16px",boxShadow:"0 12px 40px rgba(124,58,237,0.35)"}}><WeavrLogo sz={34}/></div>
+          <div style={{fontSize:28,fontWeight:800,color:"#fff",letterSpacing:"0.14em",marginBottom:4}}>WEAVR</div>
+          <div style={{fontSize:13,color:"rgba(255,255,255,0.4)",fontWeight:500}}>Bethany Church</div>
+        </div>
+
+        <div style={{background:"rgba(255,255,255,0.07)",borderRadius:24,padding:"28px 28px 24px",border:"1px solid rgba(255,255,255,0.1)",boxShadow:"0 32px 80px rgba(0,0,0,0.4)",backdropFilter:"blur(24px)"}}>
+          <div style={{display:"flex",gap:0,marginBottom:24,background:"rgba(255,255,255,0.06)",borderRadius:12,padding:3}}>
+            {["signin","signup"].map(function(t){var active=authTab===t;return <button key={t} onClick={function(){setAuthTab(t);setErr("")}} style={{flex:1,padding:"10px",borderRadius:10,border:"none",fontSize:13,fontWeight:active?700:500,color:active?"#fff":"rgba(255,255,255,0.4)",background:active?"rgba(255,255,255,0.12)":"transparent",cursor:"pointer",transition:"all 0.2s"}}>{t==="signin"?"Sign In":"Sign Up"}</button>})}
+          </div>
+
+          <div style={{marginBottom:16}}>
+            <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.1em",color:"rgba(255,255,255,0.35)",marginBottom:6}}>Username</div>
+            <input style={{width:"100%",padding:"12px 16px",borderRadius:12,border:"1px solid rgba(255,255,255,0.1)",background:"rgba(255,255,255,0.05)",color:"#fff",fontSize:14,boxSizing:"border-box",outline:"none"}} value={user} onChange={function(e){setUser(e.target.value)}} onKeyDown={function(e){if(e.key==="Enter"){if(authTab==="signin")doLogin();else doSignup()}}} placeholder="Choose a username" autoFocus/>
+          </div>
+
+          <div style={{marginBottom:authTab==="signup"?16:20}}>
+            <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.1em",color:"rgba(255,255,255,0.35)",marginBottom:6}}>Password</div>
+            <input type="password" style={{width:"100%",padding:"12px 16px",borderRadius:12,border:"1px solid rgba(255,255,255,0.1)",background:"rgba(255,255,255,0.05)",color:"#fff",fontSize:14,boxSizing:"border-box",outline:"none"}} value={pass} onChange={function(e){setPass(e.target.value)}} onKeyDown={function(e){if(e.key==="Enter"&&authTab==="signin")doLogin()}} placeholder="Enter password"/>
+          </div>
+
+          {authTab==="signup"&&<div style={{marginBottom:20}}>
+            <div style={{fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.1em",color:"rgba(255,255,255,0.35)",marginBottom:6}}>Confirm Password</div>
+            <input type="password" style={{width:"100%",padding:"12px 16px",borderRadius:12,border:"1px solid rgba(255,255,255,0.1)",background:"rgba(255,255,255,0.05)",color:"#fff",fontSize:14,boxSizing:"border-box",outline:"none"}} value={confirmPass} onChange={function(e){setConfirmPass(e.target.value)}} onKeyDown={function(e){if(e.key==="Enter")doSignup()}} placeholder="Confirm password"/>
+          </div>}
+
+          {err&&<div style={{fontSize:12,color:"#FCA5A5",marginBottom:12,textAlign:"center",background:"rgba(239,68,68,0.1)",padding:"8px 12px",borderRadius:10}}>{err}</div>}
+
+          <button onClick={authTab==="signin"?doLogin:doSignup} style={{width:"100%",padding:"14px",borderRadius:14,border:"none",background:"linear-gradient(135deg,#7C3AED,#6D28D9)",color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer",boxShadow:"0 8px 24px rgba(124,58,237,0.3)",transition:"all 0.2s"}} onMouseEnter={function(e){e.currentTarget.style.boxShadow="0 12px 32px rgba(124,58,237,0.5)";e.currentTarget.style.transform="translateY(-1px)"}} onMouseLeave={function(e){e.currentTarget.style.boxShadow="0 8px 24px rgba(124,58,237,0.3)";e.currentTarget.style.transform="translateY(0)"}}>{authTab==="signin"?"Sign In":"Create Account"}</button>
+        </div>
+
+        <p style={{textAlign:"center",fontSize:11,color:"rgba(255,255,255,0.2)",marginTop:20}}>Weavr Platform v1.0</p>
+      </div>
+    </div>}
+  </div>;
 }
