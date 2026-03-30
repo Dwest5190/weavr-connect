@@ -13,6 +13,7 @@ var SIDX=Object.fromEntries(STAGES.map(function(s,i){return[s.key,i]}));
 var DEFAULT_TPL={"first-visit":"Hey {firstName}, it was great having you! How was your visit?",salvation:"Hey {firstName}, so excited about your decision! Can we connect?","next-steps":"Hey {firstName}! Next Steps is coming up. Want a seat?",baptism:"Hey {firstName}, baptism is incredible. Can we talk?",bgroup:"Hey {firstName}! BGroups are where community happens. Interested?",ateam:"Hey {firstName}, you'd be amazing on ATeam. Can we chat?"};
 var DEFAULT_MULTI_TPL={"first-visit":[{name:"Met on Sunday",body:"Hey {firstName}, it was awesome meeting you on Sunday! How was your experience?"},{name:"Didn't Meet",body:"Hey {firstName}, we're so glad you visited! Sorry we didn't get to connect. How was your visit?"}],salvation:[{name:"Salvation",body:"Hey {firstName}, so excited about your decision! Can we connect this week?"},{name:"Rededication",body:"Hey {firstName}, so proud of your step on Sunday. How can we support you?"}],"next-steps":[{name:"Next Steps Invite",body:"Hey {firstName}! Next Steps is coming up. Want a seat?"}],baptism:[{name:"Baptism Follow-up",body:"Hey {firstName}, baptism is incredible. Can we talk about next steps?"}],bgroup:[{name:"BGroup Invite",body:"Hey {firstName}! BGroups are where community happens. Interested?"}],ateam:[{name:"ATeam Invite",body:"Hey {firstName}, you'd be amazing on ATeam. Can we chat?"}]};
 var DEFAULT_EMAIL_TPL={"first-visit":[{name:"Welcome Email",subj:"Great to have you at Bethany!",body:"Hey {firstName},\n\nThanks so much for visiting! We'd love to know how your experience was and help you get connected.\n\nBlessings"}],salvation:[{name:"Salvation Follow-up",subj:"Congratulations, {firstName}!",body:"Hey {firstName},\n\nWe're so excited about your decision! We'd love to connect with you this week.\n\nBlessings"}]};
+var DEFAULT_FUNNEL_GOALS={"first-visit":30,salvation:50,baptism:50,"next-steps":50,bgroup:200,ateam:50};
 var NEXT_ACT={"first-visit":"Send welcome message",salvation:"Schedule discipleship","next-steps":"Invite to Next Steps",baptism:"Schedule baptism chat",bgroup:"Connect to BGroup",ateam:"Invite to ATeam"};
 var FU_SUGGEST={"first-visit":{days:1,label:"24 hrs"},salvation:{days:3,label:"3 days"},baptism:{days:5,label:"5 days"},"next-steps":{days:7,label:"1 week"},bgroup:{days:7,label:"1 week"},ateam:{days:7,label:"1 week"}};
 var DEFAULT_CI=[
@@ -306,7 +307,8 @@ var OV_WIDGETS=[
   {key:"team",label:"Team Performance",icon:"flag",defaultSize:"1xM"},
   {key:"recent",label:"Recent Check-ins",icon:"msg",defaultSize:"1xM"},
   {key:"stale",label:"Stale Contacts",icon:"eye",defaultSize:"1xM"},
-  {key:"weekly-summary",label:"This Week Summary",icon:"cal",defaultSize:"1xM"}
+  {key:"weekly-summary",label:"This Week Summary",icon:"cal",defaultSize:"1xM"},
+  {key:"goals",label:"Goals Tracker",icon:"target",defaultSize:"1xM"}
 ];
 var WIDGET_SIZES=["1xS","2xS","1xM","2xM","1xL","2xL"];
 var WIDGET_SIZE_LABELS={"1xS":"Half Short","2xS":"Full Short","1xM":"Half","2xM":"Full","1xL":"Half Tall","2xL":"Full Tall"};
@@ -314,6 +316,7 @@ var WS_COLS={"1xS":1,"2xS":2,"1xM":1,"2xM":2,"1xL":1,"2xL":2};
 var WS_ROWS={"1xS":1,"2xS":1,"1xM":2,"2xM":2,"1xL":4,"2xL":4};
 var WIDGET_ROW_H=130;
 var DEFAULT_OV_WIDGETS=["next-up","mml","funnel","weekly-stats","kpis"];
+var DEFAULT_WIDGET_SIZES={"next-up":"2xM","mml":"2xS","funnel":"2xM","weekly-stats":"2xM","kpis":"2xS"};
 
 function WeeklyStats(p){
   var data=(p.config.weeklyStats||[]).slice();
@@ -431,6 +434,7 @@ function Overview(p){
   var [dragIdx,setDragIdx]=useState(null);
   var [mmlCustom,setMmlCustom]=useState(null);
   var [showWidgetPicker,setShowWidgetPicker]=useState(false);
+  var [layoutName,setLayoutName]=useState("");
   var ovWidgets=p.config.overviewWidgets||DEFAULT_OV_WIDGETS;
   var mx=Math.max.apply(null,STAGES.map(function(s){return people.filter(function(x){return x.currentStage===s.key}).length}).concat([1]));
   var mmlBase=people.filter(function(x){return!x.fullyConnected}).map(function(x){var sc=calcScore(x),d=ago(x.lastContactDate),pri=100-sc;if(d===null)pri+=30;else if(d>7)pri+=20;else if(d>3)pri+=10;if((SIDX[x.currentStage]||0)<=1)pri+=10;return{...x,engScore:sc,priority:pri}}).sort(function(a,b){return b.priority-a.priority}).slice(0,10);
@@ -443,11 +447,15 @@ function Overview(p){
   var [wDropTarget,setWDropTarget]=useState(null);
   var wDragRef=useRef(null);
   var startDrag=function(key,e){
-    e.preventDefault();e.stopPropagation();
-    wDragRef.current=key;setWDragKey(key);
-    document.body.style.cursor="grabbing";
-    document.body.style.userSelect="none";
+    if(e.target.closest("button,a,input,textarea,select"))return;/* Don't intercept interactive elements */
+    var sx=e.clientX,sy=e.clientY;var activated=false;
     var handleMove=function(ev){
+      if(!activated){
+        var dx=Math.abs(ev.clientX-sx),dy=Math.abs(ev.clientY-sy);
+        if(dx+dy<8)return;/* Dead zone — must move 8px before drag activates */
+        activated=true;wDragRef.current=key;setWDragKey(key);
+        document.body.style.cursor="grabbing";document.body.style.userSelect="none";
+      }
       var els=document.elementsFromPoint(ev.clientX,ev.clientY);
       var target=null;
       for(var i=0;i<els.length;i++){
@@ -459,11 +467,12 @@ function Overview(p){
       setWDropTarget(target);
     };
     var handleUp=function(ev){
+      if(!activated){document.removeEventListener("pointermove",handleMove);document.removeEventListener("pointerup",handleUp);return}
       var els=document.elementsFromPoint(ev.clientX,ev.clientY);
       var dropWidget=null;var dropSlot=null;
       for(var i=0;i<els.length;i++){
-        var dk=els[i].getAttribute("data-wkey");
-        if(dk&&dk!==wDragRef.current&&!dropWidget)dropWidget=dk;
+        var dk2=els[i].getAttribute("data-wkey");
+        if(dk2&&dk2!==wDragRef.current&&!dropWidget)dropWidget=dk2;
         var sk=els[i].getAttribute("data-slotid");
         if(sk&&!dropSlot)dropSlot=sk;
       }
@@ -537,15 +546,15 @@ function Overview(p){
         <span style={{fontSize:10,color:"var(--text-muted)",fontWeight:600,background:"var(--inp)",padding:"2px 8px",borderRadius:7}}>{mml.length}</span>
       </div>
       <div>
-        {mml.map(function(x,i){var stg=STAGES.find(function(s){return s.key===x.currentStage});var d=ago(x.lastContactDate);var tm=teams.find(function(t){return t.id===x.assignedTo});return <div key={x.id} style={{display:"flex",alignItems:"center",gap:11,padding:"9px 6px",borderTop:i>0?"1px solid var(--divider)":"none",cursor:"pointer",transition:"all 0.15s",borderRadius:10,margin:"0 -6px"}} onClick={function(){p.onPerson(x)}} onMouseEnter={function(e){e.currentTarget.style.background="var(--hover)"}} onMouseLeave={function(e){e.currentTarget.style.background="transparent"}}><div style={{width:32,height:32,borderRadius:8,background:stg?stg.color+"12":"var(--inp)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:700,color:stg?stg.color:"var(--text-muted)",flexShrink:0}}>{(x.firstName||"?").charAt(0)}{(x.lastName||"").charAt(0)}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:12,fontWeight:600,color:"var(--text)"}}>{x.firstName} {x.lastName}</div><div style={{fontSize:9,color:"var(--text-muted)",display:"flex",alignItems:"center",gap:7,marginTop:2}}><span style={{color:stg?stg.color:"#999",fontWeight:600}}>{stg?stg.label:"?"}</span><span>{d===null?"Never":d+"d ago"}</span>{tm&&<span style={{color:tm.color}}>{tm.name}</span>}</div></div><ScoreRing score={x.engScore} sz={34}/></div>})}
+        {mml.map(function(x,i){var stg=STAGES.find(function(s){return s.key===x.currentStage});var d=ago(x.lastContactDate);var tm=teams.find(function(t){return t.id===x.assignedTo});return <div key={x.id} style={{display:"flex",alignItems:"center",gap:9,padding:"7px 6px",borderTop:i>0?"1px solid var(--divider)":"none",cursor:"pointer",transition:"all 0.15s",borderRadius:8,margin:"0 -6px"}} onClick={function(){p.onPerson(x)}} onMouseEnter={function(e){e.currentTarget.style.background="var(--hover)"}} onMouseLeave={function(e){e.currentTarget.style.background="transparent"}}><div style={{width:28,height:28,borderRadius:7,background:stg?stg.color+"12":"var(--inp)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,fontWeight:700,color:stg?stg.color:"var(--text-muted)",flexShrink:0}}>{(x.firstName||"?").charAt(0)}{(x.lastName||"").charAt(0)}</div><div style={{flex:1,minWidth:0}}><div style={{fontSize:10,fontWeight:600,color:"var(--text)"}}>{x.firstName} {x.lastName}</div><div style={{fontSize:8,color:"var(--text-muted)",display:"flex",alignItems:"center",gap:6,marginTop:1}}><span style={{color:stg?stg.color:"#999",fontWeight:600}}>{stg?stg.label:"?"}</span><span>{d===null?"Never":d+"d ago"}</span>{tm&&<span style={{color:tm.color}}>{tm.name}</span>}</div></div><ScoreRing score={x.engScore} sz={28}/></div>})}
       </div>
     </div>;
 
-    if(key==="funnel")return <div style={{background:"var(--card)",borderRadius:19,padding:"21px 22px",boxShadow:"var(--card-shadow)",border:"1px solid var(--divider)"}}>
+    if(key==="funnel"){var fGoals={...DEFAULT_FUNNEL_GOALS,...((p.config||{}).funnelGoals||{})};return <div style={{background:"var(--card)",borderRadius:19,padding:"21px 22px",boxShadow:"var(--card-shadow)",border:"1px solid var(--divider)"}}>
       <h3 style={{fontSize:13,fontWeight:700,color:"var(--text)",marginBottom:19}}>Engagement Funnel</h3>
-      {STAGES.map(function(s){var ct=s.key==="bgroup"?people.filter(function(x){return x.stages&&x.stages.bgroup&&x.stages.bgroup.completed}).length:s.key==="ateam"?people.filter(function(x){return x.stages&&x.stages.ateam&&x.stages.ateam.completed}).length:people.filter(function(x){return x.currentStage===s.key}).length;return <div key={s.key} style={{display:"flex",alignItems:"center",gap:13,marginBottom:11,cursor:"pointer",transition:"all 0.15s"}} onClick={function(){p.navTo("people",s.key)}} onMouseEnter={function(e){e.currentTarget.style.opacity="0.8"}} onMouseLeave={function(e){e.currentTarget.style.opacity="1"}}><div style={{width:90,fontSize:10,fontWeight:600,color:"var(--text-sub)",textAlign:"right",flexShrink:0}}>{s.label}</div><div style={{flex:1,height:10,background:"var(--divider)",borderRadius:4,overflow:"hidden"}}><div style={{height:"100%",width:Math.max(ct/mx*100,4)+"%",background:s.color,borderRadius:4,transition:"width 1s ease"}}/></div><div style={{width:36,fontSize:12,fontWeight:800,color:s.color,textAlign:"right"}}>{ct}</div></div>})}
-      {(function(){var fc=people.filter(function(x){return x.fullyConnected}).length;if(fc===0)return null;return <div style={{display:"flex",alignItems:"center",gap:13,marginTop:6,cursor:"pointer",padding:"8px 0 0",borderTop:"1px solid var(--divider)"}} onClick={function(){p.navTo("connected")}}><div style={{width:90,fontSize:10,fontWeight:700,color:"#F97316",textAlign:"right",flexShrink:0}}>Connected</div><div style={{flex:1,height:10,background:"var(--divider)",borderRadius:4,overflow:"hidden"}}><div style={{height:"100%",width:Math.max(fc/mx*100,4)+"%",background:"#F97316",borderRadius:4}}/></div><div style={{width:36,fontSize:12,fontWeight:800,color:"#F97316",textAlign:"right"}}>{fc}</div></div>})()}
-    </div>;
+      {STAGES.map(function(s){var ct=s.key==="bgroup"?people.filter(function(x){return x.stages&&x.stages.bgroup&&x.stages.bgroup.completed}).length:s.key==="ateam"?people.filter(function(x){return x.stages&&x.stages.ateam&&x.stages.ateam.completed}).length:people.filter(function(x){return x.currentStage===s.key}).length;var goal=fGoals[s.key]||50;var pct=Math.min(ct/goal*100,100);return <div key={s.key} style={{display:"flex",alignItems:"center",gap:13,marginBottom:11,cursor:"pointer",transition:"all 0.15s"}} onClick={function(){p.navTo("people",s.key)}} onMouseEnter={function(e){e.currentTarget.style.opacity="0.8"}} onMouseLeave={function(e){e.currentTarget.style.opacity="1"}}><div style={{width:90,fontSize:10,fontWeight:600,color:"var(--text-sub)",textAlign:"right",flexShrink:0}}>{s.label}</div><div style={{flex:1,height:10,background:"var(--divider)",borderRadius:4,overflow:"hidden"}}><div style={{height:"100%",width:Math.max(pct,2)+"%",background:s.color,borderRadius:4,transition:"width 1s ease"}}/></div><div style={{width:36,fontSize:12,fontWeight:800,color:s.color,textAlign:"right"}}>{ct}</div></div>})}
+      {(function(){var fc=people.filter(function(x){return x.fullyConnected}).length;if(fc===0)return null;var fcGoal=fGoals["fully-connected"]||50;return <div style={{display:"flex",alignItems:"center",gap:13,marginTop:6,cursor:"pointer",padding:"8px 0 0",borderTop:"1px solid var(--divider)"}} onClick={function(){p.navTo("connected")}}><div style={{width:90,fontSize:10,fontWeight:700,color:"#F97316",textAlign:"right",flexShrink:0}}>Connected</div><div style={{flex:1,height:10,background:"var(--divider)",borderRadius:4,overflow:"hidden"}}><div style={{height:"100%",width:Math.max(Math.min(fc/fcGoal*100,100),2)+"%",background:"#F97316",borderRadius:4}}/></div><div style={{width:36,fontSize:12,fontWeight:800,color:"#F97316",textAlign:"right"}}>{fc}</div></div>})()}
+    </div>}
 
     if(key==="weekly-stats")return <WeeklyStats config={p.config} setConfig={p.setConfig}/>;
 
@@ -563,10 +572,35 @@ function Overview(p){
 
     if(key==="team"){var teamStats=teams.map(function(t){var assigned=people.filter(function(x){return x.assignedTo===t.id});var followedUp=assigned.filter(function(x){return ago(x.lastContactDate)!==null&&ago(x.lastContactDate)<=7}).length;var asc=assigned.length>0?Math.round(assigned.map(calcScore).reduce(function(a,b){return a+b},0)/assigned.length):0;return{...t,assigned:assigned.length,followedUp:followedUp,avgScore:asc}}).filter(function(t){return t.assigned>0});if(teamStats.length===0)return null;return <div style={{background:"var(--card)",borderRadius:19,padding:"21px 22px",boxShadow:"var(--card-shadow)",border:"1px solid var(--divider)"}}><h3 style={{fontSize:13,fontWeight:700,color:"var(--text)",marginBottom:13}}>Team Performance</h3>{teamStats.map(function(t){var rate=t.assigned>0?Math.round(t.followedUp/t.assigned*100):0;return <div key={t.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 11px",background:"var(--inp)",borderRadius:10,marginBottom:5}}><div style={{width:36,height:36,borderRadius:8,background:t.color+"20",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700,color:t.color}}>{t.name.charAt(0)}</div><div style={{flex:1}}><div style={{fontSize:11,fontWeight:600,color:"var(--text)"}}>{t.name}</div><div style={{fontSize:9,color:"var(--text-muted)"}}>{t.assigned} assigned - {rate}% followed up</div></div><ScoreRing score={t.avgScore} sz={36}/></div>})}</div>}
 
+    if(key==="goals"){var fGoals={...DEFAULT_FUNNEL_GOALS,...((p.config||{}).funnelGoals||{})};var customGoals=(p.config||{}).customGoals||[];
+      var stageGoals=STAGES.map(function(s){var ct=s.key==="bgroup"?people.filter(function(x){return x.stages&&x.stages.bgroup&&x.stages.bgroup.completed}).length:s.key==="ateam"?people.filter(function(x){return x.stages&&x.stages.ateam&&x.stages.ateam.completed}).length:people.filter(function(x){return x.currentStage===s.key}).length;var goal=fGoals[s.key]||50;return{label:s.label,color:s.color,current:ct,goal:goal}});
+      var fcCt=people.filter(function(x){return x.fullyConnected}).length;
+      stageGoals.push({label:"Fully Connected",color:"#F97316",current:fcCt,goal:fGoals["fully-connected"]||50});
+      var allGoals=stageGoals.concat(customGoals.map(function(g){
+        var cur=0;
+        if(g.metric==="total")cur=people.length;
+        else if(g.metric==="follow-ups-7d"){people.forEach(function(x){(x.checkIns||[]).forEach(function(c){if(ago(c.date)<=7)cur++})})}
+        else if(g.metric==="avg-score")cur=people.length>0?Math.round(people.map(calcScore).reduce(function(a,b){return a+b},0)/people.length):0;
+        else if(g.metric==="new-7d")cur=people.filter(function(x){return ago(x.createdAt)<=7}).length;
+        return{label:g.label,color:g.color||"var(--primary)",current:cur,goal:g.target}
+      }));
+      return <div style={{background:"var(--card)",borderRadius:19,padding:"21px 22px",boxShadow:"var(--card-shadow)",border:"1px solid var(--divider)"}}>
+        <h3 style={{fontSize:13,fontWeight:700,color:"var(--text)",marginBottom:14}}>Goals Tracker</h3>
+        {allGoals.map(function(g,i){var pct=g.goal>0?Math.min(Math.round(g.current/g.goal*100),100):0;var hit=pct>=100;return <div key={i} style={{marginBottom:10}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:3}}>
+            <span style={{fontSize:10,fontWeight:600,color:"var(--text-sub)"}}>{g.label}</span>
+            <span style={{fontSize:9,fontWeight:700,color:hit?"#10B981":g.color}}>{g.current} / {g.goal}{hit?" ✓":""}</span>
+          </div>
+          <div style={{height:8,background:"var(--divider)",borderRadius:4,overflow:"hidden"}}>
+            <div style={{height:"100%",width:Math.max(pct,2)+"%",background:hit?"#10B981":g.color,borderRadius:4,transition:"width 0.8s ease"}}/>
+          </div>
+        </div>})}
+      </div>}
+
     return null;
   };
 
-  var getWidgetSize=function(key){var sizes=p.config.widgetSizes||{};var wDef=OV_WIDGETS.find(function(o){return o.key===key});var rawSz=sizes[key]||(wDef?wDef.defaultSize:"2xM");return rawSz==="full"?"2xM":rawSz==="half"?"1xM":rawSz==="2x1"?"2xM":rawSz==="1x1"?"1xM":rawSz==="2x2"?"2xL":rawSz==="1x2"?"1xL":rawSz};
+  var getWidgetSize=function(key){var sizes=p.config.widgetSizes||{};var rawSz=sizes[key]||DEFAULT_WIDGET_SIZES[key]||(function(){var wDef=OV_WIDGETS.find(function(o){return o.key===key});return wDef?wDef.defaultSize:"2xM"})();return rawSz==="full"?"2xM":rawSz==="half"?"1xM":rawSz==="2x1"?"2xM":rawSz==="1x1"?"1xM":rawSz==="2x2"?"2xL":rawSz==="1x2"?"1xL":rawSz};
 
   /* Compute explicit grid positions for all widgets + empty slots */
   var computeLayout=function(excludeKey){
@@ -651,21 +685,41 @@ function Overview(p){
 
     <Reveal open={showWidgetPicker}><div style={{background:"var(--card)",borderRadius:19,padding:"19px 22px",marginBottom:19,boxShadow:"var(--card-shadow)",border:"1px solid var(--divider)"}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:13}}>
-        <div><div style={{fontSize:12,fontWeight:700,color:"var(--text)"}}>Add Widgets</div><div style={{fontSize:10,color:"var(--text-muted)",marginTop:2}}>Drag widgets from the top edge to rearrange.</div></div>
+        <div><div style={{fontSize:12,fontWeight:700,color:"var(--text)"}}>Customize Dashboard</div><div style={{fontSize:10,color:"var(--text-muted)",marginTop:2}}>Toggle widgets, save and recall layouts.</div></div>
         <button onClick={function(){setShowWidgetPicker(false)}} style={{padding:"6px 13px",borderRadius:8,background:"var(--primary)",color:"#fff",border:"none",fontSize:10,fontWeight:600,cursor:"pointer"}}>Done</button>
       </div>
+
+      <div style={{marginBottom:14}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
+          <div style={{fontSize:10,fontWeight:700,color:"var(--text-sub)",textTransform:"uppercase",letterSpacing:"0.06em"}}>Saved Layouts</div>
+          <div style={{display:"flex",gap:4,alignItems:"center"}}>
+            <input value={layoutName} onChange={function(e){setLayoutName(e.target.value)}} placeholder="Layout name..." style={{padding:"4px 8px",borderRadius:6,border:"1px solid var(--inp-border)",background:"var(--inp)",color:"var(--text)",fontSize:9,width:110,outline:"none",boxSizing:"border-box"}}/>
+            <button onClick={function(){if(!layoutName.trim())return;var layouts=(p.config.savedLayouts||[]).concat([{name:layoutName.trim(),widgets:ovWidgets.slice(),sizes:{...(p.config.widgetSizes||{})},...(p.config.widgetColPrefs?{colPrefs:{...(p.config.widgetColPrefs)}}:{})}]);p.setConfig({...p.config,savedLayouts:layouts});setLayoutName("")}} style={{padding:"4px 10px",borderRadius:6,background:layoutName.trim()?"var(--primary)":"var(--inp)",border:"1px solid "+(layoutName.trim()?"var(--primary)":"var(--inp-border)"),fontSize:9,fontWeight:600,color:layoutName.trim()?"#fff":"var(--text-muted)",cursor:layoutName.trim()?"pointer":"default",whiteSpace:"nowrap"}}>Save</button>
+          </div>
+        </div>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+          <button onClick={function(){p.setConfig({...p.config,overviewWidgets:DEFAULT_OV_WIDGETS.slice(),widgetSizes:{...DEFAULT_WIDGET_SIZES},widgetColPrefs:{}})}} style={{padding:"6px 12px",borderRadius:8,border:"1px solid var(--inp-border)",background:"var(--inp)",fontSize:10,fontWeight:600,color:"var(--text-sub)",cursor:"pointer",transition:"all 0.15s"}} onMouseEnter={function(e){e.currentTarget.style.borderColor="var(--primary)";e.currentTarget.style.color="var(--primary)"}} onMouseLeave={function(e){e.currentTarget.style.borderColor="var(--inp-border)";e.currentTarget.style.color="var(--text-sub)"}}>Default</button>
+          {(p.config.savedLayouts||[]).map(function(layout,i){return <div key={i} style={{display:"flex",alignItems:"center",gap:0}}>
+            <button onClick={function(){p.setConfig({...p.config,overviewWidgets:layout.widgets.slice(),widgetSizes:{...layout.sizes},...(layout.colPrefs?{widgetColPrefs:{...layout.colPrefs}}:{widgetColPrefs:{}})})}} style={{padding:"6px 12px",borderRadius:"8px 0 0 8px",border:"1px solid var(--inp-border)",borderRight:"none",background:"var(--inp)",fontSize:10,fontWeight:600,color:"var(--text-sub)",cursor:"pointer",transition:"all 0.15s"}} onMouseEnter={function(e){e.currentTarget.style.borderColor="var(--primary)";e.currentTarget.style.color="var(--primary)"}} onMouseLeave={function(e){e.currentTarget.style.borderColor="var(--inp-border)";e.currentTarget.style.color="var(--text-sub)"}}>{layout.name}</button>
+            <button onClick={function(){var ls=(p.config.savedLayouts||[]).slice();ls.splice(i,1);p.setConfig({...p.config,savedLayouts:ls})}} style={{padding:"6px 6px",borderRadius:"0 8px 8px 0",border:"1px solid var(--inp-border)",background:"var(--inp)",cursor:"pointer",display:"flex",alignItems:"center"}}><I n="x" sz={8} c="var(--text-muted)"/></button>
+          </div>})}
+          {(p.config.savedLayouts||[]).length===0&&<span style={{fontSize:9,color:"var(--text-muted)",padding:"6px 0"}}>No saved layouts yet</span>}
+        </div>
+      </div>
+
+      <div style={{fontSize:10,fontWeight:700,color:"var(--text-sub)",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>Widgets</div>
       <div className="weavr-widget-picker" style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:7}}>
         {OV_WIDGETS.map(function(w){var on=ovWidgets.indexOf(w.key)>=0;return <button key={w.key} onClick={function(){toggleWidget(w.key)}} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:5,padding:"11px 8px",borderRadius:12,border:on?"1px solid var(--primary)":"1px solid var(--inp-border)",background:on?"var(--primary)06":"var(--inp)",cursor:"pointer",textAlign:"center",transition:"all 0.15s"}}><div style={{width:32,height:32,borderRadius:8,background:on?"var(--primary)12":"var(--divider)",display:"flex",alignItems:"center",justifyContent:"center"}}><I n={w.icon} sz={14} c={on?"var(--primary)":"var(--text-muted)"}/></div><span style={{fontSize:9,fontWeight:on?600:500,color:on?"var(--primary)":"var(--text-muted)",lineHeight:1.3}}>{w.label}</span></button>})}
       </div>
     </div></Reveal>
 
     <div className="weavr-ov-grid" style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gridAutoRows:WIDGET_ROW_H,gap:16}}>
-      {ovWidgets.map(function(key,idx){var el=renderWidget(key);if(!el)return null;var sz=getWidgetSize(key);var pos=widgetPositions[key];if(!pos)return null;var isDragging=wDragKey===key;var isTarget=wDropTarget===key;var gCol=pos.cols===2?"1 / -1":pos.col===0?"1 / 2":"2 / 3";var gRow=(pos.row+1)+" / "+(pos.row+1+pos.rows);var commitSize=function(ns,side){var nSizes={...(p.config.widgetSizes||{})};nSizes[key]=ns;var nCols={...(p.config.widgetColPrefs||{})};var newC=WS_COLS[ns]||2;if(newC===1&&side==="left")nCols[key]="right";else if(newC===1&&side==="right")nCols[key]="left";else delete nCols[key];p.setConfig({...p.config,widgetSizes:nSizes,widgetColPrefs:nCols})};return <div key={key} data-wkey={key} className="weavr-widget-wrap" onPointerDown={function(e){startDrag(key,e)}} style={{gridColumn:gCol,gridRow:gRow,position:"relative",overflow:"hidden",borderRadius:17,transition:"all 0.5s cubic-bezier(0.22,1,0.36,1)",cursor:"grab",opacity:isDragging?0.4:1,outline:isTarget?"2px solid var(--primary)":"none",outlineOffset:2,touchAction:"none"}}>
+      {ovWidgets.map(function(key,idx){var el=renderWidget(key);if(!el)return null;var sz=getWidgetSize(key);var pos=widgetPositions[key];if(!pos)return null;var isDragging=wDragKey===key;var isTarget=wDropTarget===key;var gCol=pos.cols===2?"1 / -1":pos.col===0?"1 / 2":"2 / 3";var gRow=(pos.row+1)+" / "+(pos.row+1+pos.rows);var commitSize=function(ns,side){var nSizes={...(p.config.widgetSizes||{})};nSizes[key]=ns;var nCols={...(p.config.widgetColPrefs||{})};var newC=WS_COLS[ns]||2;if(newC===1&&side==="left")nCols[key]="right";else if(newC===1&&side==="right")nCols[key]="left";else delete nCols[key];p.setConfig({...p.config,widgetSizes:nSizes,widgetColPrefs:nCols})};return <div key={key} data-wkey={key} className="weavr-widget-wrap" onPointerDown={function(e){startDrag(key,e)}} style={{gridColumn:gCol,gridRow:gRow,position:"relative",overflow:"hidden",borderRadius:17,transition:"all 0.7s cubic-bezier(0.22,1,0.36,1)",cursor:"grab",opacity:isDragging?0.4:1,outline:isTarget?"2px solid var(--primary)":"none",outlineOffset:2,touchAction:"none"}}>
         <div className="weavr-widget-ctrl" style={{position:"absolute",top:8,right:8,zIndex:10,opacity:0,transition:"opacity 0.2s"}}>
           <button onPointerDown={function(e){e.stopPropagation()}} onClick={function(e){e.stopPropagation();toggleWidget(key)}} style={{width:22,height:22,borderRadius:6,background:"var(--card)",border:"1px solid var(--divider)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.08)"}} title="Remove widget"><I n="x" sz={9} c="var(--text-muted)"/></button>
         </div>
         <WidgetResize currentSize={sz} onResize={commitSize}/>
-        <div className="weavr-widget-scroll" style={{height:"100%",width:"100%",overflowY:"auto",overflowX:"hidden",display:"flex",flexDirection:"column"}}>{el}</div>
+        <div className="weavr-widget-scroll" style={{position:"absolute",inset:0,overflowY:"auto",overflowX:"hidden"}}><div style={{minHeight:"100%",display:"flex",flexDirection:"column"}}>{el}</div></div>
       </div>})}
       {emptySlots.map(function(slot,i){var gCol=slot.cols===2?"1 / -1":slot.col===0?"1 / 2":"2 / 3";var gRow=(slot.row+1)+" / "+(slot.row+1+slot.rows);var sid=slot.row+"_"+slot.col+"_"+slot.cols;var isTarget=wDropTarget===("slot:"+sid);return <div key={"s"+sid} data-slotid={sid} style={{gridColumn:gCol,gridRow:gRow,borderRadius:12,border:isTarget?"2px solid var(--primary)":"2px dashed var(--primary)",opacity:isTarget?0.6:0.2,background:isTarget?"var(--primary)10":"var(--primary)04",transition:"all 0.25s ease"}}/>})}
     </div>
@@ -1004,7 +1058,7 @@ function Settings(p){
   var saveTpl=function(){p.setTemplates(function(prev){return{...prev,[ek]:et}});setSaved(true);setTimeout(function(){setSaved(false)},2500)};
   var goEmailTpl=function(k){setEmailEk(k);setEmailEt(emailTpls[k]||"");setEmailSaved(false)};
   var saveEmailTpl=function(){var ne={...emailTpls};ne[emailEk]=emailEt;p.setConfig({...config,emailTemplates:ne});setEmailSaved(true);setTimeout(function(){setEmailSaved(false)},2500)};
-  var tabs=[{key:"teams",label:"Teams",icon:"users"},{key:"templates",label:"Text Templates",icon:"msg"},{key:"email-tpl",label:"Email Templates",icon:"mail"},{key:"sequences",label:"Sequences",icon:"clock"},{key:"automation",label:"Automation",icon:"zap"},{key:"checkins",label:"Check-ins",icon:"check"},{key:"forms",label:"Form Fields",icon:"card"},{key:"visual",label:"Visual",icon:"palette"},{key:"data",label:"Data",icon:"dl"}];
+  var tabs=[{key:"teams",label:"Teams",icon:"users"},{key:"templates",label:"Text Templates",icon:"msg"},{key:"email-tpl",label:"Email Templates",icon:"mail"},{key:"goals",label:"Goals",icon:"target"},{key:"sequences",label:"Sequences",icon:"clock"},{key:"automation",label:"Automation",icon:"zap"},{key:"checkins",label:"Check-ins",icon:"check"},{key:"forms",label:"Form Fields",icon:"card"},{key:"visual",label:"Visual",icon:"palette"},{key:"data",label:"Data",icon:"dl"}];
 
   return <div>
     <h2 style={{fontSize:17,fontWeight:800,color:"var(--text)",marginBottom:16}}>Settings</h2>
@@ -1070,6 +1124,54 @@ function Settings(p){
             </div>})}
             {emailSaved&&<div style={{fontSize:10,color:"#10B981",fontWeight:600,marginTop:4}}>Saved!</div>}
           </div>})():<div style={{color:"var(--text-muted)",fontSize:12,padding:"32px 0",textAlign:"center"}}>Select a stage to manage its email templates</div>}</div>
+      </div>
+    </div>}
+
+    {tab==="goals"&&<div style={{background:"var(--card)",borderRadius:19,padding:"21px 22px",boxShadow:"var(--card-shadow)",border:"1px solid var(--divider)"}}>
+      <h3 style={{fontSize:13,fontWeight:700,color:"var(--text)",marginBottom:3}}>Goals & Funnel Thresholds</h3>
+      <p style={{fontSize:10,color:"var(--text-muted)",marginBottom:16}}>Set the capacity for each funnel bar. The bar reaches full length when you hit this number.</p>
+      <div style={{marginBottom:20}}>
+        <div style={{fontSize:11,fontWeight:700,color:"var(--text)",marginBottom:10}}>Funnel Bar Thresholds</div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:8}}>
+          {STAGES.concat([{key:"fully-connected",label:"Fully Connected",color:"#F97316"}]).map(function(s){var fGoals={...DEFAULT_FUNNEL_GOALS,...(config.funnelGoals||{})};var val=fGoals[s.key]||50;return <div key={s.key} style={{display:"flex",alignItems:"center",gap:8,background:"var(--inp)",borderRadius:10,padding:"8px 12px",border:"1px solid var(--inp-border)"}}>
+            <Dot color={s.color} sz={7}/>
+            <span style={{flex:1,fontSize:10,fontWeight:600,color:"var(--text-sub)"}}>{s.label}</span>
+            <input type="number" min="1" value={val} onChange={function(e){var nfg={...DEFAULT_FUNNEL_GOALS,...(config.funnelGoals||{})};nfg[s.key]=parseInt(e.target.value)||1;p.setConfig({...config,funnelGoals:nfg})}} style={{width:60,padding:"4px 6px",borderRadius:6,border:"1px solid var(--inp-border)",background:"var(--card)",color:"var(--text)",fontSize:11,fontWeight:700,textAlign:"center",boxSizing:"border-box",outline:"none"}}/>
+          </div>})}
+        </div>
+      </div>
+      <div>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+          <div style={{fontSize:11,fontWeight:700,color:"var(--text)"}}>Custom Goals</div>
+          <button onClick={function(){var cg=(config.customGoals||[]).concat([{label:"New Goal",metric:"total",target:100,color:"var(--primary)"}]);p.setConfig({...config,customGoals:cg})}} style={{padding:"4px 12px",borderRadius:7,background:"var(--primary)10",border:"1px solid var(--primary)25",fontSize:9,fontWeight:600,color:"var(--primary)",cursor:"pointer"}}>+ Add Goal</button>
+        </div>
+        <p style={{fontSize:9,color:"var(--text-muted)",marginBottom:10}}>Track custom metrics. These appear in the Goals Tracker widget.</p>
+        {(config.customGoals||[]).map(function(g,i){return <div key={i} style={{background:"var(--inp)",borderRadius:10,padding:"10px 12px",marginBottom:6,border:"1px solid var(--inp-border)"}}>
+          <div style={{display:"flex",gap:6,marginBottom:6}}>
+            <input value={g.label} onChange={function(e){var cg=(config.customGoals||[]).slice();cg[i]={...cg[i],label:e.target.value};p.setConfig({...config,customGoals:cg})}} placeholder="Goal name" style={{flex:1,padding:"5px 8px",borderRadius:6,border:"1px solid var(--inp-border)",background:"var(--card)",color:"var(--text)",fontSize:11,fontWeight:600,boxSizing:"border-box",outline:"none"}}/>
+            <button onClick={function(){var cg=(config.customGoals||[]).slice();cg.splice(i,1);p.setConfig({...config,customGoals:cg})}} style={{width:24,height:24,borderRadius:6,background:"#EF444410",border:"1px solid #EF444420",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0}}><I n="x" sz={9} c="#EF4444"/></button>
+          </div>
+          <div style={{display:"flex",gap:6}}>
+            <div style={{flex:1}}>
+              <div style={{fontSize:8,fontWeight:700,color:"var(--text-muted)",textTransform:"uppercase",marginBottom:2}}>Metric</div>
+              <select value={g.metric} onChange={function(e){var cg=(config.customGoals||[]).slice();cg[i]={...cg[i],metric:e.target.value};p.setConfig({...config,customGoals:cg})}} style={{width:"100%",padding:"5px 6px",borderRadius:6,border:"1px solid var(--inp-border)",background:"var(--card)",color:"var(--text)",fontSize:10,cursor:"pointer",outline:"none"}}>
+                <option value="total">Total People</option>
+                <option value="new-7d">New People (7d)</option>
+                <option value="follow-ups-7d">Follow-ups (7d)</option>
+                <option value="avg-score">Avg Engagement Score</option>
+              </select>
+            </div>
+            <div style={{width:70}}>
+              <div style={{fontSize:8,fontWeight:700,color:"var(--text-muted)",textTransform:"uppercase",marginBottom:2}}>Target</div>
+              <input type="number" min="1" value={g.target} onChange={function(e){var cg=(config.customGoals||[]).slice();cg[i]={...cg[i],target:parseInt(e.target.value)||1};p.setConfig({...config,customGoals:cg})}} style={{width:"100%",padding:"5px 6px",borderRadius:6,border:"1px solid var(--inp-border)",background:"var(--card)",color:"var(--text)",fontSize:11,fontWeight:700,textAlign:"center",boxSizing:"border-box",outline:"none"}}/>
+            </div>
+            <div style={{width:50}}>
+              <div style={{fontSize:8,fontWeight:700,color:"var(--text-muted)",textTransform:"uppercase",marginBottom:2}}>Color</div>
+              <input type="color" value={g.color==="var(--primary)"?"#7C3AED":g.color||"#7C3AED"} onChange={function(e){var cg=(config.customGoals||[]).slice();cg[i]={...cg[i],color:e.target.value};p.setConfig({...config,customGoals:cg})}} style={{width:"100%",height:26,padding:0,border:"none",borderRadius:6,cursor:"pointer",background:"transparent"}}/>
+            </div>
+          </div>
+        </div>})}
+        {(config.customGoals||[]).length===0&&<div style={{color:"var(--text-muted)",fontSize:10,textAlign:"center",padding:"12px 0",background:"var(--inp)",borderRadius:8}}>No custom goals yet. Add one above.</div>}
       </div>
     </div>}
 
@@ -1439,7 +1541,7 @@ function AppMain(p){
   var activeKey=view==="overview"?"overview":view==="settings"?"settings":view==="quick"?"quick":view==="bulk"?"bulk":view==="reports"?"reports":view==="assigned"?"assigned":view==="connected"?"fully-connected":(sf||"all");
 
   return <div style={{display:"flex",height:"100vh",fontFamily:"'Nunito',sans-serif",background:"var(--bg)",color:"var(--text)",...cssVars}}>
-    <style>{["@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap');","*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;font-family:'Nunito',sans-serif !important}","::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.12);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,0.2)}*{scrollbar-width:thin;scrollbar-color:rgba(0,0,0,0.12) transparent}","@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}","@keyframes panelSlide{from{transform:translateX(100%)}to{transform:translateX(0)}}","@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}","@keyframes revealDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}","@keyframes revealUp{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-12px)}}","@keyframes gentleFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}","@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}","@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}","@keyframes confettiFall{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(60px) rotate(360deg);opacity:0}}",".score-ring-pulse{animation:pulse 2s ease-in-out infinite}",".shimmer-btn{background-size:200% 100%;animation:shimmer 2s ease infinite}","input:focus,textarea:focus,select:focus{outline:none;border-color:var(--primary) !important;box-shadow:0 0 0 3px var(--primary)20 !important}","button{cursor:pointer;font-family:'Nunito',sans-serif !important}button:active{transform:scale(0.97)}",".weavr-widget-wrap:hover .weavr-widget-ctrl{opacity:1 !important}",".weavr-widget-wrap>div:last-child>*{flex:1;min-height:0}",".weavr-widget-scroll::-webkit-scrollbar{width:3px}",".weavr-widget-scroll::-webkit-scrollbar-track{background:transparent;margin:8px}",".weavr-widget-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.08);border-radius:3px}",".weavr-widget-scroll::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,0.15)}",".weavr-widget-scroll{scrollbar-width:thin;scrollbar-color:rgba(0,0,0,0.08) transparent}",".weavr-ov-grid{transition:all 0.3s ease}","@media(max-width:768px){.weavr-sidebar{display:none !important}.weavr-collapse-btn{display:none !important}.weavr-mobile-nav{display:flex !important}.weavr-main{margin-left:0 !important}.weavr-main-header{padding:12px 14px !important}.weavr-main-header>div:first-child{display:none !important}.weavr-main-content{padding:0 14px 100px !important}.weavr-pipeline-hero{padding:20px 16px !important;border-radius:16px !important;margin-bottom:16px !important}.weavr-pipeline-grid{grid-template-columns:repeat(3,1fr) !important;gap:6px !important}.weavr-pipeline-grid>div{padding:12px 6px !important}.weavr-pipeline-grid>div>div:first-child{font-size:20px !important}.weavr-kpi-grid{grid-template-columns:repeat(2,1fr) !important}.weavr-kpi-grid>div{padding:16px !important}.weavr-kpi-grid>div>div:last-child{font-size:24px !important}.weavr-card-grid{grid-template-columns:1fr !important}.weavr-panel{width:100vw !important;max-width:100vw !important;border-radius:0 !important}.weavr-panel-header{padding:16px 16px 14px !important}.weavr-panel-actions{padding:10px 16px !important}.weavr-panel-actions>div{gap:4px !important}.weavr-panel-body{padding:14px 16px !important}.weavr-qe-layout{flex-direction:column !important}.weavr-qe-recent{width:100% !important}.weavr-next-up{flex-direction:column !important}.weavr-next-up>div:first-child{padding:16px !important;gap:12px !important}.weavr-next-up>div:first-child>div:last-child{display:none !important}.weavr-ws-grid{grid-template-columns:repeat(2,1fr) !important}.weavr-ws-input{grid-template-columns:repeat(2,1fr) !important}.weavr-widget-picker{grid-template-columns:repeat(2,1fr) !important}.weavr-sort-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap !important}.weavr-ac-header{flex-direction:column !important;align-items:flex-start !important;gap:10px !important}.weavr-ac-header>div:last-child{width:100% !important}.weavr-ac-teams{overflow-x:auto !important;-webkit-overflow-scrolling:touch !important;flex-wrap:nowrap !important;padding-bottom:4px}.weavr-fc-header{flex-direction:column !important;align-items:flex-start !important;gap:8px !important}table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}.weavr-stats-compare{flex-direction:column !important;align-items:flex-start !important;gap:6px !important}.weavr-ov-grid{grid-template-columns:1fr !important;gap:14px !important;grid-auto-rows:auto !important}.weavr-login-split{flex-direction:column !important}.weavr-login-left{display:none !important}.weavr-login-right{width:100% !important;min-height:100vh !important;justify-content:center !important;border-left:none !important;padding:40px 24px !important}.weavr-login-right h2{font-size:24px !important}.weavr-login-mobile-logo{display:flex !important}.weavr-portal-grid{grid-template-columns:repeat(2,1fr) !important;gap:12px !important}.weavr-portal-header{padding:20px 0 !important}.weavr-portal-hero{padding:32px 0 40px !important}.weavr-portal-hero h1{font-size:26px !important}.weavr-portal-card{padding:20px 16px !important}.weavr-modal-inner{width:95vw !important;max-width:95vw !important;padding:20px !important;margin:0 !important;border-radius:16px !important}.weavr-modal-inner h3{font-size:17px !important}}","@media(max-width:480px){.weavr-pipeline-grid{grid-template-columns:repeat(2,1fr) !important}.weavr-kpi-grid{grid-template-columns:1fr !important}.weavr-main-header{flex-wrap:wrap !important;gap:8px !important}.weavr-ws-grid{grid-template-columns:1fr 1fr !important}.weavr-ws-input{grid-template-columns:1fr 1fr !important}.weavr-portal-grid{grid-template-columns:1fr !important}.weavr-weekly-summary-grid{grid-template-columns:1fr !important}.weavr-login-right{padding:32px 20px !important}}"].join("\n")}</style>
+    <style>{["@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap');","*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;font-family:'Nunito',sans-serif !important}","::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.12);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,0.2)}*{scrollbar-width:thin;scrollbar-color:rgba(0,0,0,0.12) transparent}","@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}","@keyframes panelSlide{from{transform:translateX(100%)}to{transform:translateX(0)}}","@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}","@keyframes revealDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}","@keyframes revealUp{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-12px)}}","@keyframes gentleFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}","@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}","@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}","@keyframes confettiFall{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(60px) rotate(360deg);opacity:0}}",".score-ring-pulse{animation:pulse 2s ease-in-out infinite}",".shimmer-btn{background-size:200% 100%;animation:shimmer 2s ease infinite}","input:focus,textarea:focus,select:focus{outline:none;border-color:var(--primary) !important;box-shadow:0 0 0 3px var(--primary)20 !important}","button{cursor:pointer;font-family:'Nunito',sans-serif !important}button:active{transform:scale(0.97)}",".weavr-widget-wrap:hover .weavr-widget-ctrl{opacity:1 !important}",".weavr-widget-scroll>div>*{flex:1;min-height:0}",".weavr-widget-scroll::-webkit-scrollbar{width:3px}",".weavr-widget-scroll::-webkit-scrollbar-track{background:transparent;margin:8px}",".weavr-widget-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.08);border-radius:3px}",".weavr-widget-scroll::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,0.15)}",".weavr-widget-scroll{scrollbar-width:thin;scrollbar-color:rgba(0,0,0,0.08) transparent}",".weavr-ov-grid{transition:all 0.3s ease}","@media(max-width:768px){.weavr-sidebar{display:none !important}.weavr-collapse-btn{display:none !important}.weavr-mobile-nav{display:flex !important}.weavr-main{margin-left:0 !important}.weavr-main-header{padding:12px 14px !important}.weavr-main-header>div:first-child{display:none !important}.weavr-main-content{padding:0 14px 100px !important}.weavr-pipeline-hero{padding:20px 16px !important;border-radius:16px !important;margin-bottom:16px !important}.weavr-pipeline-grid{grid-template-columns:repeat(3,1fr) !important;gap:6px !important}.weavr-pipeline-grid>div{padding:12px 6px !important}.weavr-pipeline-grid>div>div:first-child{font-size:20px !important}.weavr-kpi-grid{grid-template-columns:repeat(2,1fr) !important}.weavr-kpi-grid>div{padding:16px !important}.weavr-kpi-grid>div>div:last-child{font-size:24px !important}.weavr-card-grid{grid-template-columns:1fr !important}.weavr-panel{width:100vw !important;max-width:100vw !important;border-radius:0 !important}.weavr-panel-header{padding:16px 16px 14px !important}.weavr-panel-actions{padding:10px 16px !important}.weavr-panel-actions>div{gap:4px !important}.weavr-panel-body{padding:14px 16px !important}.weavr-qe-layout{flex-direction:column !important}.weavr-qe-recent{width:100% !important}.weavr-next-up{flex-direction:column !important}.weavr-next-up>div:first-child{padding:16px !important;gap:12px !important}.weavr-next-up>div:first-child>div:last-child{display:none !important}.weavr-ws-grid{grid-template-columns:repeat(2,1fr) !important}.weavr-ws-input{grid-template-columns:repeat(2,1fr) !important}.weavr-widget-picker{grid-template-columns:repeat(2,1fr) !important}.weavr-sort-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap !important}.weavr-ac-header{flex-direction:column !important;align-items:flex-start !important;gap:10px !important}.weavr-ac-header>div:last-child{width:100% !important}.weavr-ac-teams{overflow-x:auto !important;-webkit-overflow-scrolling:touch !important;flex-wrap:nowrap !important;padding-bottom:4px}.weavr-fc-header{flex-direction:column !important;align-items:flex-start !important;gap:8px !important}table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}.weavr-stats-compare{flex-direction:column !important;align-items:flex-start !important;gap:6px !important}.weavr-ov-grid{grid-template-columns:1fr !important;gap:14px !important;grid-auto-rows:auto !important}.weavr-login-split{flex-direction:column !important}.weavr-login-left{display:none !important}.weavr-login-right{width:100% !important;min-height:100vh !important;justify-content:center !important;border-left:none !important;padding:40px 24px !important}.weavr-login-right h2{font-size:24px !important}.weavr-login-mobile-logo{display:flex !important}.weavr-portal-grid{grid-template-columns:repeat(2,1fr) !important;gap:12px !important}.weavr-portal-header{padding:20px 0 !important}.weavr-portal-hero{padding:32px 0 40px !important}.weavr-portal-hero h1{font-size:26px !important}.weavr-portal-card{padding:20px 16px !important}.weavr-modal-inner{width:95vw !important;max-width:95vw !important;padding:20px !important;margin:0 !important;border-radius:16px !important}.weavr-modal-inner h3{font-size:17px !important}}","@media(max-width:480px){.weavr-pipeline-grid{grid-template-columns:repeat(2,1fr) !important}.weavr-kpi-grid{grid-template-columns:1fr !important}.weavr-main-header{flex-wrap:wrap !important;gap:8px !important}.weavr-ws-grid{grid-template-columns:1fr 1fr !important}.weavr-ws-input{grid-template-columns:1fr 1fr !important}.weavr-portal-grid{grid-template-columns:1fr !important}.weavr-weekly-summary-grid{grid-template-columns:1fr !important}.weavr-login-right{padding:32px 20px !important}}"].join("\n")}</style>
     <aside className="weavr-sidebar" style={{width:sbCollapsed?60:220,background:"var(--sidebar)",display:"flex",flexDirection:"column",flexShrink:0,height:"100vh",position:"sticky",top:0,transition:"width 0.25s cubic-bezier(0.22,1,0.36,1)",overflow:"visible",zIndex:60}}>
       <div style={{padding:sbCollapsed?"12px 0":"12px 10px",borderBottom:"1px solid var(--sb-divider)",display:"flex",alignItems:"center",justifyContent:sbCollapsed?"center":"flex-start",gap:sbCollapsed?0:10,position:"relative",zIndex:80}}>
         <div style={{position:"relative",width:sbCollapsed?"auto":"100%"}}>
